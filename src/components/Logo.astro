@@ -11,7 +11,8 @@
  * and the rest of the site picks it up — this is the only file that needs to change.
  */
 import { Picture } from 'astro:assets';
-import logoFull from '../assets/images/logo.png';
+// logo-web.png is generated from logo.png by `npm run logo` (same artwork, lighter file).
+import logoFull from '../assets/images/logo-web.png';
 import logoWordmark from '../assets/images/logo-wordmark.png';
 import { useTranslations, type Lang } from '../i18n/utils';
 

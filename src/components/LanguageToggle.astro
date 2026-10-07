@@ -31,7 +31,6 @@ const codes = Object.keys(languages) as Lang[];
         href={localePath(code)}
         lang={code}
         hreflang={code}
-        aria-label={languages[code]}
         aria-current={code === lang ? 'page' : undefined}
         data-lang-switch={code === lang ? undefined : code}
         class:list={[
@@ -42,6 +41,7 @@ const codes = Object.keys(languages) as Lang[];
         ]}
       >
         {code}
+        <span class="sr-only">&nbsp;{languages[code]}</span>
       </a>
     </>
   ))}

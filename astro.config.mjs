@@ -10,6 +10,10 @@ export default defineConfig({
   site: 'https://www.veronicaseventdecor.com',
   output: 'static',
   trailingSlash: 'ignore',
+  build: {
+    // One small page: inline the CSS so it doesn't block the first paint.
+    inlineStylesheets: 'always',
+  },
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es'],

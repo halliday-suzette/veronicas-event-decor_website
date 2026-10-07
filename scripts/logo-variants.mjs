@@ -3,6 +3,8 @@
 //   npm run logo
 //
 // Output:
+//   src/assets/images/logo-web.png      — the full logo with its nearly invisible edge
+//     pixels (alpha < 10) cleared. They can't be seen but make the image ~15% heavier.
 //   src/assets/images/logo-wordmark.png — the center "Veronica's event decor" band
 //     (between the two gold bars, without filigree) for the header and mobile menu.
 //   public/og-image.png                  — 1200×630 social-share image (logo on onyx).
@@ -16,19 +18,32 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SOURCE = `${root}src/assets/images/logo.png`;
+const WEB = `${root}src/assets/images/logo-web.png`;
 const WORDMARK = `${root}src/assets/images/logo-wordmark.png`;
 const PUBLIC = `${root}public/`;
 
 const ONYX = '#141210';
 
-// ---------------------------------------------------------------------------
-// 1. Wordmark crop
-// ---------------------------------------------------------------------------
 const { data, info } = await sharp(SOURCE)
   .ensureAlpha()
   .raw()
   .toBuffer({ resolveWithObject: true });
 const { width, height } = info;
+
+// ---------------------------------------------------------------------------
+// 1. Web copy: clear invisible edge pixels (alpha < 10) so the image compresses better
+// ---------------------------------------------------------------------------
+const cleaned = Buffer.from(data);
+for (let i = 0; i < cleaned.length; i += 4) {
+  if (cleaned[i + 3] < 10) cleaned[i] = cleaned[i + 1] = cleaned[i + 2] = cleaned[i + 3] = 0;
+}
+const rawInput = { raw: { width, height, channels: /** @type {4} */ (4) } };
+await sharp(cleaned, rawInput).png({ compressionLevel: 9 }).toFile(WEB);
+console.log(`Web logo: ${WEB}`);
+
+// ---------------------------------------------------------------------------
+// 2. Wordmark crop (from the cleaned copy)
+// ---------------------------------------------------------------------------
 
 /** Rows where more than 85% of pixels are opaque — the logo's horizontal gold bars. */
 const barRows = [];
@@ -51,14 +66,14 @@ if (barRows.length >= 2) {
   bottom = Math.round(height * 0.75);
 }
 
-await sharp(SOURCE)
+await sharp(cleaned, rawInput)
   .extract({ left: 0, top, width, height: bottom - top + 1 })
   .png({ compressionLevel: 9 })
   .toFile(WORDMARK);
 console.log(`Wordmark: rows ${top}–${bottom} → ${width}×${bottom - top + 1}`);
 
 // ---------------------------------------------------------------------------
-// 2. Open Graph image (1200×630): full logo on onyx with a warm glow
+// 3. Open Graph image (1200×630): full logo on onyx with a warm glow
 // ---------------------------------------------------------------------------
 const glow = Buffer.from(`
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
@@ -87,7 +102,7 @@ await sharp(glow)
 console.log('OG image: public/og-image.png');
 
 // ---------------------------------------------------------------------------
-// 3. Favicons: gold "V" monogram on an onyx tile
+// 4. Favicons: gold "V" monogram on an onyx tile
 // ---------------------------------------------------------------------------
 /** @param {number} size @param {number} radius corner radius as a fraction of size */
 const monogram = (size, radius = 0.18) =>

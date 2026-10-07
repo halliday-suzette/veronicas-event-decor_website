@@ -1,11 +1,7 @@
 @import 'tailwindcss';
 
-/* Self-hosted fonts (no Google Fonts request). Only the Latin subset is downloaded
-   by browsers for English/Spanish text, thanks to unicode-range. */
-@import '@fontsource-variable/playfair-display';
-@import '@fontsource/lato/400.css';
-@import '@fontsource/lato/700.css';
-@import '@fontsource/rye/400.css';
+/* Self-hosted fonts (no Google Fonts request). */
+@import './fonts.css';
 
 /*
  * Brand tokens — gold tones tuned to samples from src/assets/images/logo.png
