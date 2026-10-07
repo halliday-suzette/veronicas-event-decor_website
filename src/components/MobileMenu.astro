@@ -68,11 +68,13 @@ const t = useTranslations(lang);
           href={site.instagram.url}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={t.instagram.label}
           class="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-gold-soft transition hover:text-gold"
         >
           <InstagramIcon class="size-6" />
-          <span class="text-sm">{site.instagram.handle}</span>
+          <span class="text-sm">
+            <span class="sr-only">Instagram </span>
+            {site.instagram.handle}
+          </span>
         </a>
       </div>
     </div>

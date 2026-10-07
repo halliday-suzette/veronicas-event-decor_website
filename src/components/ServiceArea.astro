@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section
+  id="service-area"
+  aria-labelledby="service-area-title"
+  class="section-cream py-20 sm:py-24 lg:py-28"
+>
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="service-area-title"
+      tone="light"
+      eyebrow={t.serviceArea.eyebrow}
+      title={t.serviceArea.title}
+      intro={t.serviceArea.intro}
+    />
+
+    <div class="mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
+      <!-- Home-base badge -->
+      <div class="relative mx-auto w-full max-w-sm rounded-lg bg-onyx p-8 text-center text-cream shadow-soft">
+        <div
+          class="pointer-events-none absolute inset-2 rounded-md border border-gold-deep/60"
+          aria-hidden="true"
+        ></div>
+        <Icon name="pin" class="mx-auto size-12 text-gold" strokeWidth={1.25} />
+        <p class="mt-4 font-western text-xs tracking-[0.2em] text-gold uppercase">
+          {t.serviceArea.baseLabel}
+        </p>
+        <p class="mt-2 font-serif text-3xl font-semibold text-gold-soft">{t.serviceArea.base}</p>
+      </div>
+
+      <!-- Areas served -->
+      <div class="text-center lg:text-left">
+        <h3 class="text-2xl font-semibold text-whiskey-dark">{t.serviceArea.areasLabel}</h3>
+        <ul class="mt-5 flex flex-wrap justify-center gap-3 lg:justify-start">
+          {t.serviceArea.areas.map((area) => (
+            <li class="inline-flex items-center gap-2 rounded-full border border-whiskey/60 bg-white/60 px-4 py-2 font-bold text-whiskey-dark">
+              <Icon name="pin" class="size-4 text-gold-deep" strokeWidth={2} />
+              {area}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-7 font-serif text-xl text-whiskey-dark italic">{t.serviceArea.note}</p>
+        <a href="#quote" class="btn-outline-dark mt-5">
+          {t.serviceArea.cta}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

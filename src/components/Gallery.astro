@@ -1,0 +1,76 @@
+---
+/**
+ * Gallery (#gallery): photos from src/assets/images/gallery/ plus an Instagram button.
+ * No third-party Instagram widget.
+ *
+ * To change photos: replace the files in src/assets/images/gallery/ (any .jpg, .jpeg,
+ * .png, .webp or .avif). They are shown in filename order — the first six are used.
+ * Update the matching descriptions in `gallery.photoAlts` in src/i18n/en.ts and es.ts.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import InstagramIcon from './InstagramIcon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { site } from '../config/site';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const MAX_PHOTOS = 6;
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+const photos = Object.keys(files)
+  .sort()
+  .slice(0, MAX_PHOTOS)
+  .map((key, i) => ({
+    src: files[key]!.default,
+    alt: t.gallery.photoAlts[i] ?? `${t.gallery.eyebrow} ${i + 1}`,
+  }));
+---
+
+<section id="gallery" aria-labelledby="gallery-title" class="section-dark py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="gallery-title"
+      eyebrow={t.gallery.eyebrow}
+      title={t.gallery.title}
+      intro={t.gallery.intro}
+    />
+
+    <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+      {photos.map((photo) => (
+        <li class="overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            widths={[300, 450, 600, 900]}
+            sizes="(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw"
+            class="aspect-square h-auto w-full object-cover transition duration-500 hover:scale-[1.03]"
+          />
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-12 text-center">
+      <a
+        href={site.instagram.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-gold max-w-full py-3 text-lg"
+      >
+        <InstagramIcon class="size-6 shrink-0" />
+        <span>
+          {t.gallery.follow}
+          <span class="inline-block">{site.instagram.handle}</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
