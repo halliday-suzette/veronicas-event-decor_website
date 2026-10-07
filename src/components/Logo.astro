@@ -54,6 +54,7 @@ const alt = decorative ? '' : t.logoAlt;
     widths={[170, 220, 340, 440]}
     sizes="(min-width: 1024px) 220px, 165px"
     priority={priority}
+    loading={priority ? undefined : 'eager'}
     class:list={['h-12 w-auto lg:h-16', className]}
   />
 )}

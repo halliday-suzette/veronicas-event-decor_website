@@ -6,6 +6,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Hero from './Hero.astro';
+import About from './About.astro';
+import Rentals from './Rentals.astro';
+import Events from './Events.astro';
+import Packages from './Packages.astro';
 import type { Lang } from '../i18n/utils';
 
 // To add a real event photo to the hero later, import it here and pass it below, e.g.
@@ -25,5 +29,9 @@ const { lang } = Astro.props;
   <Header lang={lang} />
   <main id="main" tabindex="-1">
     <Hero lang={lang} />
+    <About lang={lang} />
+    <Rentals lang={lang} />
+    <Events lang={lang} />
+    <Packages lang={lang} />
   </main>
 </BaseLayout>

@@ -1,0 +1,87 @@
+---
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+// The first item (barrel cocktail tables) shows the light/dark finish swatches.
+const SWATCH_ITEM = 0;
+---
+
+<section id="rentals" aria-labelledby="rentals-title" class="section-dark py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="rentals-title"
+      eyebrow={t.rentals.eyebrow}
+      title={t.rentals.title}
+      intro={t.rentals.intro}
+    />
+
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {t.rentals.items.map((item, i) => (
+        <li class="group flex flex-col rounded-lg border border-gold-deep/40 bg-charcoal p-6 shadow-soft transition hover:-translate-y-0.5 hover:border-gold/70">
+          <span class="flex size-14 items-center justify-center rounded-full border border-gold-deep/70 text-gold transition group-hover:border-gold group-hover:text-gold-soft">
+            <Icon name={item.icon} class="size-7" />
+          </span>
+          <h3 class="mt-5 text-xl leading-snug font-semibold text-gold-soft">{item.title}</h3>
+          <p class="mt-2 text-cream/80">{item.text}</p>
+
+          {i === SWATCH_ITEM && (
+            <div class="mt-5 border-t border-gold-deep/30 pt-4">
+              <p class="text-xs font-bold tracking-widest text-cream/70 uppercase">
+                {t.rentals.finishes.label}
+              </p>
+              <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-3">
+                <li class="flex items-center gap-2 text-sm text-cream/90">
+                  <span class="swatch swatch-light" aria-hidden="true" />
+                  {t.rentals.finishes.light}
+                </li>
+                <li class="flex items-center gap-2 text-sm text-cream/90">
+                  <span class="swatch swatch-dark" aria-hidden="true" />
+                  {t.rentals.finishes.dark}
+                </li>
+              </ul>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-12 flex flex-col items-center gap-5 text-center">
+      <p class="font-serif text-xl text-cream/90 italic">{t.rentals.note}</p>
+      <a href="#quote" class="btn-outline">
+        {t.cta.quote}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .swatch {
+    display: inline-block;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1.5px solid var(--color-gold);
+    box-shadow: inset 0 1px 2px rgb(255 255 255 / 0.25);
+  }
+
+  /* Barrel-stave look: fine vertical grain over a warm wood gradient. */
+  .swatch-light {
+    background:
+      repeating-linear-gradient(90deg, rgb(59 36 22 / 0.12) 0 1px, transparent 1px 5px),
+      linear-gradient(135deg, #d6a06a, var(--color-whiskey-light) 50%, #9c6a3e);
+  }
+
+  .swatch-dark {
+    background:
+      repeating-linear-gradient(90deg, rgb(0 0 0 / 0.2) 0 1px, transparent 1px 5px),
+      linear-gradient(135deg, #5e3a24, var(--color-whiskey-dark) 55%, #24150c);
+  }
+</style>

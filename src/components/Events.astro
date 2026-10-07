@@ -1,0 +1,63 @@
+---
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Desktop layout: two large tiles on the first row, three on the second.
+const spans = [
+  'lg:col-span-3',
+  'lg:col-span-3',
+  'lg:col-span-2',
+  'lg:col-span-2',
+  'sm:col-span-2 lg:col-span-2',
+];
+---
+
+<section id="events" aria-labelledby="events-title" class="section-linen py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="events-title"
+      tone="light"
+      eyebrow={t.events.eyebrow}
+      title={t.events.title}
+      intro={t.events.intro}
+    />
+
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
+      {t.events.items.map((event, i) => (
+        <li
+          class:list={[
+            'event-tile relative overflow-hidden rounded-lg bg-onyx p-7 text-cream shadow-soft sm:p-8',
+            spans[i],
+          ]}
+        >
+          <div
+            class="pointer-events-none absolute inset-2 rounded-md border border-gold-deep/50"
+            aria-hidden="true"
+          />
+          <div class="relative flex h-full flex-col">
+            <Icon name={event.icon} class="size-10 text-gold" strokeWidth={1.25} />
+            <h3 class="mt-5 text-2xl font-semibold text-gold-soft sm:text-[1.7rem]">
+              {event.title}
+            </h3>
+            <p class="mt-3 max-w-md text-cream/85">{event.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Soft candlelight in the corner of each tile. */
+  .event-tile {
+    background-image: radial-gradient(circle at 100% 0%, rgb(230 170 30 / 0.16), transparent 55%);
+  }
+</style>
