@@ -1,0 +1,68 @@
+---
+/**
+ * Add-Ons (#add-ons): feature photo, then a card for every published add-on in
+ * src/data/inventory.ts. The grid wraps, so it works for 3 items or 12+.
+ */
+import Photo from './Photo.astro';
+import SectionHeading from './SectionHeading.astro';
+import { publishedItems } from '../data/inventory';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const addOns = publishedItems.filter((i) => i.category === 'add-ons');
+const FEATURE_PHOTO = 'balloons-cowgirl-shower.jpg';
+---
+
+<section id="add-ons" aria-labelledby="add-ons-title" class="section-linen py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="add-ons-title"
+      tone="light"
+      eyebrow={t.addOns.eyebrow}
+      title={t.addOns.title}
+      intro={t.addOns.intro}
+    />
+
+    <div class="overflow-hidden rounded-lg shadow-soft">
+      <Photo
+        file={FEATURE_PHOTO}
+        lang={lang}
+        label={t.addOns.title}
+        width={1600}
+        height={700}
+        widths={[640, 960, 1280, 1600]}
+        sizes="(min-width: 1280px) 1216px, calc(100vw - 2.5rem)"
+      />
+    </div>
+
+    <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {addOns.map((item) => (
+        <li class="flex flex-col overflow-hidden rounded-lg border border-whiskey-light/60 bg-white/60 shadow-soft">
+          {item.image && (
+            <Photo
+              file={item.image}
+              lang={lang}
+              label={item.name[lang]}
+              altOverride={item.imageAlt}
+              width={600}
+              height={400}
+              widths={[300, 450, 600]}
+              sizes="(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, calc(100vw - 2.5rem)"
+            />
+          )}
+          <div class="flex-1 p-6">
+            <h3 class="text-xl font-semibold text-whiskey-dark">{item.name[lang]}</h3>
+            <p class="mt-2 text-charcoal/85">{item.description[lang]}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-10 text-center font-serif text-xl text-whiskey-dark">{t.addOns.note}</p>
+  </div>
+</section>

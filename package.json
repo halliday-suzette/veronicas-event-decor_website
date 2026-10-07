@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "astro": "astro",
-    "logo": "node scripts/logo-variants.mjs"
+    "logo": "node scripts/logo-variants.mjs",
+    "check:i18n": "node scripts/check-i18n.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

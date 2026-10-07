@@ -1,0 +1,102 @@
+---
+/**
+ * "More Handcrafted Rentals" — every published inventory item except the featured barrel
+ * tables and add-ons, grouped by category. Items with a photo get a photo card; items
+ * without one get a compact text card.
+ */
+import Photo from './Photo.astro';
+import SpecRow from './SpecRow.astro';
+import { categories, publishedItems } from '../data/inventory';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const groups = categories
+  .filter((c) => c.id !== 'add-ons')
+  .map((category) => {
+    const items = publishedItems.filter((i) => i.category === category.id && !i.featured);
+    return {
+      ...category,
+      withPhoto: items.filter((i) => i.image),
+      textOnly: items.filter((i) => !i.image),
+    };
+  })
+  .filter((g) => g.withPhoto.length + g.textOnly.length > 0);
+---
+
+<div class="mt-20 sm:mt-24">
+  <div class="mx-auto max-w-3xl text-center">
+    <h3 class="text-3xl font-semibold text-gold-soft sm:text-4xl">{t.catalog.title}</h3>
+    <p class="mt-4 text-lg text-cream/85">{t.catalog.intro}</p>
+  </div>
+
+  <div class="mt-12 space-y-14">
+    {groups.map((group) => (
+      <div>
+        <div class="mb-6 flex items-center gap-4">
+          <h4 class="font-western text-sm tracking-[0.18em] text-gold uppercase sm:text-base">
+            {group.label[lang]}
+          </h4>
+          <hr class="gold-rule min-w-8 flex-1" />
+        </div>
+
+        {group.withPhoto.length > 0 && (
+          <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {group.withPhoto.map((item) => (
+              <li class="flex flex-col overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal shadow-soft">
+                <Photo
+                  file={item.image}
+                  lang={lang}
+                  label={item.name[lang]}
+                  altOverride={item.imageAlt}
+                  width={600}
+                  height={450}
+                  widths={[300, 450, 600]}
+                  sizes="(min-width: 1280px) 290px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, calc(100vw - 2.5rem)"
+                />
+                <div class="flex flex-1 flex-col p-5">
+                  <h5 class="font-serif text-xl leading-snug font-semibold text-gold-soft">
+                    {item.name[lang]}
+                  </h5>
+                  <p class="mt-2 text-cream/80">{item.description[lang]}</p>
+                  <SpecRow item={item} lang={lang} class="mt-3 text-cream/75" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {group.textOnly.length > 0 && (
+          <ul
+            class:list={[
+              'grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+              group.withPhoto.length > 0 && 'mt-5',
+            ]}
+          >
+            {group.textOnly.map((item) => (
+              <li class="rounded-lg border border-gold-deep/40 bg-charcoal/60 p-5">
+                <h5 class="font-serif text-lg leading-snug font-semibold text-gold-soft">
+                  {item.name[lang]}
+                </h5>
+                <p class="mt-1.5 text-sm text-cream/80">{item.description[lang]}</p>
+                <SpecRow item={item} lang={lang} class="mt-2 text-cream/75" />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-14 flex flex-col items-center gap-5 text-center">
+    <p class="font-serif text-xl text-cream/90">{t.catalog.closing}</p>
+    <a href="#quote" class="btn-outline">
+      {t.cta.quote}
+    </a>
+  </div>
+</div>

@@ -1,17 +1,17 @@
 ---
 /**
- * Gallery (#gallery): photos from src/assets/images/gallery/ plus an Instagram button.
- * No third-party Instagram widget.
- *
- * To change photos: replace the files in src/assets/images/gallery/ (any .jpg, .jpeg,
- * .png, .webp or .avif). They are shown in filename order — the first six are used.
- * Update the matching descriptions in `gallery.photoAlts` in src/i18n/en.ts and es.ts.
+ * Real Event Setups (#gallery): photos listed in `galleryPhotos` (src/data/photos.ts).
+ * Real photos open in a lightweight, keyboard-accessible lightbox (native <dialog>:
+ * Escape closes, arrow keys / buttons move between photos). No third-party widget.
  */
-import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
 import InstagramIcon from './InstagramIcon.astro';
+import Photo from './Photo.astro';
 import SectionHeading from './SectionHeading.astro';
 import { site } from '../config/site';
+import { galleryPhotos } from '../data/photos';
+import { resolvePhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -21,18 +21,24 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const MAX_PHOTOS = 6;
-const files = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}',
-  { eager: true },
+const items = await Promise.all(
+  galleryPhotos.map(async (file) => {
+    const photo = resolvePhoto(file, lang);
+    // Photos with a crop position (e.g. to hide parked cars at the edge) keep the same square
+    // crop as their gallery tile when enlarged. TODO(veronica): check this crop on the real photo.
+    const large = photo?.src
+      ? await getImage({
+          src: photo.src,
+          width: 1600,
+          ...(photo.position ? { height: 1600, fit: 'cover', position: photo.position } : {}),
+          format: 'webp',
+        })
+      : undefined;
+    return { file, alt: photo?.alt ?? '', large: large?.src };
+  }),
 );
-const photos = Object.keys(files)
-  .sort()
-  .slice(0, MAX_PHOTOS)
-  .map((key, i) => ({
-    src: files[key]!.default,
-    alt: t.gallery.photoAlts[i] ?? `${t.gallery.eyebrow} ${i + 1}`,
-  }));
+const viewable = items.filter((i) => i.large);
+const counterTemplate = t.gallery.counter;
 ---
 
 <section id="gallery" aria-labelledby="gallery-title" class="section-dark py-20 sm:py-24 lg:py-28">
@@ -44,18 +50,38 @@ const photos = Object.keys(files)
       intro={t.gallery.intro}
     />
 
-    <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
-      {photos.map((photo) => (
-        <li class="overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal">
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            widths={[300, 450, 600, 900]}
-            sizes="(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw"
-            class="aspect-square h-auto w-full object-cover transition duration-500 hover:scale-[1.03]"
+    <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {items.map((item) => {
+        const tile = (
+          <Photo
+            file={item.file}
+            lang={lang}
+            label={item.alt}
+            width={600}
+            height={600}
+            widths={[300, 450, 600]}
+            sizes="(min-width: 1280px) 300px, (min-width: 1024px) 24vw, (min-width: 768px) 32vw, 48vw"
+            class="transition duration-500 group-hover:scale-[1.03]"
           />
-        </li>
-      ))}
+        );
+        return (
+          <li class="overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal">
+            {item.large ? (
+              <button
+                type="button"
+                class="group block w-full cursor-zoom-in overflow-hidden"
+                data-lightbox-index={viewable.findIndex((v) => v.file === item.file)}
+                aria-label={`${t.gallery.open}: ${item.alt}`}
+                aria-haspopup="dialog"
+              >
+                {tile}
+              </button>
+            ) : (
+              tile
+            )}
+          </li>
+        );
+      })}
     </ul>
 
     <div class="mt-12 text-center">
@@ -66,11 +92,126 @@ const photos = Object.keys(files)
         class="btn-gold max-w-full py-3 text-lg"
       >
         <InstagramIcon class="size-6 shrink-0" />
-        <span>
-          {t.gallery.follow}
-          <span class="inline-block">{site.instagram.handle}</span>
-        </span>
+        <span>{t.gallery.button}</span>
+        <Icon name="arrowRight" class="size-5 shrink-0" strokeWidth={2} />
       </a>
     </div>
   </div>
+
+  {viewable.length > 0 && (
+    <dialog
+      id="lightbox"
+      class="lightbox m-auto max-h-none max-w-none bg-transparent p-0"
+      aria-label={t.gallery.title}
+      data-photos={JSON.stringify(viewable.map((v) => ({ src: v.large, alt: v.alt })))}
+      data-counter={counterTemplate}
+    >
+      <figure class="flex h-dvh w-screen flex-col items-center justify-center gap-3 p-4 sm:p-8">
+        <img
+          data-lightbox-img
+          alt=""
+          class="max-h-[80dvh] w-auto max-w-full rounded-md object-contain shadow-soft"
+        />
+        <figcaption class="max-w-2xl text-center text-cream">
+          <span data-lightbox-caption />
+          <span class="mt-1 block text-sm text-cream/70" data-lightbox-counter />
+        </figcaption>
+      </figure>
+      <button
+        type="button"
+        data-lightbox-close
+        class="lightbox-btn top-4 right-4"
+        aria-label={t.gallery.close}
+      >
+        <Icon name="close" class="size-7" />
+      </button>
+      {viewable.length > 1 && (
+        <>
+          <button
+            type="button"
+            data-lightbox-prev
+            class="lightbox-btn top-1/2 left-2 -translate-y-1/2 sm:left-4"
+            aria-label={t.gallery.previous}
+          >
+            <Icon name="chevronLeft" class="size-8" />
+          </button>
+          <button
+            type="button"
+            data-lightbox-next
+            class="lightbox-btn top-1/2 right-2 -translate-y-1/2 sm:right-4"
+            aria-label={t.gallery.next}
+          >
+            <Icon name="chevronRight" class="size-8" />
+          </button>
+        </>
+      )}
+    </dialog>
+  )}
 </section>
+
+<style>
+  .lightbox::backdrop {
+    background: rgb(20 18 16 / 0.92);
+  }
+
+  .lightbox-btn {
+    position: absolute;
+    display: inline-flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgb(20 18 16 / 0.7);
+    color: var(--color-gold-soft);
+    border: 1px solid rgb(162 104 10 / 0.6);
+  }
+
+  .lightbox-btn:hover {
+    background: rgb(230 170 30 / 0.15);
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('lightbox');
+
+  if (dialog instanceof HTMLDialogElement) {
+    const photos = JSON.parse(dialog.dataset.photos ?? '[]') as { src: string; alt: string }[];
+    const counter = dialog.dataset.counter ?? '';
+    const img = dialog.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lightbox-caption]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-lightbox-counter]')!;
+    let index = 0;
+
+    const show = (i: number) => {
+      index = (i + photos.length) % photos.length;
+      const photo = photos[index]!;
+      img.src = photo.src;
+      img.alt = photo.alt;
+      caption.textContent = photo.alt;
+      count.textContent = counter
+        .replace('{current}', String(index + 1))
+        .replace('{total}', String(photos.length));
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lightbox-index]').forEach((button) => {
+      button.addEventListener('click', () => {
+        show(Number(button.dataset.lightboxIndex));
+        dialog.showModal();
+      });
+    });
+
+    dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lightbox-next]')?.addEventListener('click', () => show(index + 1));
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    // Click on the dark backdrop (outside the photo and buttons) closes.
+    dialog.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target === dialog || target.tagName === 'FIGURE') dialog.close();
+    });
+  }
+</script>

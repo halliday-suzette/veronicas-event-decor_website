@@ -51,21 +51,21 @@ export function localeUrl(lang: Lang, site: URL | undefined): string {
   return new URL(localePath(lang), site).href;
 }
 
-/** The language a visitor would switch to from the toggle. */
-export function otherLang(lang: Lang): Lang {
-  return lang === 'en' ? 'es' : 'en';
-}
-
-/** Section ids used for anchor navigation, in page order. */
+/**
+ * Section ids (anchor targets), in page order. The language toggle keeps visitors on the
+ * same section, so rename these only together with the components that use them.
+ */
 export const sectionIds = [
   'home',
-  'about',
+  'celebrations',
   'rentals',
-  'events',
-  'packages',
-  'service-area',
+  'add-ons',
   'gallery',
+  'why-us',
+  'how-it-works',
+  'about',
   'quote',
+  'faq',
 ] as const;
 
 export type SectionId = (typeof sectionIds)[number];
@@ -73,11 +73,10 @@ export type SectionId = (typeof sectionIds)[number];
 /** Header / footer navigation links (Home is reached via the logo). */
 export function navLinks(t: Translations): { id: SectionId; label: string }[] {
   return [
-    { id: 'about', label: t.nav.about },
+    { id: 'celebrations', label: t.nav.celebrations },
     { id: 'rentals', label: t.nav.rentals },
-    { id: 'events', label: t.nav.events },
-    { id: 'packages', label: t.nav.packages },
-    { id: 'service-area', label: t.nav.serviceArea },
+    { id: 'add-ons', label: t.nav.addOns },
     { id: 'gallery', label: t.nav.gallery },
+    { id: 'faq', label: t.nav.faq },
   ];
 }

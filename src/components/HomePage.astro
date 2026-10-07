@@ -1,45 +1,60 @@
 ---
 /**
  * The one-page site. Both src/pages/index.astro (English) and src/pages/es/index.astro
- * (Spanish) render this component, so sections only need to change here.
+ * (Spanish) render this component, so the section order only lives here.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Hero from './Hero.astro';
-import About from './About.astro';
+import Celebrations from './Celebrations.astro';
 import Rentals from './Rentals.astro';
-import Events from './Events.astro';
-import Packages from './Packages.astro';
-import ServiceArea from './ServiceArea.astro';
+import AddOns from './AddOns.astro';
 import Gallery from './Gallery.astro';
+import WhyUs from './WhyUs.astro';
+import HowItWorks from './HowItWorks.astro';
+import About from './About.astro';
 import QuoteForm from './QuoteForm.astro';
+import Faq from './Faq.astro';
 import Footer from './Footer.astro';
-import type { Lang } from '../i18n/utils';
-
-// To add a real event photo to the hero later, import it here and pass it below, e.g.
-//   import heroPhoto from '../assets/images/hero.jpg';
-//   <Hero lang={lang} backgroundImage={heroPhoto} />
-// or replace the logo with the photo:
-//   <Hero lang={lang} featureImage={heroPhoto} featureAlt="Rustic barrel setup at a quinceañera" />
+import { faq } from '../data/faq';
+import { localeUrl, type Lang } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
+
+// Hero background photo (src/assets/photos/). Until the file exists the hero is plain onyx.
+const HERO_PHOTO = 'barrels-umbrellas-backyard.jpg';
+
+// FAQPage structured data from the same data as the FAQ accordion, so they never drift.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${localeUrl(lang, Astro.site)}#faq`,
+  inLanguage: lang,
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.question[lang],
+    acceptedAnswer: { '@type': 'Answer', text: item.answer[lang] },
+  })),
+};
 ---
 
-<BaseLayout lang={lang}>
+<BaseLayout lang={lang} structuredData={[faqJsonLd]}>
   <Header lang={lang} />
   <main id="main" tabindex="-1">
-    <Hero lang={lang} />
-    <About lang={lang} />
+    <Hero lang={lang} backgroundFile={HERO_PHOTO} />
+    <Celebrations lang={lang} />
     <Rentals lang={lang} />
-    <Events lang={lang} />
-    <Packages lang={lang} />
-    <ServiceArea lang={lang} />
+    <AddOns lang={lang} />
     <Gallery lang={lang} />
+    <WhyUs lang={lang} />
+    <HowItWorks lang={lang} />
+    <About lang={lang} />
     <QuoteForm lang={lang} />
+    <Faq lang={lang} />
   </main>
   <Footer lang={lang} />
 </BaseLayout>

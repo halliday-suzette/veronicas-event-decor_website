@@ -1,26 +1,23 @@
 ---
 /**
- * Hero (#home). Shows the full logo with a warm gold glow, beside the headline on desktop
- * and above it on mobile.
- *
- * To use a real event photo later (set in HomePage.astro):
- *   - backgroundImage: photo sits behind everything under a dark overlay (logo stays)
- *   - featureImage + featureAlt: photo replaces the logo in the feature column
+ * Hero (#home): background event photo under a dark gradient (for legibility), the lit
+ * logo, the H1 and the two calls to action. The photo is set in HomePage.astro; until the
+ * file exists in src/assets/photos/, the hero shows the plain onyx background.
  */
-import type { ImageMetadata } from 'astro';
-import { Picture } from 'astro:assets';
+import { Image } from 'astro:assets';
 import Logo from './Logo.astro';
+import { resolvePhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
-  backgroundImage?: ImageMetadata;
-  featureImage?: ImageMetadata;
-  featureAlt?: string;
+  /** Filename in src/assets/photos/ for the background. */
+  backgroundFile?: string;
 }
 
-const { lang, backgroundImage, featureImage, featureAlt = '' } = Astro.props;
+const { lang, backgroundFile } = Astro.props;
 const t = useTranslations(lang);
+const background = resolvePhoto(backgroundFile, lang);
 ---
 
 <section
@@ -28,57 +25,50 @@ const t = useTranslations(lang);
   aria-labelledby="hero-title"
   class="section-dark relative isolate overflow-hidden"
 >
-  {backgroundImage && (
+  {background?.src && (
     <div class="absolute inset-0 -z-10" aria-hidden="true">
-      <Picture
-        src={backgroundImage}
+      <Image
+        src={background.src}
         alt=""
-        formats={['avif', 'webp']}
-        widths={[640, 1024, 1536, 2048]}
+        width={1920}
+        height={1080}
+        widths={[640, 960, 1280, 1920]}
         sizes="100vw"
+        format="webp"
+        fit="cover"
         priority
         class="h-full w-full object-cover"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-onyx/85 via-onyx/75 to-onyx/95" />
+      {/* At least 80% onyx everywhere: text stays WCAG AA even over a white patch of photo. */}
+      <div class="absolute inset-0 bg-gradient-to-b from-onyx/90 via-onyx/80 to-onyx/95" />
+      <div class="absolute inset-0 bg-gradient-to-r from-onyx/60 via-transparent to-onyx/70" />
     </div>
   )}
 
-  <div class="mx-auto grid max-w-7xl items-center gap-8 px-5 pt-8 pb-16 sm:px-6 sm:pt-12 lg:grid-cols-[1.15fr_1fr] lg:gap-12 lg:px-8 lg:py-20 xl:py-24">
-    <div class="relative mx-auto w-full max-w-[720px]">
+  <div class="mx-auto grid max-w-7xl items-center gap-8 px-5 pt-8 pb-16 sm:px-6 sm:pt-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:px-8 lg:py-20 xl:py-24">
+    <div class="relative mx-auto w-full max-w-[640px]">
       <div class="hero-glow absolute -inset-[12%] -z-10 rounded-full" aria-hidden="true"></div>
-      {featureImage ? (
-        <Picture
-          src={featureImage}
-          alt={featureAlt}
-          formats={['avif', 'webp']}
-          widths={[400, 640, 960, 1280]}
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          priority
-          class="h-auto w-full rounded-lg border border-gold-deep/50 shadow-soft"
-        />
-      ) : (
-        <Logo lang={lang} variant="full" priority />
-      )}
+      <Logo lang={lang} variant="full" priority={!background?.src} />
     </div>
 
     <div class="text-center lg:text-left">
-      <p class="font-western text-xs leading-relaxed tracking-[0.18em] text-gold uppercase sm:text-sm">
+      <p class="font-western text-xs leading-relaxed tracking-[0.16em] text-gold uppercase sm:text-sm">
         {t.hero.eyebrow}
       </p>
       <h1
         id="hero-title"
-        class="mt-4 text-[2rem] leading-[1.15] font-semibold text-cream sm:text-5xl lg:text-[3.25rem] xl:text-6xl"
+        class="mt-4 text-[2rem] leading-[1.15] font-semibold text-cream sm:text-5xl lg:text-[3.1rem] xl:text-[3.4rem]"
       >
         {t.hero.title}
       </h1>
       <hr class="gold-rule mx-auto mt-6 max-w-48 lg:mx-0" />
-      <p class="mx-auto mt-6 max-w-xl text-lg text-cream/85 lg:mx-0">{t.hero.subtitle}</p>
+      <p class="mx-auto mt-6 max-w-xl text-lg text-cream/90 lg:mx-0">{t.hero.subtitle}</p>
       <div class="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center lg:justify-start">
         <a href="#quote" class="btn-gold">
-          {t.cta.quote}
+          {t.hero.primary}
         </a>
-        <a href="#rentals" class="btn-outline">
-          {t.cta.rentals}
+        <a href="#rentals" class="btn-outline bg-onyx/40">
+          {t.hero.secondary}
         </a>
       </div>
     </div>

@@ -7,7 +7,8 @@ interface Props {
   name: string;
   legend: string;
   type: 'radio' | 'checkbox';
-  options: { value: string; label: string }[];
+  /** `attrs` adds extra attributes to that option's input (e.g. aria-controls). */
+  options: { value: string; label: string; attrs?: Record<string, string> }[];
   required?: boolean;
   help?: string;
   /** Value to pre-select. */
@@ -58,6 +59,7 @@ const describedBy = [helpId, errorId].filter(Boolean).join(' ');
           value={option.value}
           required={type === 'radio' && required}
           checked={checked === option.value}
+          {...option.attrs}
           class="size-5 shrink-0 accent-whiskey-dark"
         />
         <span>{option.label}</span>

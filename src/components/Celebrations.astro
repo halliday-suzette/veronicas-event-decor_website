@@ -1,0 +1,121 @@
+---
+/**
+ * Celebrations (#celebrations): large photo cards for the primary tier, smaller text cards
+ * for the secondary tier. Content comes from src/data/celebrations.ts.
+ * "Gentle" cards (Celebration of Life) get calm, muted styling: no accent badge, no motion.
+ */
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+import SectionHeading from './SectionHeading.astro';
+import { celebrations } from '../data/celebrations';
+import { resolvePhoto } from '../lib/photos';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const primary = celebrations.filter((c) => c.tier === 'primary');
+const secondary = celebrations.filter((c) => c.tier === 'secondary');
+
+const icons: Record<string, string> = {
+  wedding: 'rings',
+  'baby-shower': 'gift',
+  'celebration-of-life': 'candle',
+  more: 'sparkle',
+};
+---
+
+<section
+  id="celebrations"
+  aria-labelledby="celebrations-title"
+  class="section-cream py-20 sm:py-24 lg:py-28"
+>
+  <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="celebrations-title"
+      tone="light"
+      eyebrow={t.celebrations.eyebrow}
+      title={t.celebrations.title}
+      intro={t.celebrations.intro}
+    />
+
+    <ul class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+      {primary.map((c) => (
+        <li class="flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
+          <Photo
+            file={c.image}
+            lang={lang}
+            label={c.name[lang]}
+            altOverride={c.imageAlt}
+            width={600}
+            height={500}
+            widths={[300, 450, 600]}
+            sizes="(min-width: 1280px) 290px, (min-width: 1024px) 23vw, 46vw"
+          />
+          <div class="flex flex-1 flex-col border-t border-gold-deep/60 p-3.5 sm:p-5">
+            <h3 class="text-base leading-snug font-semibold text-gold-soft sm:text-xl">
+              {c.name[lang]}
+            </h3>
+            <p class="mt-1.5 text-sm text-cream/85 sm:text-base">{c.description[lang]}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <ul class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {secondary.map((c) => {
+        const photo = resolvePhoto(c.image, lang, c.imageAlt);
+        return (
+          <li
+            class:list={[
+              'flex flex-col overflow-hidden rounded-lg border',
+              c.gentle
+                ? 'border-whiskey-light/40 bg-linen/40'
+                : 'border-whiskey-light/60 bg-white/60 shadow-soft',
+            ]}
+          >
+            {/* Small photo only once the real file exists — these are text cards. */}
+            {photo?.src && (
+              <Photo
+                file={c.image}
+                lang={lang}
+                label={c.name[lang]}
+                altOverride={c.imageAlt}
+                width={600}
+                height={300}
+                widths={[300, 600]}
+                sizes="(min-width: 1024px) 290px, (min-width: 640px) 46vw, 100vw"
+              />
+            )}
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              {c.gentle ? (
+                <Icon
+                  name={icons[c.id] ?? 'sparkle'}
+                  class="size-7 text-whiskey/70"
+                  strokeWidth={1.25}
+                />
+              ) : (
+                <span class="flex size-11 items-center justify-center rounded-full bg-onyx text-gold">
+                  <Icon name={icons[c.id] ?? 'sparkle'} class="size-6" />
+                </span>
+              )}
+              <h3
+                class:list={[
+                  'mt-4 text-xl font-semibold',
+                  c.gentle ? 'text-whiskey' : 'text-whiskey-dark',
+                ]}
+              >
+                {c.name[lang]}
+              </h3>
+              <p class="mt-2 text-charcoal/85">{c.description[lang]}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>

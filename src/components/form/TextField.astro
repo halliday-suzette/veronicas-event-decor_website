@@ -8,7 +8,7 @@ import type { HTMLAttributes } from 'astro/types';
 interface Props {
   name: string;
   label: string;
-  type?: 'text' | 'email' | 'tel' | 'date';
+  type?: 'text' | 'email' | 'tel' | 'date' | 'number';
   required?: boolean;
   multiline?: boolean;
   rows?: number;
@@ -17,7 +17,11 @@ interface Props {
   autocomplete?: HTMLAttributes<'input'>['autocomplete'];
   inputmode?: HTMLAttributes<'input'>['inputmode'];
   min?: string;
+  step?: string;
+  pattern?: string;
   maxlength?: number;
+  /** Short text shown inside the input on the left, e.g. "$". */
+  prefix?: string;
   class?: string;
 }
 
@@ -33,14 +37,16 @@ const {
   autocomplete,
   inputmode,
   min,
+  step,
+  pattern,
   maxlength,
+  prefix,
   class: className = '',
 } = Astro.props;
 
 const helpId = help ? `${name}-help` : undefined;
 const errorId = `${name}-error`;
 const describedBy = [helpId, errorId].filter(Boolean).join(' ');
-const inputClass = 'form-control';
 ---
 
 <div class={className}>
@@ -66,22 +72,34 @@ const inputClass = 'form-control';
       placeholder={placeholder}
       maxlength={maxlength}
       aria-describedby={describedBy}
-      class:list={[inputClass, 'min-h-32 resize-y']}
+      class="form-control min-h-32 resize-y"
     />
   ) : (
-    <input
-      id={name}
-      name={name}
-      type={type}
-      required={required}
-      placeholder={placeholder}
-      autocomplete={autocomplete}
-      inputmode={inputmode}
-      min={min}
-      maxlength={maxlength}
-      aria-describedby={describedBy}
-      class={inputClass}
-    />
+    <div class="relative">
+      {prefix && (
+        <span
+          class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 font-bold text-whiskey-dark"
+          aria-hidden="true"
+        >
+          {prefix}
+        </span>
+      )}
+      <input
+        id={name}
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        autocomplete={autocomplete}
+        inputmode={inputmode}
+        min={min}
+        step={step}
+        pattern={pattern}
+        maxlength={maxlength}
+        aria-describedby={describedBy}
+        class:list={['form-control', prefix && 'pl-8']}
+      />
+    </div>
   )}
   <p id={errorId} class="form-error" data-error-for={name}></p>
 </div>

@@ -1,0 +1,98 @@
+---
+/**
+ * Signature Whiskey Barrel Tables — the featured item from src/data/inventory.ts, with a card
+ * for each finish. Sits at the top of the #rentals section.
+ */
+import Photo from './Photo.astro';
+import SectionHeading from './SectionHeading.astro';
+import SpecRow from './SpecRow.astro';
+import { featuredItem } from '../data/inventory';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// TODO(veronica): confirm which finish is most requested before adding a badge.
+const finishCards = (featuredItem?.finishes ?? ['light', 'dark']).map((finish) => ({
+  finish,
+  file: finish === 'light' ? 'barrel-table-light.jpg' : 'barrel-table-dark.jpg',
+  ...t.signature[finish],
+}));
+---
+
+<SectionHeading
+  id="rentals-title"
+  eyebrow={t.signature.eyebrow}
+  title={t.signature.title}
+  intro={t.signature.craft}
+/>
+
+<div class="overflow-hidden rounded-lg border border-gold-deep/50 shadow-soft">
+  <Photo
+    file={featuredItem?.image}
+    lang={lang}
+    label={featuredItem?.name[lang] ?? t.signature.title}
+    altOverride={featuredItem?.imageAlt}
+    width={1600}
+    height={700}
+    widths={[640, 960, 1280, 1600]}
+    sizes="(min-width: 1280px) 1216px, calc(100vw - 2.5rem)"
+  />
+</div>
+
+<ul class="mt-6 grid gap-6 md:grid-cols-2">
+  {finishCards.map((card) => (
+    <li class="flex flex-col overflow-hidden rounded-lg border border-gold-deep/50 bg-charcoal shadow-soft">
+      <Photo
+        file={card.file}
+        lang={lang}
+        label={card.title}
+        width={800}
+        height={600}
+        widths={[400, 600, 800]}
+        sizes="(min-width: 1280px) 600px, (min-width: 768px) 46vw, calc(100vw - 2.5rem)"
+      />
+      <div class="flex items-start gap-4 p-6">
+        <span class:list={['swatch mt-1', `swatch-${card.finish}`]} aria-hidden="true" />
+        <div>
+          <h3 class="text-2xl font-semibold text-gold-soft">{card.title}</h3>
+          <p class="mt-2 text-cream/85">{card.text}</p>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<p class="mx-auto mt-8 max-w-2xl text-center font-serif text-xl text-cream/90">
+  {t.signature.pairLine}
+</p>
+<SpecRow item={featuredItem} lang={lang} class="mt-4 justify-center text-cream/85" />
+
+<style>
+  .swatch {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1.5px solid var(--color-gold);
+    box-shadow: inset 0 1px 2px rgb(255 255 255 / 0.25);
+  }
+
+  /* Barrel-stave look: fine vertical grain over a warm wood gradient. */
+  .swatch-light {
+    background:
+      repeating-linear-gradient(90deg, rgb(59 36 22 / 0.12) 0 1px, transparent 1px 5px),
+      linear-gradient(135deg, #d6a06a, var(--color-whiskey-light) 50%, #9c6a3e);
+  }
+
+  .swatch-dark {
+    background:
+      repeating-linear-gradient(90deg, rgb(0 0 0 / 0.2) 0 1px, transparent 1px 5px),
+      linear-gradient(135deg, #5e3a24, var(--color-whiskey-dark) 55%, #24150c);
+  }
+</style>

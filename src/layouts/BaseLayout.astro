@@ -12,9 +12,11 @@ import {
 
 interface Props {
   lang: Lang;
+  /** Extra JSON-LD blocks for this page (e.g. FAQPage), rendered after LocalBusiness. */
+  structuredData?: Record<string, unknown>[];
 }
 
-const { lang } = Astro.props;
+const { lang, structuredData = [] } = Astro.props;
 const t = useTranslations(lang);
 
 const canonical = localeUrl(lang, Astro.site);
@@ -27,7 +29,8 @@ const otherOgLocales = alternates
   .filter((a) => a.lang !== lang)
   .map((a) => useTranslations(a.lang).meta.ogLocale);
 
-// Structured data for search engines. Phone/email are included only once set in site.ts.
+// Structured data for search engines, in the page's language. Phone/email are included
+// only once set in site.ts.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness'],
@@ -46,7 +49,7 @@ const jsonLd = {
   },
   areaServed: site.serviceArea.areasServed.map((area) => ({
     '@type': area.type,
-    name: area.name,
+    name: area.name[lang],
   })),
   sameAs: [site.instagram.url],
   knowsLanguage: ['en', 'es'],
@@ -98,6 +101,9 @@ const jsonLd = {
     <meta name="twitter:image:alt" content={t.meta.ogImageAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {structuredData.map((data) => (
+      <script type="application/ld+json" set:html={JSON.stringify(data)} />
+    ))}
   </head>
   <body>
     <a

@@ -1,13 +1,16 @@
 ---
 /**
- * Free quote request form (#quote), sent to Formspree.
+ * Quote form (#quote), sent to Formspree.
  *
- * - Without JavaScript: a normal POST to Formspree (native HTML validation applies).
- * - With JavaScript: validated inline, sent with fetch, and the visitor stays on the page
- *   with a translated success or error message.
+ * - Without JavaScript: a normal POST to Formspree; native HTML validation applies and the
+ *   barrel-table questions are always visible (and optional).
+ * - With JavaScript: inline accessible validation, barrel-table questions appear only when
+ *   barrel tables are checked (hidden ones are disabled, so they aren't submitted), the email
+ *   subject includes the event type and date, and the visitor stays on the page with a
+ *   success or error message.
  *
- * The endpoint comes from PUBLIC_FORMSPREE_ENDPOINT (see .env.example and README).
- * Field names are readable (event_type, guest_count…) so Formspree emails are easy to scan.
+ * Endpoint: PUBLIC_FORMSPREE_ENDPOINT (see README). Field names are readable snake_case so
+ * Formspree emails are easy to scan; option values are always the English wording.
  */
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -15,6 +18,7 @@ import ChoiceGroup from './form/ChoiceGroup.astro';
 import SelectField from './form/SelectField.astro';
 import TextField from './form/TextField.astro';
 import { site } from '../config/site';
+import { publishedItems } from '../data/inventory';
 import { en, type Translations } from '../i18n/en';
 import { useTranslations, type Lang } from '../i18n/utils';
 
@@ -30,33 +34,50 @@ const PLACEHOLDER_ENDPOINT = 'https://formspree.io/f/XXXXXXXX';
 const endpoint = site.formspreeEndpoint || PLACEHOLDER_ENDPOINT;
 const showSetupNotice = import.meta.env.DEV && !site.formspreeEndpoint;
 
-type OptionGroup = keyof Translations['quote']['options'];
+type OptionGroup = Exclude<keyof Translations['quote']['options'], 'rentalsExtra'>;
 
-/** Options for a group: the English wording is submitted, the current language is shown. */
+/** Options for a group: the English wording is submitted, the page language is shown. */
 function options(group: OptionGroup) {
   const values = en.quote.options[group] as Record<string, string>;
   const labels = q.options[group] as Record<string, string>;
   return Object.keys(values).map((key) => ({ value: values[key]!, label: labels[key]! }));
 }
 
+// Rentals checklist: inventory items marked showInForm, plus two extra choices.
+const BARREL_ITEM_ID = 'barrel-cocktail-tables';
+const rentalOptions = [
+  ...publishedItems
+    .filter((item) => item.showInForm)
+    .map((item) => ({
+      value: item.name.en,
+      label: item.name[lang],
+      attrs:
+        item.id === BARREL_ITEM_ID
+          ? { 'data-barrel-toggle': '', 'aria-controls': 'barrel-options' }
+          : undefined,
+    })),
+  { value: en.quote.options.rentalsExtra.westernProps, label: q.options.rentalsExtra.westernProps },
+  { value: en.quote.options.rentalsExtra.unsure, label: q.options.rentalsExtra.unsure },
+];
+
 // Build-time fallback for "no past dates"; the script updates it to the visitor's today.
 const today = new Date().toISOString().slice(0, 10);
 
-// Messages the script needs, in the page language.
-const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.submit });
+// Text the script needs, in the page language.
+const scriptText = JSON.stringify({
+  ...q.errors,
+  sending: q.sending,
+  submit: q.submit,
+  subjectPrefix: q.subjectPrefix,
+  lang,
+});
 ---
 
-<section id="quote" aria-labelledby="quote-title" class="section-linen py-20 sm:py-24 lg:py-28">
+<section id="quote" aria-labelledby="quote-title" class="section-dark py-20 sm:py-24 lg:py-28">
   <div class="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
-    <SectionHeading
-      id="quote-title"
-      tone="light"
-      eyebrow={q.eyebrow}
-      title={q.title}
-      intro={q.intro}
-    />
+    <SectionHeading id="quote-title" eyebrow={q.eyebrow} title={q.title} intro={q.intro} />
 
-    <div class="rounded-lg border border-whiskey-light/60 bg-cream p-5 shadow-soft sm:p-8 lg:p-10">
+    <div class="rounded-lg border border-gold-deep/60 bg-cream p-5 text-charcoal shadow-soft [--focus-color:var(--color-gold-deep)] sm:p-8 lg:p-10">
       {showSetupNotice && (
         <p class="mb-6 rounded-md border border-dashed border-whiskey bg-white p-3 text-sm text-whiskey-dark">
           Dev note (not shown on the live site): PUBLIC_FORMSPREE_ENDPOINT is not set. Copy
@@ -69,10 +90,11 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
         action={endpoint}
         method="POST"
         accept-charset="UTF-8"
-        data-messages={messages}
+        data-text={scriptText}
         class="space-y-10"
       >
-        <input type="hidden" name="_subject" value={q.subject} />
+        <!-- Updated by the script to include event type and date. -->
+        <input type="hidden" name="_subject" value={q.subjectPrefix} />
         <input type="hidden" name="form_language" value={lang} />
         <!-- Honeypot: real people never see or fill this; Formspree discards submissions that do. -->
         <div class="hidden" aria-hidden="true">
@@ -84,7 +106,7 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
 
         <div id="quote-error-summary" class="form-error text-base" role="alert"></div>
 
-        <!-- Your contact info -->
+        <!-- 1–5: Your contact info -->
         <fieldset class="space-y-5">
           <legend class="form-group-title">{q.groups.contact}</legend>
           <div class="grid gap-5 md:grid-cols-2">
@@ -109,7 +131,6 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
               name="phone"
               type="tel"
               label={q.fields.phone.label}
-              help={q.fields.phone.help}
               required
               autocomplete="tel"
               inputmode="tel"
@@ -136,17 +157,10 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
           </div>
         </fieldset>
 
-        <!-- Your event -->
+        <!-- 6–11: Your event -->
         <fieldset class="space-y-5">
           <legend class="form-group-title">{q.groups.event}</legend>
           <div class="grid gap-5 md:grid-cols-2">
-            <SelectField
-              name="event_type"
-              label={q.fields.eventType.label}
-              placeholder={q.selectPlaceholder}
-              options={options('eventType')}
-              required
-            />
             <TextField
               name="event_date"
               type="date"
@@ -155,11 +169,36 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
               required
             />
             <TextField
+              name="event_city"
+              label={q.fields.eventCity.label}
+              placeholder={q.fields.eventCity.placeholder}
+              required
+              autocomplete="address-level2"
+              maxlength={80}
+            />
+            <TextField
+              name="event_zip"
+              label={q.fields.eventZip.label}
+              placeholder={q.fields.eventZip.placeholder}
+              required
+              inputmode="numeric"
+              autocomplete="postal-code"
+              pattern="[0-9]{5}"
+              maxlength={5}
+            />
+            <SelectField
+              name="event_type"
+              label={q.fields.eventType.label}
+              placeholder={q.selectPlaceholder}
+              options={options('eventType')}
+              required
+            />
+            <SelectField
               name="event_location"
               label={q.fields.eventLocation.label}
-              placeholder={q.fields.eventLocation.placeholder}
+              placeholder={q.selectPlaceholder}
+              options={options('eventLocation')}
               required
-              maxlength={120}
             />
             <SelectField
               name="guest_count"
@@ -168,105 +207,89 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
               options={options('guestCount')}
               required
             />
-            <ChoiceGroup
-              name="venue_setting"
-              type="radio"
-              legend={q.fields.venueSetting.label}
-              options={options('venueSetting')}
-              columns="grid-cols-2 sm:grid-cols-4"
-              class="md:col-span-2"
-            />
-            <TextField
-              name="venue_name"
-              label={q.fields.venueName.label}
-              placeholder={q.fields.venueName.placeholder}
-              maxlength={160}
-              class="md:col-span-2"
-            />
           </div>
         </fieldset>
 
-        <!-- Rentals & style -->
+        <!-- 12–15: Rentals & budget -->
         <fieldset class="space-y-5">
-          <legend class="form-group-title">{q.groups.style}</legend>
+          <legend class="form-group-title">{q.groups.rentals}</legend>
           <div class="grid gap-5 md:grid-cols-2">
             <ChoiceGroup
-              name="rental_items"
+              name="rentals"
               type="checkbox"
-              legend={q.fields.rentalItems.label}
-              help={q.fields.rentalItems.help}
-              options={options('rentalItems')}
+              legend={q.fields.rentals.label}
+              help={q.fields.rentals.help}
+              options={rentalOptions}
               columns="sm:grid-cols-2"
               class="md:col-span-2"
             />
-            <ChoiceGroup
-              name="barrel_finish"
-              type="radio"
-              legend={q.fields.barrelFinish.label}
-              options={options('barrelFinish')}
-              columns="sm:grid-cols-2"
-              class="md:col-span-2"
-            />
+
+            <!-- Shown when barrel tables are checked (always shown, optional, without JS). -->
+            <div id="barrel-options" class="barrel-options grid gap-5 md:col-span-2 md:grid-cols-2">
+              <TextField
+                name="barrel_table_count"
+                type="number"
+                label={q.fields.barrelCount.label}
+                inputmode="numeric"
+                min="1"
+                step="1"
+              />
+              <SelectField
+                name="barrel_finish"
+                label={q.fields.barrelFinish.label}
+                placeholder={q.selectPlaceholder}
+                options={options('barrelFinish')}
+              />
+            </div>
+
             <TextField
-              name="colors_theme"
-              label={q.fields.colorsTheme.label}
-              placeholder={q.fields.colorsTheme.placeholder}
-              maxlength={200}
-            />
-            <SelectField
               name="budget"
+              type="number"
               label={q.fields.budget.label}
-              placeholder={q.selectPlaceholder}
-              options={options('budget')}
+              placeholder={q.fields.budget.placeholder}
+              inputmode="decimal"
+              min="0"
+              step="any"
+              prefix="$"
             />
           </div>
         </fieldset>
 
-        <!-- Details -->
+        <!-- 16–17: Details -->
         <fieldset class="space-y-5">
           <legend class="form-group-title">{q.groups.details}</legend>
-          <div class="grid gap-5 md:grid-cols-2">
-            <TextField
-              name="event_details"
-              multiline
-              rows={6}
-              label={q.fields.eventDetails.label}
-              help={q.fields.eventDetails.help}
-              required
-              maxlength={5000}
-              class="md:col-span-2"
-            />
-            <SelectField
-              name="referral_source"
-              label={q.fields.referral.label}
-              placeholder={q.selectPlaceholder}
-              options={options('referral')}
-            />
-            <div class="md:col-span-2">
-              <label class="form-choice items-start py-3">
-                <input
-                  type="checkbox"
-                  id="consent"
-                  name="consent"
-                  value="Yes"
-                  required
-                  aria-describedby="consent-error"
-                  class="mt-0.5 size-5 shrink-0 accent-whiskey-dark"
-                />
-                <span>
-                  {q.fields.consent.label}
-                  <span class="text-whiskey" aria-hidden="true">
-                    *
-                  </span>
+          <TextField
+            name="event_details"
+            multiline
+            rows={6}
+            label={q.fields.notes.label}
+            placeholder={q.fields.notes.placeholder}
+            maxlength={5000}
+          />
+          <div>
+            <label class="form-choice items-start py-3">
+              <input
+                type="checkbox"
+                id="consent"
+                name="consent"
+                value="Yes"
+                required
+                aria-describedby="consent-error"
+                class="mt-0.5 size-5 shrink-0 accent-whiskey-dark"
+              />
+              <span>
+                {q.fields.consent.label}
+                <span class="text-whiskey" aria-hidden="true">
+                  *
                 </span>
-              </label>
-              <p id="consent-error" class="form-error" data-error-for="consent"></p>
-            </div>
+              </span>
+            </label>
+            <p id="consent-error" class="form-error" data-error-for="consent"></p>
           </div>
         </fieldset>
 
         <div class="border-t border-whiskey-light/50 pt-8">
-          <button type="submit" class="btn-gold w-full text-lg sm:w-auto sm:min-w-64">
+          <button type="submit" class="btn-gold w-full text-lg sm:w-auto sm:min-w-72">
             <span
               class="spinner hidden size-5 rounded-full border-2 border-onyx/30 border-t-onyx"
               aria-hidden="true"
@@ -281,8 +304,7 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
         <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-onyx text-gold ring-1 ring-gold-deep ring-offset-4 ring-offset-cream">
           <Icon name="check" class="size-8" strokeWidth={2} />
         </span>
-        <h3 class="mt-6 text-3xl font-semibold text-whiskey-dark">{q.successTitle}</h3>
-        <p class="mx-auto mt-3 max-w-md text-lg text-charcoal">{q.successText}</p>
+        <p class="mx-auto mt-6 max-w-md font-serif text-2xl text-whiskey-dark">{q.success}</p>
       </div>
 
       <!-- Shown by the script if sending fails. -->
@@ -295,8 +317,7 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
         <div class="flex gap-3">
           <Icon name="alert" class="size-6 shrink-0 text-error" strokeWidth={2} />
           <div>
-            <h3 class="font-sans text-lg font-bold text-error">{q.errorTitle}</h3>
-            <p class="mt-1 text-charcoal">{q.errorText}</p>
+            <p class="font-bold text-error">{q.error}</p>
             <button type="button" data-retry class="btn-outline-dark mt-4">
               {q.retry}
             </button>
@@ -316,6 +337,10 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
     .spinner {
       animation: spin 0.8s linear infinite;
     }
+
+    .barrel-options.is-opening {
+      animation: reveal 220ms ease-out;
+    }
   }
 
   @keyframes spin {
@@ -323,19 +348,31 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
       transform: rotate(360deg);
     }
   }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
 </style>
 
 <script>
-  type Messages = Record<
+  type Text = Record<
     | 'required'
     | 'choose'
     | 'email'
     | 'phone'
+    | 'zip'
     | 'date'
+    | 'count'
+    | 'budget'
     | 'consent'
     | 'summary'
     | 'sending'
-    | 'submit',
+    | 'submit'
+    | 'subjectPrefix'
+    | 'lang',
     string
   >;
   type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -346,77 +383,142 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
   const summary = document.getElementById('quote-error-summary');
 
   if (form && success && failure && summary) {
-    const messages = JSON.parse(form.dataset.messages ?? '{}') as Messages;
+    const text = JSON.parse(form.dataset.text ?? '{}') as Text;
     const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const subjectInput = form.querySelector<HTMLInputElement>('input[name="_subject"]')!;
 
     // JS handles validation messages from here on (native bubbles stay off).
     form.noValidate = true;
 
-    // "No past dates", based on the visitor's own today.
-    const dateInput = form.querySelector<HTMLInputElement>('input[name="event_date"]');
-    if (dateInput) {
-      const now = new Date();
-      dateInput.min = new Date(now.getTime() - now.getTimezoneOffset() * 60_000)
-        .toISOString()
-        .slice(0, 10);
-    }
+    // ---- "No past dates", based on the visitor's own today -------------------------
+    const dateInput = form.querySelector<HTMLInputElement>('input[name="event_date"]')!;
+    const now = new Date();
+    dateInput.min = new Date(now.getTime() - now.getTimezoneOffset() * 60_000)
+      .toISOString()
+      .slice(0, 10);
 
-    /** Fields that get validated: anything required, plus email/phone format checks. */
-    const fieldNames = [
+    // ---- Barrel-table questions: only when barrel tables are checked ----------------
+    const barrelToggle = form.querySelector<HTMLInputElement>('[data-barrel-toggle]');
+    const barrelOptions = document.getElementById('barrel-options');
+    const barrelControls = barrelOptions
+      ? [...barrelOptions.querySelectorAll<Control>('input, select')]
+      : [];
+    const barrelCount = form.querySelector<HTMLInputElement>('[name="barrel_table_count"]');
+
+    function syncBarrelOptions(animate: boolean) {
+      if (!barrelToggle || !barrelOptions) return;
+      const open = barrelToggle.checked;
+      barrelToggle.setAttribute('aria-expanded', String(open));
+      barrelOptions.hidden = !open;
+      // Disabled controls are not submitted, so hidden answers never reach Formspree.
+      barrelControls.forEach((el) => {
+        el.disabled = !open;
+        if (!open) clearError(el.name);
+      });
+      if (barrelCount) barrelCount.required = open;
+      if (open && animate) {
+        barrelOptions.classList.remove('is-opening');
+        void barrelOptions.offsetWidth; // restart the animation
+        barrelOptions.classList.add('is-opening');
+      }
+    }
+    barrelToggle?.addEventListener('change', () => syncBarrelOptions(true));
+    syncBarrelOptions(false);
+
+    // ---- Validation --------------------------------------------------------------------
+    const controls = (name: string) =>
+      [...form.querySelectorAll<Control>(`[name="${name}"]`)].filter(
+        (el) => el.type !== 'hidden' && !el.disabled,
+      );
+
+    /** Names of fields to validate right now (required, or with a format to check). */
+    const fieldNames = () => [
       ...new Set(
-        [...form.querySelectorAll<Control>('[required], [type="email"], [type="tel"]')].map(
-          (el) => el.name,
-        ),
+        [
+          ...form.querySelectorAll<Control>(
+            '[required], [type="email"], [type="tel"], [type="number"], [pattern]',
+          ),
+        ]
+          .filter((el) => !el.disabled && el.name !== '_gotcha')
+          .map((el) => el.name),
       ),
     ];
-
-    const controls = (name: string) =>
-      [...form.querySelectorAll<Control>(`[name="${name}"]`)].filter((el) => el.type !== 'hidden');
 
     function messageFor(el: Control): string {
       if (el instanceof HTMLInputElement && el.type === 'tel') {
         const digits = el.value.replace(/\D/g, '').length;
-        el.setCustomValidity(el.value && digits < 10 ? messages.phone : '');
+        el.setCustomValidity(el.value && digits < 10 ? text.phone : '');
       }
       const v = el.validity;
       if (v.valid) return '';
       if (v.valueMissing) {
-        if (el.type === 'checkbox') return messages.consent;
-        if (el.type === 'radio' || el instanceof HTMLSelectElement) return messages.choose;
-        return messages.required;
+        if (el.type === 'checkbox') return text.consent;
+        if (el.type === 'radio' || el instanceof HTMLSelectElement) return text.choose;
+        return text.required;
       }
-      if (v.typeMismatch) return messages.email;
-      if (v.rangeUnderflow || v.badInput) return messages.date;
+      if (v.typeMismatch) return text.email;
+      if (v.patternMismatch) return text.zip;
+      if (el.name === 'event_date') return text.date;
+      if (el.name === 'barrel_table_count') return text.count;
+      if (el.name === 'budget') return text.budget;
       if (v.customError) return el.validationMessage;
-      return messages.required;
+      return text.required;
     }
 
-    /** Validates one field (or radio group), updates its inline error. Returns true if valid. */
-    function validate(name: string): boolean {
-      const els = controls(name);
-      if (!els.length) return true;
-      const message = messageFor(els[0]!);
-      els.forEach((el) =>
+    function setError(name: string, message: string) {
+      controls(name).forEach((el) =>
         message ? el.setAttribute('aria-invalid', 'true') : el.removeAttribute('aria-invalid'),
       );
       const errorEl = form!.querySelector(`[data-error-for="${name}"]`);
       if (errorEl) errorEl.textContent = message;
+    }
+
+    function clearError(name: string) {
+      form!
+        .querySelectorAll<Control>(`[name="${name}"]`)
+        .forEach((el) => el.removeAttribute('aria-invalid'));
+      const errorEl = form!.querySelector(`[data-error-for="${name}"]`);
+      if (errorEl) errorEl.textContent = '';
+    }
+
+    /** Validates one field (or radio group). Returns true if valid. */
+    function validate(name: string): boolean {
+      const els = controls(name);
+      if (!els.length) return true;
+      const message = messageFor(els[0]!);
+      setError(name, message);
       return !message;
     }
 
     let attempted = false;
     const revalidate = (event: Event) => {
       const target = event.target as Control;
-      if (attempted && fieldNames.includes(target.name)) validate(target.name);
+      if (attempted && fieldNames().includes(target.name)) validate(target.name);
     };
     form.addEventListener('input', revalidate);
     form.addEventListener('change', revalidate);
 
+    // ---- Email subject: "New quote request – Quinceañera / Mis XV – June 6, 2027" ----------
+    function buildSubject(): string {
+      const parts = [text.subjectPrefix];
+      const type = form!.querySelector<HTMLSelectElement>('[name="event_type"]');
+      const typeLabel = type?.value ? type.selectedOptions[0]?.textContent?.trim() : '';
+      if (typeLabel) parts.push(typeLabel);
+      const [y, m, d] = dateInput.value.split('-').map(Number);
+      if (y && m && d) {
+        parts.push(
+          new Intl.DateTimeFormat(text.lang, { dateStyle: 'long' }).format(new Date(y, m - 1, d)),
+        );
+      }
+      return parts.join(' – ');
+    }
+
+    // ---- Submit --------------------------------------------------------------------------
     function setBusy(busy: boolean) {
       form!.setAttribute('aria-busy', String(busy));
       submitButton.disabled = busy;
-      submitLabel.textContent = busy ? messages.sending : messages.submit;
+      submitLabel.textContent = busy ? text.sending : text.submit;
     }
 
     form.addEventListener('submit', async (event) => {
@@ -424,13 +526,14 @@ const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.sub
       attempted = true;
       failure.hidden = true;
 
-      const invalid = fieldNames.filter((name) => !validate(name));
+      const invalid = fieldNames().filter((name) => !validate(name));
       if (invalid.length) {
-        summary.textContent = messages.summary;
+        summary.textContent = text.summary;
         controls(invalid[0]!)[0]?.focus();
         return;
       }
       summary.textContent = '';
+      subjectInput.value = buildSubject();
 
       setBusy(true);
       try {

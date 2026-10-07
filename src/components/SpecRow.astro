@@ -1,0 +1,35 @@
+---
+/**
+ * Quantity / size details for an inventory item. Renders nothing until that data exists
+ * in src/data/inventory.ts (TODO(veronica): inventory list with quantities and dimensions).
+ */
+import type { InventoryItem } from '../data/inventory';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  item: InventoryItem | undefined;
+  lang: Lang;
+  class?: string;
+}
+
+const { item, lang, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+const hasSpecs = item && (item.quantity !== undefined || item.dimensions);
+---
+
+{hasSpecs && (
+  <dl class:list={['flex flex-wrap gap-x-6 gap-y-1 text-sm', className]}>
+    {item.quantity !== undefined && (
+      <div class="flex gap-1.5">
+        <dt class="font-bold">{t.signature.specQuantity}:</dt>
+        <dd>{item.quantity}</dd>
+      </div>
+    )}
+    {item.dimensions && (
+      <div class="flex gap-1.5">
+        <dt class="font-bold">{t.signature.specDimensions}:</dt>
+        <dd>{item.dimensions[lang]}</dd>
+      </div>
+    )}
+  </dl>
+)}

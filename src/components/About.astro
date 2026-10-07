@@ -1,6 +1,8 @@
 ---
+/** Our Story & Service Area (#about). */
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
+import { site } from '../config/site';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -11,26 +13,42 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section id="about" aria-labelledby="about-title" class="section-cream py-20 sm:py-24 lg:py-28">
+<section id="about" aria-labelledby="about-title" class="section-linen py-20 sm:py-24 lg:py-28">
   <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
     <SectionHeading id="about-title" tone="light" eyebrow={t.about.eyebrow} title={t.about.title} />
 
-    <div class="mx-auto max-w-3xl space-y-5 text-center text-lg text-charcoal">
-      {t.about.paragraphs.map((p) => (
-        <p>{p}</p>
-      ))}
-    </div>
+    <div class="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
+      <p class="text-center text-lg leading-relaxed text-charcoal lg:text-left lg:text-xl">
+        {t.about.story}
+      </p>
 
-    <ul class="mt-14 grid gap-6 md:grid-cols-3">
-      {t.about.values.map((value) => (
-        <li class="rounded-lg border border-whiskey-light/50 bg-white/50 p-7 text-center shadow-soft">
-          <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-onyx text-gold ring-1 ring-gold-deep ring-offset-4 ring-offset-cream">
-            <Icon name={value.icon} class="size-8" />
+      <div class="rounded-lg border border-whiskey-light/60 bg-cream/70 p-6 shadow-soft sm:p-8">
+        <h3 class="text-center text-2xl font-semibold text-whiskey-dark lg:text-left">
+          {t.about.serviceTitle}
+        </h3>
+        <p class="mt-4 flex items-center justify-center gap-2 text-whiskey-dark lg:justify-start">
+          <Icon name="pin" class="size-5 text-gold-deep" />
+          <span>
+            <span class="font-bold">{t.about.baseLabel}:</span> {t.about.base}
           </span>
-          <h3 class="mt-6 text-2xl font-semibold text-whiskey-dark">{value.title}</h3>
-          <p class="mt-3 text-charcoal/85">{value.text}</p>
-        </li>
-      ))}
-    </ul>
+        </p>
+        <ul class="mt-5 flex flex-wrap justify-center gap-2.5 lg:justify-start">
+          {site.serviceArea.areasServed.map((area) => (
+            <li class="inline-flex items-center gap-2 rounded-full border border-whiskey/60 bg-white/70 px-4 py-2 font-bold text-whiskey-dark">
+              <Icon name="pin" class="size-4 text-gold-deep" strokeWidth={2} />
+              {area.name[lang]}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-center font-serif text-xl text-whiskey-dark lg:text-left">
+          {t.about.note}
+        </p>
+        <div class="mt-5 text-center lg:text-left">
+          <a href="#quote" class="btn-outline-dark">
+            {t.cta.quote}
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

@@ -4,8 +4,10 @@
  * To add a phone number or email later, replace `null` with the value in quotes, e.g.
  *   phone: '(909) 555-0123',
  *   email: 'hello@example.com',
- * They will then appear in the footer and the search-engine data automatically.
+ * They then appear in the footer (with Call / Text / Email links) and in the search-engine
+ * data automatically.
  */
+import type { L10n } from '../data/types';
 
 export interface SiteConfig {
   name: string;
@@ -19,19 +21,18 @@ export interface SiteConfig {
     region: string;
     postalCode: string;
     country: string;
-    /** Used for search-engine structured data (JSON-LD `areaServed`). */
-    areasServed: { type: 'City' | 'AdministrativeArea'; name: string }[];
+    /** Shown in Our Story & Service Area and used for JSON-LD `areaServed`. */
+    areasServed: { type: 'City' | 'Place' | 'AdministrativeArea'; name: L10n }[];
   };
-  /** Set with PUBLIC_FORMSPREE_ENDPOINT in `.env` (see `.env.example`). */
+  /** Set with PUBLIC_FORMSPREE_ENDPOINT in `.env` / the GitHub repository variable. */
   formspreeEndpoint: string;
 }
 
 export const site: SiteConfig = {
   name: "Veronica's Event Decor",
 
-  // TODO: Add the business phone number when it's available.
+  // TODO(veronica): confirm public phone/email.
   phone: null,
-  // TODO: Add the business email address when it's available.
   email: null,
 
   instagram: {
@@ -45,18 +46,35 @@ export const site: SiteConfig = {
     postalCode: '91767',
     country: 'US',
     areasServed: [
-      { type: 'City', name: 'Pomona' },
-      { type: 'AdministrativeArea', name: 'San Bernardino County' },
-      { type: 'AdministrativeArea', name: 'Orange County' },
-      { type: 'AdministrativeArea', name: 'Riverside County' },
+      { type: 'City', name: { en: 'Pomona', es: 'Pomona' } },
+      { type: 'Place', name: { en: 'Inland Empire', es: 'Inland Empire' } },
+      {
+        type: 'AdministrativeArea',
+        name: { en: 'San Bernardino County', es: 'Condado de San Bernardino' },
+      },
+      {
+        type: 'AdministrativeArea',
+        name: { en: 'Riverside County', es: 'Condado de Riverside' },
+      },
+      { type: 'AdministrativeArea', name: { en: 'Orange County', es: 'Orange County' } },
     ],
   },
 
   formspreeEndpoint: import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ?? '',
 };
 
-/** `tel:` link for the phone number, digits only (e.g. `tel:+19095550123`). */
-export function phoneHref(phone: string): string {
+/** Phone number in international form, digits only (e.g. `+19095550123`). */
+function e164(phone: string): string {
   const digits = phone.replace(/\D/g, '');
-  return `tel:${digits.length === 10 ? `+1${digits}` : `+${digits}`}`;
+  return digits.length === 10 ? `+1${digits}` : `+${digits}`;
+}
+
+/** `tel:` link for the phone number. */
+export function phoneHref(phone: string): string {
+  return `tel:${e164(phone)}`;
+}
+
+/** `sms:` link for the phone number. */
+export function smsHref(phone: string): string {
+  return `sms:${e164(phone)}`;
 }

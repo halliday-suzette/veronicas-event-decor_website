@@ -1,0 +1,67 @@
+---
+/**
+ * One of Verónica's photos from src/assets/photos/ (listed in src/data/photos.ts).
+ * Renders an optimized WebP with explicit width/height (no layout shift), lazy-loaded unless
+ * `priority`. If the file hasn't been added yet, shows a neutral dark wood-tone placeholder
+ * with the item name — never stock imagery.
+ */
+import { Image } from 'astro:assets';
+import { resolvePhoto } from '../lib/photos';
+import type { L10n } from '../data/types';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  file: string | undefined;
+  lang: Lang;
+  /** Shown on the placeholder until the photo exists. */
+  label: string;
+  /** Output size; sets the aspect ratio (the photo is cropped to fit). */
+  width: number;
+  height: number;
+  widths: number[];
+  sizes: string;
+  altOverride?: L10n;
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  file,
+  lang,
+  label,
+  width,
+  height,
+  widths,
+  sizes,
+  altOverride,
+  priority = false,
+  class: className = '',
+} = Astro.props;
+const t = useTranslations(lang);
+const photo = resolvePhoto(file, lang, altOverride);
+---
+
+{photo?.src ? (
+  <Image
+    src={photo.src}
+    alt={photo.alt}
+    width={width}
+    height={height}
+    widths={widths}
+    sizes={sizes}
+    format="webp"
+    fit="cover"
+    position={photo.position}
+    priority={priority}
+    class:list={['h-auto w-full object-cover', className]}
+  />
+) : (
+  <div
+    class:list={['photo-placeholder', className]}
+    style={`aspect-ratio: ${width} / ${height}`}
+    aria-hidden="true"
+  >
+    <span class="font-serif text-lg leading-snug text-cream/90">{label}</span>
+    <span class="mt-1 text-xs tracking-widest text-cream/60 uppercase">{t.photoComingSoon}</span>
+  </div>
+)}
