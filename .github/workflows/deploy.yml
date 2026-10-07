@@ -30,9 +30,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      # Reports the Pages URL: the github.io project URL, or the custom domain once one is set.
-      - name: Read GitHub Pages settings
-        id: pages
+      # Checks that Pages is enabled. The site's URL itself comes from src/config/site-url.mjs
+      # (the single source for every absolute URL) — update that file for a custom domain.
+      - name: Check GitHub Pages settings
         uses: actions/configure-pages@v6
 
       - name: Install dependencies
@@ -41,8 +41,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          SITE_URL: ${{ steps.pages.outputs.origin }}
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
           # Set under Settings → Secrets and variables → Actions → Variables.
           PUBLIC_FORMSPREE_ENDPOINT: ${{ vars.PUBLIC_FORMSPREE_ENDPOINT }}
 

@@ -6,8 +6,14 @@
  *   email: 'hello@example.com',
  * They then appear in the footer (with Call / Text / Email links) and in the search-engine
  * data automatically.
+ *
+ * The site's own URL lives in ./site-url.mjs (one setting for every absolute URL).
  */
 import type { L10n } from '../data/types';
+
+export { SITE_URL, BASE_PATH } from './site-url.mjs';
+
+export type AnalyticsProvider = 'none' | 'plausible' | 'ga4';
 
 export interface SiteConfig {
   name: string;
@@ -16,16 +22,27 @@ export interface SiteConfig {
   /** `null` hides it everywhere. */
   email: string | null;
   instagram: { handle: string; url: string };
+  /** Google Business Profile URL; added to JSON-LD `sameAs` when set. */
+  googleBusinessProfileUrl: string | null;
   serviceArea: {
     city: string;
     region: string;
     postalCode: string;
     country: string;
     /** Shown in Our Story & Service Area and used for JSON-LD `areaServed`. */
-    areasServed: { type: 'City' | 'Place' | 'AdministrativeArea'; name: L10n }[];
+    areasServed: { type: 'City' | 'AdministrativeArea'; name: L10n }[];
   };
   /** Set with PUBLIC_FORMSPREE_ENDPOINT in `.env` / the GitHub repository variable. */
   formspreeEndpoint: string;
+  /**
+   * Privacy-friendly analytics, off by default. `id` is the site's domain for Plausible
+   * (e.g. 'www.your-domain.com') or the measurement ID for GA4 (e.g. 'G-XXXXXXX').
+   */
+  analytics: { provider: AnalyticsProvider; id: string };
+  /** Google Search Console verification code (`content` of the meta tag). Empty = no tag. */
+  googleSiteVerification: string;
+  /** Bing Webmaster Tools verification code (`content` of msvalidate.01). Empty = no tag. */
+  bingSiteVerification: string;
 }
 
 export const site: SiteConfig = {
@@ -40,6 +57,9 @@ export const site: SiteConfig = {
     url: 'https://www.instagram.com/veronica_eventdecor/',
   },
 
+  // TODO(suzette): add GBP URL after profile is live.
+  googleBusinessProfileUrl: null,
+
   serviceArea: {
     city: 'Pomona',
     region: 'CA',
@@ -47,7 +67,7 @@ export const site: SiteConfig = {
     country: 'US',
     areasServed: [
       { type: 'City', name: { en: 'Pomona', es: 'Pomona' } },
-      { type: 'Place', name: { en: 'Inland Empire', es: 'Inland Empire' } },
+      { type: 'AdministrativeArea', name: { en: 'Inland Empire', es: 'Inland Empire' } },
       {
         type: 'AdministrativeArea',
         name: { en: 'San Bernardino County', es: 'Condado de San Bernardino' },
@@ -61,6 +81,14 @@ export const site: SiteConfig = {
   },
 
   formspreeEndpoint: import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ?? '',
+
+  // TODO(suzette): choose provider — recommend Plausible, which uses no cookies, so no consent
+  // banner is needed. Set provider: 'plausible' and id: the site's domain.
+  analytics: { provider: 'none', id: '' },
+
+  // TODO(suzette): add after creating Search Console and Bing Webmaster accounts.
+  googleSiteVerification: '',
+  bingSiteVerification: '',
 };
 
 /** Phone number in international form, digits only (e.g. `+19095550123`). */

@@ -16,7 +16,7 @@ You need **Node.js 22.12 or newer** (check with `node --version`).
 ```bash
 npm install          # install dependencies (first time only)
 cp .env.example .env # then put your Formspree form ID in .env (see section 5)
-npm run dev          # start the local site at http://localhost:4321
+npm run dev          # local site at http://localhost:4321/veronicas-event-decor_website/
 ```
 
 Other commands:
@@ -118,14 +118,14 @@ When a photo arrives, check its alt text in `src/data/photos.ts` matches what's 
 3. Check the header and hero with `npm run dev`.
 
 > **Have an SVG (vector) logo?** It would be sharper and lighter. Save it in
-> `src/assets/images/` and change the two `import` lines at the top of
-> `src/components/Logo.astro` — that is the only file that needs to change.
+> `src/assets/images/` and change the logo import in `src/lib/logo.ts` and the wordmark import in
+> `src/components/Logo.astro`.
 
 ### Hero photo
 
-The hero uses `barrels-umbrellas-backyard.jpg` as its background (under a dark overlay) as soon
-as that file is in `src/assets/photos/`. To use a different photo, change `HERO_PHOTO` in
-`src/components/HomePage.astro`.
+The hero uses `barrels-umbrellas-backyard.jpg` as its background (under a dark overlay, from
+tablet width up). To use a different photo, change `heroPhoto` in `src/data/photos.ts` — the
+`<head>` preload and the structured data follow automatically.
 
 ---
 
@@ -193,7 +193,11 @@ Live address (until a custom domain is added):
    `PUBLIC_FORMSPREE_ENDPOINT` = your Formspree endpoint (section 5).
 3. Push to `main` (or **Actions → Deploy to GitHub Pages → Run workflow**).
 
-### Custom domain (optional)
+### Custom domain — switching over
+
+The site's address lives in **one file**: `src/config/site-url.mjs`. Every absolute URL —
+canonical links, language links (hreflang), social-share tags, structured data, the sitemap,
+`robots.txt` and `llms.txt` — is built from it.
 
 1. **Settings → Pages → Custom domain:** enter e.g. `www.veronicaseventdecor.com` and save.
 2. At your domain registrar, add DNS records:
@@ -201,27 +205,61 @@ Live address (until a custom domain is added):
    - apex domain (no `www`) → **A** records `185.199.108.153`, `185.199.109.153`,
      `185.199.110.153`, `185.199.111.153` (GitHub redirects it to `www`)
 3. Once the DNS check passes, tick **Enforce HTTPS**.
-4. Re-run the deploy workflow. The build reads the domain from GitHub automatically, so the
-   canonical URLs, sitemap, social-share image and language links switch to the new domain —
-   no code change needed.
+4. In `src/config/site-url.mjs` change two lines:
 
-### How the address is configured
+   ```js
+   const DEFAULT_SITE_URL = 'https://www.veronicaseventdecor.com';
+   const DEFAULT_BASE_PATH = '/';
+   ```
 
-`astro.config.mjs` reads `SITE_URL` and `BASE_PATH`, which the workflow fills in from the
-GitHub Pages settings (`/veronicas-event-decor_website` without a custom domain, empty with one).
-Locally they aren't set, so `npm run dev` / `npm run preview` serve the site at `/`.
-Any new link to a file in `public/` must use `withBase('/file.png')` from `src/i18n/utils.ts`
-so it works under the sub-folder.
+5. Commit and push. The whole site now uses the new domain (and `robots.txt` starts working —
+   search engines only read it at the domain root).
+
+### The sub-folder (base path)
+
+GitHub Pages serves this project from `/veronicas-event-decor_website/`, so the site is built with
+that base path — locally too (`npm run dev` → `http://localhost:4321/veronicas-event-decor_website/`).
+Any new link to a file in `public/` must use `withBase('/file.png')` from `src/i18n/utils.ts`.
+With a custom domain the base path becomes `/` and nothing else changes.
 
 ### Other hosts
 
 The site also deploys to Netlify, Vercel or Cloudflare Pages: build command `npm run build`,
-output directory `dist`, Node 22, and the environment variables `PUBLIC_FORMSPREE_ENDPOINT` and
-`SITE_URL` (your full domain, e.g. `https://www.veronicaseventdecor.com`).
+output directory `dist`, Node 22, and the environment variable `PUBLIC_FORMSPREE_ENDPOINT`. Set
+the domain in `src/config/site-url.mjs` (or override it with `SITE_URL` / `BASE_PATH` environment
+variables).
 
 ---
 
-## 7. Project structure
+## 7. Search engines, AI answers & analytics
+
+Already built in — nothing to do unless noted:
+
+- **Titles & descriptions** per language: `meta` in `src/i18n/en.ts` / `es.ts`.
+- **Structured data** (JSON-LD, one `@graph` per page, in the page's language): WebSite, WebPage,
+  LocalBusiness (service area, languages, `knowsAbout`, and an OfferCatalog generated from
+  `src/data/inventory.ts` — no prices, ratings or street address) and FAQPage (from
+  `src/data/faq.ts`). Built in `src/lib/structured-data.ts`.
+- **Sitemap** (`/sitemap-index.xml`) with English/Spanish alternates for each page.
+- **`/robots.txt`** welcomes search and AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Bingbot…).
+- **`/llms.txt`**: a short plain-text summary for AI engines, generated from the same data.
+
+To finish (in `src/config/site.ts`):
+
+| Setting                    | What to do                                                                                                                                                                                                                                           |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `googleSiteVerification`   | Create a [Google Search Console](https://search.google.com/search-console) property → "HTML tag" method → paste the `content` value. Then submit `sitemap-index.xml`.                                                                                |
+| `bingSiteVerification`     | Same in [Bing Webmaster Tools](https://www.bing.com/webmasters) ("HTML Meta Tag" → `content` of `msvalidate.01`). Bing matters for AI answers: ChatGPT search and Copilot use Bing's index.                                                          |
+| `googleBusinessProfileUrl` | Once the Google Business Profile is live, paste its URL — it's added to the structured data.                                                                                                                                                         |
+| `analytics`                | Off by default. Recommended: [Plausible](https://plausible.io) (no cookies → no consent banner): `{ provider: 'plausible', id: 'your-domain.com' }`. GA4 also works: `{ provider: 'ga4', id: 'G-XXXXXXX' }`. With `'none'`, no analytics code loads. |
+
+Events sent when analytics is on (never personal data): `quote_submitted` (language, event type),
+`instagram_click`, `phone_click`, `sms_click` (language, page section). In Plausible, add each as a
+custom-event goal to see it in the dashboard.
+
+---
+
+## 8. Project structure
 
 ```
 src/
@@ -229,12 +267,14 @@ src/
   assets/photos/      Verónica's event & inventory photos (see its README for filenames)
   components/         one file per page section (Hero, Celebrations, Rentals, …, Faq, Footer)
     form/             reusable form fields used by QuoteForm
-  config/site.ts      phone, email, Instagram, service area, Formspree endpoint
+  config/site-url.mjs the site's address (one setting for every absolute URL)
+  config/site.ts      phone, email, Instagram, service area, Formspree, analytics, verification
   data/               inventory, celebrations, FAQ, photo list (bilingual)
   i18n/               en.ts, es.ts (page text) and utils.ts (helpers)
   layouts/            BaseLayout.astro — <head>, SEO tags, hreflang, structured data
-  lib/photos.ts       finds photo files by name (placeholder if missing)
-  pages/              index.astro (English) and es/index.astro (Spanish)
+  lib/               photos.ts (find photos), structured-data.ts (JSON-LD), logo.ts + hero.ts
+                      (preloaded hero images), analytics.ts (event tracking)
+  pages/              index.astro (English), es/index.astro (Spanish), robots.txt.ts, llms.txt.ts
   styles/             global.css (colors, fonts, shared styles), fonts.css
 public/               favicons, og-image.png, site.webmanifest
 scripts/              logo-variants.mjs (npm run logo), check-i18n.ts (npm run check:i18n)

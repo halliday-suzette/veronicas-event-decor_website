@@ -45,20 +45,20 @@ export const photos: Record<string, PhotoInfo> = {
   },
   'barrel-bar-wagon-wheel.jpg': {
     alt: {
-      en: 'Barrel bar made of two whiskey barrels and a thick wood plank, with a wagon wheel in front and a hay bale beside it',
-      es: 'Barra de dos barriles de whiskey con una tabla gruesa de madera, una rueda de carreta al frente y una paca de paja a un lado',
+      en: 'Rustic western barrel bar made of two whiskey barrels and a thick wood plank, with a wagon wheel in front and a hay bale beside it',
+      es: 'Barra western rústica de dos barriles de whiskey con una tabla gruesa de madera, una rueda de carreta al frente y una paca de paja a un lado',
     },
   },
   'wood-backdrop-birthday-salud.jpg': {
     alt: {
-      en: 'Dark wood backdrop with a "Happy Birthday" neon sign and coiled rope, a "Salud" drink display, a wagon wheel and a whiskey barrel cocktail table',
-      es: 'Backdrop de madera oscura con letrero de neón "Happy Birthday" y una soga enrollada, el exhibidor "Salud", una rueda de carreta y una mesa de barril alta',
+      en: 'Western birthday setup: dark wood backdrop with a "Happy Birthday" neon sign and coiled rope, a "Salud" drink display, a wagon wheel and a whiskey barrel cocktail table',
+      es: 'Cumpleaños western: backdrop de madera oscura con letrero de neón "Happy Birthday" y una soga enrollada, el exhibidor "Salud", una rueda de carreta y una mesa de barril alta',
     },
   },
   'wood-backdrop-cactus.jpg': {
     alt: {
-      en: 'Dark wood backdrop with coiled rope, a potted cactus, a hay bale, a wagon wheel and a whiskey barrel',
-      es: 'Backdrop de madera oscura con una soga enrollada, un cactus en maceta, una paca de paja, una rueda de carreta y un barril de whiskey',
+      en: 'Rustic western dark wood backdrop with coiled rope, a potted cactus, a hay bale, a wagon wheel and a whiskey barrel',
+      es: 'Backdrop western rústico de madera oscura con una soga enrollada, un cactus en maceta, una paca de paja, una rueda de carreta y un barril de whiskey',
     },
   },
   'dessert-cart-night.jpg': {
@@ -87,8 +87,8 @@ export const photos: Record<string, PhotoInfo> = {
   },
   'balloons-sunflower-gold.jpg': {
     alt: {
-      en: 'White and gold balloon garland with sunflowers and a "Happy Birthday" neon sign over a dessert table with wood and gold cake stands',
-      es: 'Arco de globos blancos y dorados con girasoles y un letrero de neón "Happy Birthday" sobre una mesa de postres con bases para pastel de madera y doradas',
+      en: 'White and gold balloon garland with sunflowers and a "Happy Birthday" neon sign over a rustic farmhouse dessert table with a burlap skirt, wood and gold cake stands and bundles of hay',
+      es: 'Arco de globos blancos y dorados con girasoles y un letrero de neón "Happy Birthday" sobre una mesa de postres estilo rancho con faldón de yute, bases para pastel de madera y doradas y paja',
     },
   },
   'balloons-bee-column.jpg': {
@@ -132,8 +132,8 @@ export const photos: Record<string, PhotoInfo> = {
   },
   'balloons-cowgirl-shower.jpg': {
     alt: {
-      en: '"A little cowgirl is on the way" baby shower with a balloon garland and a rustic wood dessert table',
-      es: 'Baby shower "A little cowgirl is on the way" con arco de globos y una mesa de postres de madera rústica',
+      en: 'Western cowgirl baby shower setup with balloon garland, dark wood backdrop and wagon wheel',
+      es: 'Baby shower vaquerita western con arco de globos, backdrop de madera oscura y rueda de carreta',
     },
   },
   'photo-booth.jpg': {
@@ -155,6 +155,9 @@ export const photos: Record<string, PhotoInfo> = {
     },
   },
 };
+
+/** Hero background photo; also the WebPage `primaryImageOfPage` in the structured data. */
+export const heroPhoto = 'barrels-umbrellas-backyard.jpg';
 
 /** Gallery order (8–12 photos). Only photos whose files exist are shown. */
 export const galleryPhotos: string[] = [

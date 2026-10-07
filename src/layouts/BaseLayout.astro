@@ -1,8 +1,20 @@
 ---
+import { getImage } from 'astro:assets';
 import '../styles/global.css';
+// The hero H1 font — preloaded so the headline renders sooner. (Body text is preloaded by nothing:
+// on a slow phone connection a second font preload delays the hero logo, the LCP image.)
+// Same files the CSS references, so the preload is reused (no double download).
+import playfairUrl from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url';
+import Analytics from '../components/Analytics.astro';
 import { site } from '../config/site';
+import { heroPhoto } from '../data/photos';
+import { resolvePhoto } from '../lib/photos';
+import { heroBackground } from '../lib/hero';
+import { logoPreload } from '../lib/logo';
+import { buildGraph } from '../lib/structured-data';
 import {
   absoluteUrl,
+  hreflangCode,
   languages,
   localeUrl,
   useTranslations,
@@ -12,50 +24,41 @@ import {
 
 interface Props {
   lang: Lang;
-  /** Extra JSON-LD blocks for this page (e.g. FAQPage), rendered after LocalBusiness. */
-  structuredData?: Record<string, unknown>[];
 }
 
-const { lang, structuredData = [] } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+// Every absolute URL below is built from Astro.site + base (src/config/site-url.mjs).
 const canonical = localeUrl(lang, Astro.site);
 const ogImage = absoluteUrl('/og-image.png', Astro.site);
 const alternates = (Object.keys(languages) as Lang[]).map((l) => ({
-  lang: l,
+  hreflang: hreflangCode(l),
   href: localeUrl(l, Astro.site),
 }));
-const otherOgLocales = alternates
-  .filter((a) => a.lang !== lang)
-  .map((a) => useTranslations(a.lang).meta.ogLocale);
+const otherOgLocales = (Object.keys(languages) as Lang[])
+  .filter((l) => l !== lang)
+  .map((l) => useTranslations(l).meta.ogLocale);
 
-// Structured data for search engines, in the page's language. Phone/email are included
-// only once set in site.ts.
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': ['LocalBusiness'],
-  '@id': `${localeUrl('en', Astro.site)}#business`,
-  name: site.name,
-  description: t.meta.description,
-  url: canonical,
-  logo: absoluteUrl('/icon-512.png', Astro.site),
-  image: ogImage,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: site.serviceArea.city,
-    addressRegion: site.serviceArea.region,
-    postalCode: site.serviceArea.postalCode,
-    addressCountry: site.serviceArea.country,
-  },
-  areaServed: site.serviceArea.areasServed.map((area) => ({
-    '@type': area.type,
-    name: area.name[lang],
-  })),
-  sameAs: [site.instagram.url],
-  knowsLanguage: ['en', 'es'],
-  ...(site.phone ? { telephone: site.phone } : {}),
-  ...(site.email ? { email: site.email } : {}),
-};
+// Hero preloads — same responsive URLs as the rendered images (no double download):
+// the logo (LCP on phones) and, from 640px up, the background photo (LCP on larger screens).
+const logo = await logoPreload();
+const heroBg = await heroBackground();
+
+// Primary image of the page for the structured data: the hero event photo, if present.
+const hero = resolvePhoto(heroPhoto, lang);
+const heroImage = hero?.src
+  ? await getImage({ src: hero.src, width: Math.min(1200, hero.src.width), format: 'webp' })
+  : undefined;
+const primaryImage = heroImage
+  ? {
+      url: new URL(heroImage.src, Astro.site).href,
+      width: Number(heroImage.attributes.width),
+      height: Number(heroImage.attributes.height),
+    }
+  : undefined;
+
+const jsonLd = buildGraph({ lang, t, siteUrl: Astro.site, pageUrl: canonical, primaryImage });
 ---
 
 <!doctype html>
@@ -70,15 +73,42 @@ const jsonLd = {
     <meta name="description" content={t.meta.description} />
     <link rel="canonical" href={canonical} />
     {alternates.map((a) => (
-      <link rel="alternate" hreflang={a.lang} href={a.href} />
+      <link rel="alternate" hreflang={a.hreflang} href={a.href} />
     ))}
     <link rel="alternate" hreflang="x-default" href={localeUrl('en', Astro.site)} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+
+    <!-- Critical resources: the hero logo (LCP) and the two above-the-fold fonts. -->
+    <link
+      rel="preload"
+      as="image"
+      type={logo.type}
+      imagesrcset={logo.srcset}
+      imagesizes={logo.sizes}
+      fetchpriority="high"
+    />
+    {heroBg && (
+      <link
+        rel="preload"
+        as="image"
+        type="image/webp"
+        media={heroBg.media}
+        imagesrcset={heroBg.srcset}
+        imagesizes={heroBg.sizes}
+        fetchpriority="high"
+      />
+    )}
+    <link rel="preload" as="font" type="font/woff2" href={playfairUrl} crossorigin />
 
     <link rel="icon" href={withBase('/favicon.ico')} sizes="48x48" />
     <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <link rel="manifest" href={withBase('/site.webmanifest')} />
+
+    {site.googleSiteVerification && (
+      <meta name="google-site-verification" content={site.googleSiteVerification} />
+    )}
+    {site.bingSiteVerification && <meta name="msvalidate.01" content={site.bingSiteVerification} />}
 
     <!-- Open Graph / social sharing -->
     <meta property="og:type" content="website" />
@@ -101,9 +131,7 @@ const jsonLd = {
     <meta name="twitter:image:alt" content={t.meta.ogImageAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    {structuredData.map((data) => (
-      <script type="application/ld+json" set:html={JSON.stringify(data)} />
-    ))}
+    {site.analytics.provider !== 'none' && <Analytics />}
   </head>
   <body>
     <a

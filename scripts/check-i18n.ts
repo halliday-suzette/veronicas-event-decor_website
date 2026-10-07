@@ -1,7 +1,7 @@
 // Checks the bilingual copy:
 //   1. en.ts and es.ts have exactly the same keys (and the same array lengths)
 //   2. every bilingual entry in src/data/ has non-empty English AND Spanish text
-//   3. customer-facing text avoids banned brand-voice words ("style", "estiliz", …)
+//   3. customer-facing text avoids banned words ("we style", "styled", "styling", "estiliz…", "decoramos", "charro/charra")
 //
 //   npm run check:i18n
 //
@@ -69,7 +69,9 @@ for (const f of faq) {
 for (const [file, info] of Object.entries(photos)) checkL10n(`photo ${file}.alt`, info.alt);
 
 // 3. Brand voice ---------------------------------------------------------------------------
-const banned = /\b(styl(e|ed|es|ing)|estiliz\w*|decoramos)\b/i;
+// The service is renting + delivering + setting up, never "styling" (style as a noun/adjective,
+// e.g. "What styles do you offer?", is fine). "charro/charra" is not used for this brand.
+const banned = /\b(we style|styled|styling|estiliz\w*|decoramos|charr[oa]s?)\b/i;
 /** Both languages of each bilingual entry, labeled with where it came from. */
 const both = (where: string, ...texts: (L10n | undefined)[]): [string, string][] =>
   texts.flatMap((t) =>

@@ -1,0 +1,67 @@
+---
+/**
+ * Analytics loader + outbound click tracking. Only rendered by BaseLayout when
+ * `site.analytics.provider` isn't 'none' — so with analytics off, no third-party script and no
+ * tracking code is on the page at all.
+ *
+ * Events (no personal data):
+ *   quote_submitted  { language, event_type }   — fired by QuoteForm on a successful send
+ *   instagram_click  { language, location }
+ *   phone_click      { language, location }     — tel: links (only present once a phone is set)
+ *   sms_click        { language, location }     — sms: links
+ * In Plausible, add each event name as a custom-event goal to see it in the dashboard.
+ */
+import { site } from '../config/site';
+
+const { provider, id } = site.analytics;
+---
+
+{provider === 'plausible' && id && (
+  <>
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
+    <script is:inline defer data-domain={id} src="https://plausible.io/js/script.js" />
+  </>
+)}
+{provider === 'ga4' && id && (
+  <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
+    <script is:inline define:vars={{ id }}>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () {
+        window.dataLayer.push(arguments);
+      };
+      window.gtag('js', new Date());
+      window.gtag('config', id);
+    </script>
+  </>
+)}
+
+<script>
+  import { track } from '../lib/analytics';
+
+  // Outbound clicks: Instagram, and tel:/sms: links once a phone number is configured.
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element | null)?.closest?.('a[href]');
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const href = link.getAttribute('href') ?? '';
+    const name = href.includes('instagram.com')
+      ? 'instagram_click'
+      : href.startsWith('tel:')
+        ? 'phone_click'
+        : href.startsWith('sms:')
+          ? 'sms_click'
+          : null;
+    if (!name) return;
+    const area = link.closest('header, footer, section, dialog');
+    track(name, {
+      language: document.documentElement.lang,
+      location: area?.id || area?.tagName.toLowerCase() || 'page',
+    });
+  });
+</script>

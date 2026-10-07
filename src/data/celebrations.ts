@@ -37,8 +37,8 @@ export const celebrations: Celebration[] = [
     tier: 'primary',
     name: { en: 'Sweet 16s', es: 'Sweet 16' },
     description: {
-      en: "A milestone birthday with a photo-ready rustic look she'll love.",
-      es: 'Un cumpleaños inolvidable con un look rústico perfecto para las fotos.',
+      en: 'A milestone birthday with a photo-ready rustic look, perfect for a cowgirl or western-theme sweet 16.',
+      es: 'Un cumpleaños inolvidable con un look rústico perfecto para las fotos, ideal para un sweet 16 vaquero o western.',
     },
   },
   {
@@ -56,8 +56,8 @@ export const celebrations: Celebration[] = [
     tier: 'primary',
     name: { en: 'Birthdays', es: 'Cumpleaños' },
     description: {
-      en: 'From first birthdays to milestone years, parties your guests will talk about.',
-      es: 'Desde el primer añito hasta los grandes cumpleaños, fiestas de las que todos van a hablar.',
+      en: 'From cowboy and "My First Rodeo" birthdays to milestone years, parties your guests will talk about.',
+      es: 'Desde fiestas vaqueras y primeros añitos con temática de rodeo hasta los grandes cumpleaños, fiestas de las que todos van a hablar.',
     },
     image: 'wood-backdrop-birthday-salud.jpg',
   },
@@ -68,8 +68,8 @@ export const celebrations: Celebration[] = [
     tier: 'secondary',
     name: { en: 'Weddings', es: 'Bodas' },
     description: {
-      en: 'Warm, romantic rustic touches for your reception and sweetheart table.',
-      es: 'Detalles rústicos, cálidos y románticos para tu recepción y mesa de novios.',
+      en: 'Warm, romantic rustic western and farmhouse touches for your reception and sweetheart table.',
+      es: 'Detalles rústicos western y estilo rancho, cálidos y románticos, para tu recepción y mesa de novios.',
     },
     image: 'barrels-umbrellas-patio-dusk.jpg',
   },
@@ -78,8 +78,8 @@ export const celebrations: Celebration[] = [
     tier: 'secondary',
     name: { en: 'Baby Showers', es: 'Baby showers' },
     description: {
-      en: 'Sweet, cozy setups to welcome your little one.',
-      es: 'Montajes tiernos y acogedores para darle la bienvenida a tu bebé.',
+      en: 'Sweet, cozy cowboy, cowgirl and farmhouse setups to welcome your little one.',
+      es: 'Montajes tiernos y acogedores, vaqueros o estilo rancho, para darle la bienvenida a tu bebé.',
     },
     image: 'balloons-cowgirl-shower.jpg',
   },

@@ -1,26 +1,23 @@
 ---
 /**
  * Hero (#home): background event photo under a dark gradient (for legibility), the lit
- * logo, the H1 and the two calls to action. The photo is set in HomePage.astro; until the
- * file exists in src/assets/photos/, the hero shows the plain onyx background.
+ * logo, the H1 and the two calls to action. The photo is `heroPhoto` in src/data/photos.ts;
+ * until the file exists, the hero shows the plain onyx background.
  */
-import { Image } from 'astro:assets';
 import Logo from './Logo.astro';
-import { fitSize, resolvePhoto } from '../lib/photos';
+import { heroBackground } from '../lib/hero';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
-  /** Filename in src/assets/photos/ for the background. */
-  backgroundFile?: string;
 }
 
-const { lang, backgroundFile } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-const background = resolvePhoto(backgroundFile, lang);
-const bgSize = background?.src
-  ? fitSize(background.src, 1920, 1080, [640, 960, 1280, 1920])
-  : undefined;
+const background = await heroBackground();
+// 1×1 transparent GIF: the <img> fallback on phones, so no photo is downloaded there.
+const EMPTY_IMAGE =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 ---
 
 <section
@@ -28,25 +25,28 @@ const bgSize = background?.src
   aria-labelledby="hero-title"
   class="section-dark relative isolate overflow-hidden"
 >
-  {background?.src && bgSize && (
+  {background && (
     <div class="absolute inset-0 -z-10 hidden sm:block" aria-hidden="true">
-      {/* Hidden on phones (barely visible under the overlay) so it isn't downloaded there:
-          lazy images inside display:none are never fetched. */}
-      <Image
-        src={background.src}
-        alt=""
-        width={bgSize.width}
-        height={bgSize.height}
-        widths={bgSize.widths}
-        sizes="100vw"
-        format="webp"
-        fit="cover"
-        quality={55}
-        loading="lazy"
-        fetchpriority="low"
-        decoding="async"
-        class="h-full w-full object-cover"
-      />
+      {/* From 640px up the <source> supplies the photo (largest element → eager, high priority,
+          preloaded in <head>). On phones the empty inline image is used: no request at all. */}
+      <picture>
+        <source
+          media={background.media}
+          srcset={background.srcset}
+          sizes={background.sizes}
+          type="image/webp"
+        />
+        <img
+          src={EMPTY_IMAGE}
+          alt=""
+          width={background.width}
+          height={background.height}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
+      </picture>
       {/* At least 80% onyx everywhere: text stays WCAG AA even over a white patch of photo. */}
       <div class="absolute inset-0 bg-gradient-to-b from-onyx/90 via-onyx/80 to-onyx/95" />
       <div class="absolute inset-0 bg-gradient-to-r from-onyx/60 via-transparent to-onyx/70" />

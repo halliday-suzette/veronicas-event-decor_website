@@ -14,9 +14,9 @@ import type { Translations } from './en';
  */
 export const es: Translations = {
   meta: {
-    title: "Renta de mesas de barril en Pomona | Veronica's Event Decor",
+    title: "Renta de mobiliario rústico western en Pomona | Veronica's",
     description:
-      'Mesas de barril hechas a mano y mobiliario rústico western para XV años, sweet 16, graduaciones y cumpleaños. Negocio latino en Pomona, CA.',
+      'Renta de mobiliario rústico western en Pomona: mesas de barril hechas a mano y decoración estilo rancho para XV años, sweet 16, graduaciones y cumpleaños.',
     ogLocale: 'es_US',
     ogImageAlt: "Logo dorado de Veronica's Event Decor sobre fondo negro",
   },
@@ -52,7 +52,7 @@ export const es: Translations = {
     eyebrow: 'Negocio de una mujer latina · Atendemos en inglés y en español · Pomona, CA',
     title: 'Mesas de barril hechas a mano y renta de mobiliario rústico western',
     subtitle:
-      'Para tus XV años, sweet 16, graduaciones, cumpleaños y todas tus celebraciones — te lo llevamos y lo montamos en el Inland Empire, Orange County y Riverside.',
+      'Renta de mobiliario rústico western y decoración estilo rancho para tus XV años, sweet 16, graduaciones, cumpleaños y todas tus celebraciones — te lo llevamos y lo montamos en el Inland Empire, Orange County y Riverside.',
     primary: 'Revisa disponibilidad y cotiza',
     secondary: 'Mira lo que rentamos',
   },
@@ -82,7 +82,7 @@ export const es: Translations = {
   },
 
   catalog: {
-    title: 'Más rentas hechas a mano',
+    title: 'Más renta de mobiliario rústico western',
     intro: 'Combina piezas rústicas western y crea un look que vaya contigo.',
     closing: 'Y mucho más. ¡Pregúntanos por otras piezas!',
   },
@@ -190,8 +190,10 @@ export const es: Translations = {
   about: {
     eyebrow: 'Quiénes somos',
     title: 'Nuestra historia',
+    definition:
+      "Veronica's Event Decor es una empresa de renta de mobiliario para fiestas en Pomona, California, de una mujer latina, especializada en mesas de barril hechas a mano, mobiliario rústico western y decoración estilo rancho.",
     story:
-      "Veronica's Event Decor es un negocio familiar de una mujer latina en Pomona, California. Nos encantan las fiestas, y ese cariño lo ponemos en cada pieza hecha a mano que rentamos. Cada evento recibe nuestra atención personal: escuchamos tus ideas, te ayudamos a escoger las piezas ideales y nos encargamos de los detalles para que tú disfrutes con tu familia.",
+      'Nos encantan las fiestas, y ese cariño lo ponemos en cada pieza hecha a mano que rentamos. Cada evento recibe nuestra atención personal: escuchamos tus ideas, te ayudamos a escoger las piezas ideales y nos encargamos de los detalles para que tú disfrutes con tu familia.',
     serviceTitle: 'Hasta dónde te lo llevamos',
     baseLabel: 'Nuestra base',
     base: 'Pomona, CA 91767',
@@ -300,9 +302,24 @@ export const es: Translations = {
     title: 'Preguntas frecuentes',
   },
 
+  // Datos estructurados (JSON-LD) para buscadores — no se muestran en la página.
+  schema: {
+    offerCatalogName: 'Renta de mobiliario rústico western',
+    knowsAbout: [
+      'renta de mobiliario rústico western',
+      'decoración western estilo rancho',
+      'renta de mesas de barril',
+      'decoración para XV años',
+      'decoración para sweet 16',
+      'renta de mobiliario para graduaciones',
+      'arcos de globos',
+      'renta de cabina de fotos',
+    ],
+  },
+
   footer: {
     tagline:
-      'Mesas de barril hechas a mano y renta de mobiliario rústico western para las celebraciones más importantes de tu vida.',
+      'Mesas de barril hechas a mano y mobiliario rústico western para las celebraciones más importantes de tu vida.',
     serviceLine: 'Desde Pomona, CA · Damos servicio en el Inland Empire, Orange County y Riverside',
     navHeading: 'Explora',
     contactHeading: 'Contáctanos',

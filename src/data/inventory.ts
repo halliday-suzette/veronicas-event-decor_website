@@ -129,7 +129,7 @@ export const inventory: InventoryItem[] = [
     category: 'bars-carts',
     name: { en: 'Rustic Dessert Table', es: 'Mesa de postres rústica' },
     description: {
-      en: 'A sturdy farmhouse wood table for your cake and sweets.',
+      en: 'A sturdy western farmhouse–style wood table for your cake and sweets.',
       es: 'Una mesa de madera estilo rancho, firme y bonita, para tu pastel y dulces.',
     },
     image: 'balloons-cowgirl-shower.jpg',
@@ -155,8 +155,8 @@ export const inventory: InventoryItem[] = [
     category: 'backdrops',
     name: { en: 'Rustic Wood Backdrop', es: 'Backdrop de madera rústica' },
     description: {
-      en: 'A rich, dark-stained wood wall that frames your cake table, head table or photo moments.',
-      es: 'Un muro de madera en tono oscuro que enmarca tu mesa de pastel, mesa principal o tus fotos.',
+      en: 'A rich, dark-stained wood wall with a rustic western farmhouse feel that frames your cake table, head table or photo moments.',
+      es: 'Un muro de madera en tono oscuro, con un toque rústico western estilo rancho, que enmarca tu mesa de pastel, mesa principal o tus fotos.',
     },
     image: 'wood-backdrop-birthday-salud.jpg',
     showInForm: true,
@@ -167,8 +167,8 @@ export const inventory: InventoryItem[] = [
     category: 'backdrops',
     name: { en: 'Arched Wood Backdrops', es: 'Arcos de madera' },
     description: {
-      en: 'Elegant wood arches that add height and a modern western feel.',
-      es: 'Arcos elegantes de madera que le dan altura y un toque western moderno a tu fiesta.',
+      en: 'Elegant wood arches that add height and a modern western farmhouse feel.',
+      es: 'Arcos elegantes de madera que le dan altura y un toque western moderno estilo rancho.',
     },
     image: 'arched-backdrops.jpg',
     showInForm: true,

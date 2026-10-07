@@ -12,9 +12,9 @@
  */
 export const en = {
   meta: {
-    title: "Barrel Table & Rustic Western Rentals in Pomona | Veronica's",
+    title: "Rustic Western Party Rentals in Pomona | Veronica's",
     description:
-      'Handcrafted whiskey barrel tables & rustic western rentals for quinceañeras, sweet 16s, graduations & birthdays. Latina woman-owned in Pomona, CA.',
+      'Rustic western party rentals in Pomona: handcrafted barrel tables, western farmhouse décor & more for quinceañeras, sweet 16s, graduations & birthdays.',
     ogLocale: 'en_US',
     ogImageAlt: "Veronica's Event Decor gold logo on a black background",
   },
@@ -50,7 +50,7 @@ export const en = {
     eyebrow: 'Latina Woman-Owned · Bilingual Service · Pomona, CA',
     title: 'Handcrafted Whiskey Barrel Tables & Rustic Western Rentals',
     subtitle:
-      'For quinceañeras, sweet 16s, graduations, birthdays and every celebration in between — delivered and set up across the Inland Empire, Orange County and Riverside.',
+      'Rustic western party rentals and western farmhouse décor for quinceañeras, sweet 16s, graduations, birthdays and every celebration in between — delivered and set up across the Inland Empire, Orange County and Riverside.',
     primary: 'Check Availability & Get a Quote',
     secondary: 'See Our Rentals',
   },
@@ -82,7 +82,7 @@ export const en = {
   },
 
   catalog: {
-    title: 'More Handcrafted Rentals',
+    title: 'More Rustic Western Party Rentals',
     intro: 'Mix and match rustic western pieces to create a look that feels like you.',
     closing: 'And more — ask us about additional pieces.',
   },
@@ -190,8 +190,11 @@ export const en = {
   about: {
     eyebrow: 'About Us',
     title: 'Our Story',
+    // First sentence = the business definition; also used for the JSON-LD description and llms.txt.
+    definition:
+      "Veronica's Event Decor is a Latina woman-owned party rental company in Pomona, California, specializing in handcrafted whiskey barrel tables, rustic western party rentals and western farmhouse décor.",
     story:
-      "Veronica's Event Decor is a family-run, Latina woman-owned business based in Pomona, California. We love celebrations, and we put that love into every handcrafted piece we rent. Every event gets our personal attention: we listen to your ideas, help you choose the right pieces, and take care of the details so you can enjoy the day with your family.",
+      'We love celebrations, and we put that love into every handcrafted piece we rent. Every event gets our personal attention: we listen to your ideas, help you choose the right pieces, and take care of the details so you can enjoy the day with your family.',
     serviceTitle: 'Where We Deliver',
     baseLabel: 'Home base',
     base: 'Pomona, CA 91767',
@@ -297,6 +300,21 @@ export const en = {
   faq: {
     eyebrow: 'FAQ',
     title: 'Frequently Asked Questions',
+  },
+
+  // Search-engine structured data (JSON-LD) — not shown on the page.
+  schema: {
+    offerCatalogName: 'Rustic Western Party Rentals',
+    knowsAbout: [
+      'rustic western party rentals',
+      'western farmhouse décor',
+      'whiskey barrel table rentals',
+      'quinceañera décor',
+      'sweet 16 décor',
+      'graduation party rentals',
+      'balloon garlands',
+      'photo booth rentals',
+    ],
   },
 
   footer: {

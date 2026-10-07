@@ -16,36 +16,22 @@ import About from './About.astro';
 import QuoteForm from './QuoteForm.astro';
 import Faq from './Faq.astro';
 import Footer from './Footer.astro';
-import { faq } from '../data/faq';
-import { localeUrl, type Lang } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
+
+// Structured data (WebSite, WebPage, LocalBusiness, FAQPage) is built in BaseLayout from
+// src/lib/structured-data.ts. The hero photo is set in src/data/photos.ts (`heroPhoto`).
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-
-// Hero background photo (src/assets/photos/). Until the file exists the hero is plain onyx.
-const HERO_PHOTO = 'barrels-umbrellas-backyard.jpg';
-
-// FAQPage structured data from the same data as the FAQ accordion, so they never drift.
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  '@id': `${localeUrl(lang, Astro.site)}#faq`,
-  inLanguage: lang,
-  mainEntity: faq.map((item) => ({
-    '@type': 'Question',
-    name: item.question[lang],
-    acceptedAnswer: { '@type': 'Answer', text: item.answer[lang] },
-  })),
-};
 ---
 
-<BaseLayout lang={lang} structuredData={[faqJsonLd]}>
+<BaseLayout lang={lang}>
   <Header lang={lang} />
   <main id="main" tabindex="-1">
-    <Hero lang={lang} backgroundFile={HERO_PHOTO} />
+    <Hero lang={lang} />
     <Celebrations lang={lang} />
     <Rentals lang={lang} />
     <AddOns lang={lang} />

@@ -358,6 +358,8 @@ const scriptText = JSON.stringify({
 </style>
 
 <script>
+  import { track } from '../lib/analytics';
+
   type Text = Record<
     | 'required'
     | 'choose'
@@ -543,6 +545,13 @@ const scriptText = JSON.stringify({
           headers: { Accept: 'application/json' },
         });
         if (!response.ok) throw new Error(`Formspree responded ${response.status}`);
+
+        // Conversion event (no personal data): page language + the event type's English value.
+        track('quote_submitted', {
+          language: text.lang,
+          event_type:
+            form.querySelector<HTMLSelectElement>('[name="event_type"]')?.value || 'unknown',
+        });
 
         form.reset();
         form.hidden = true;

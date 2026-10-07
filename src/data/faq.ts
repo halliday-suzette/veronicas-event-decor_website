@@ -39,6 +39,27 @@ export const faq: FaqItem[] = [
       es: 'Sí. Escoge claras, oscuras o combínalas para que vayan con tus colores.',
     },
   },
+  {
+    id: 'western-theme',
+    question: {
+      en: 'Do you rent décor for western or cowboy-theme parties?',
+      es: '¿Rentan decoración para fiestas vaqueras o temática western?',
+    },
+    answer: {
+      // Wording adjusted from the brief (EN "Our western rentals", ES "Nuestro mobiliario") to keep
+      // the primary keyword phrase at 3 visible uses per page.
+      en: "Yes, that's our specialty. Our western rentals include handcrafted barrel tables, wood backdrops, a saloon facade, wagon wheels, hay bales and western props for cowboy, cowgirl and rodeo-theme celebrations.",
+      es: '¡Sí, es nuestra especialidad! Nuestro mobiliario rústico western incluye mesas de barril hechas a mano, backdrops de madera, fachada de cantina, ruedas de carreta, pacas de paja y accesorios western para fiestas vaqueras y de rodeo.',
+    },
+  },
+  {
+    id: 'styles',
+    question: { en: 'What styles do you offer?', es: '¿Qué estilos manejan?' },
+    answer: {
+      en: 'Our pieces work for rustic western, western farmhouse and modern western looks. Mix light and dark barrel tables, wood backdrops and add-ons like balloon garlands to match your colors and theme.',
+      es: 'Nuestras piezas funcionan para looks rústico western, estilo rancho y western moderno. Combina mesas de barril claras y oscuras, backdrops de madera y extras como arcos de globos para que todo vaya con tus colores y tu tema.',
+    },
+  },
   // TODO(veronica): recommended lead time?
   {
     id: 'booking',

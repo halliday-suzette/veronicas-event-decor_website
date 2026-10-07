@@ -52,9 +52,12 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   (case-insensitive) an unanchored `Photos/` also matched `src/assets/photos/` and hid the
   real photos from git.
 - `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es,
-  x-default), LocalBusiness JSON-LD (+ extra blocks via `structuredData` prop), skip link.
+  x-default, codes `en-US`/`es-US` via `hreflangCode()`, same as the sitemap), OG/Twitter,
+  preloads (hero logo AVIF, hero background ≥640px, Playfair font), verification metas, one
+  JSON-LD `@graph` from `src/lib/structured-data.ts` (WebSite, WebPage, LocalBusiness with an
+  OfferCatalog generated from inventory, FAQPage from faq.ts), `<Analytics />` only when enabled.
 - `src/config/site.ts`: phone/email (`null` = hidden everywhere, incl. JSON-LD), Instagram,
-  service area, Formspree endpoint (`PUBLIC_FORMSPREE_ENDPOINT`).
+  `googleBusinessProfileUrl`, service area, Formspree endpoint, `analytics`
 - `src/components/QuoteForm.astro` + `src/components/form/*`: progressive enhancement — plain POST
   without JS (barrel-table questions visible and optional); with JS, inline validation, barrel
   questions shown only when barrel tables are checked (hidden ones are **disabled** so they aren't
@@ -64,14 +67,15 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
 ## Hosting (GitHub Pages)
 
 - Deployed by `.github/workflows/deploy.yml` on push to `main` (Pages source: GitHub Actions).
-- `astro.config.mjs` takes `site`/`base` from `SITE_URL`/`BASE_PATH`, which the workflow sets from
-  `actions/configure-pages` outputs. Without a custom domain the site lives under
-  `/veronicas-event-decor_website/`; locally both are unset and the site runs at `/`.
+- **`src/config/site-url.mjs` is the single source of the site URL** (`SITE_URL`, `BASE_PATH`),
+  imported by `astro.config.mjs`; the workflow does not set them. The site builds under
+  `/veronicas-event-decor_website/` everywhere, including `npm run dev`. Custom domain = change the
+  two defaults there (`TODO(suzette)`). `SITE_URL`/`BASE_PATH` env vars can still override.
 - **Never hard-code root-relative URLs** (`/favicon.ico`, `/es/`). Use `withBase()`,
   `absoluteUrl()`, `localePath()` or `localeUrl()` from `src/i18n/utils.ts`. In-page `#anchors`
   and `astro:assets` images are fine as-is. `public/site.webmanifest` uses relative paths.
-- To test the Pages build locally: set `SITE_URL=https://halliday-suzette.github.io` and
-  `BASE_PATH=/veronicas-event-decor_website`, then `npm run build` and `npx astro preview`.
+- Local builds already match production: `npm run build` then `npx astro preview` and open
+  `/veronicas-event-decor_website/`.
 - `PUBLIC_FORMSPREE_ENDPOINT` comes from a GitHub Actions repository **variable**.
 
 ## Conventions
@@ -80,10 +84,20 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   typed as `Translations`, so keys must match); list content goes in `src/data/` as `L10n`.
 - **Brand voice:** warm and friendly, like Verónica talking to a friend; short sentences. Spanish
   is natural Mexican Spanish: always "tú", "renta" (not "alquiler"), "cotización/cotiza", "fiesta",
-  "Mis XV / XV años", "salón de eventos", "bancos altos", "sombrillas". **Never** "style / styled /
-  styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets them up
-  ("set up / montamos", "deliver / te llevamos"). Don't name family members. Celebration of Life
-  copy is soft: no exclamation points, no party language, muted card styling.
+  "Mis XV / XV años", "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
+  styled / styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets
+  them up ("set up / montamos", "deliver / te llevamos"); "style" as a noun ("What styles…",
+  "farmhouse–style table") is fine. **Never "charro" or "charra".** Don't name family members.
+  Celebration of Life copy is soft: no exclamation points, no party language, no theme/keyword
+  language, muted card styling.
+- **Keywords (SEO/AEO/GEO):** primary "rustic western party rentals" / "renta de mobiliario rústico
+  western", secondary "western farmhouse décor" / "decoración (western) estilo rancho". Max 2–3
+  visible uses of each per page (currently exactly 3 primary per page: hero subtitle, catalog H3,
+  Our Story / ES: H1, hero subtitle, catalog H3). "Farmhouse"/"estilo rancho" only on weddings,
+  baby showers, wood & arched backdrops, dessert pieces/table (plus the hero, definition and
+  "styles" FAQ). Western stays the lead identity. No stuffing, hidden text or keyword lists.
+- **Business definition** = `about.definition` (first sentence of Our Story); it's also the
+  LocalBusiness description and the `llms.txt` summary — keep it a clear, quotable sentence.
 - Missing facts (prices, quantities, dimensions, lead times, "most requested"): leave a
   `TODO(veronica)` comment and render nothing or neutral copy. Brand name stays in English.
 - Quote form option values submitted to Formspree are always the **English** labels
@@ -213,6 +227,29 @@ From the client restructure brief (not a redesign — logo, palette, fonts, Form
   description + TODOs; rodeo first-birthday photo permanently excluded; Quinceañera/Sweet 16 stay
   photo-less for now; phone/email stay blank.
 
+### Phase 5 — SEO / AEO / GEO (2026-10-07)
+
+- **Copy:** keyword language woven into the hero subtitle, catalog H3, the Our Story definition
+  sentence, four celebration cards (not Quinceañeras, Graduations or Celebration of Life), three
+  inventory items and alt text; two FAQs added ("western/cowboy-theme" and "styles"). The brief's
+  FAQ answers were trimmed slightly (EN "Our western rentals", ES "Nuestro mobiliario…") and the ES
+  footer tagline dropped "renta de" to keep the primary phrase at 3 visible uses per page.
+- **Titles/descriptions** replaced (EN "Rustic Western Party Rentals in Pomona | Veronica's").
+- **One URL setting:** `src/config/site-url.mjs` (workflow no longer passes SITE_URL/BASE_PATH).
+- **Sitemap** hreflang `en-US`/`es-US`; `<head>` hreflang switched to the same codes.
+- **robots.txt** (generated, AI crawlers welcomed) and **llms.txt** (generated from data).
+- **JSON-LD** `@graph`: WebSite, WebPage (primaryImageOfPage = hero photo), LocalBusiness
+  (definition, slogan, knowsAbout, areaServed incl. Inland Empire as AdministrativeArea, OfferCatalog
+  of 22 items in 5 groups, no prices/ratings/street), FAQPage (9 Q&As).
+- **Performance:** hero logo preloaded (AVIF, `type` attr), eager + `fetchpriority=high` +
+  `decoding=async`, AVIF quality 40 (visually identical, −22%); hero background is a `<picture>`
+  whose source only matches ≥640px (eager/high + media-scoped preload; phones never download it);
+  Playfair preloaded (a second font preload didn't help LCP). Mobile Lighthouse 96, LCP 2.7s (lab,
+  simulated slow 4G — the remaining gap is the ~1.7s first-paint floor + logo bytes).
+- **Analytics** component (Plausible/GA4/none, off by default) + `quote_submitted` and outbound
+  click events; **verification** metas for Google/Bing, rendered only when set.
+- check-i18n banned-word list narrowed to the client's actual rule and extended with charro/charra.
+
 ### Testing done each phase
 
 Build (0 errors/warnings), `check:i18n`, both pages at 360–1536px with an overflow check,
@@ -230,4 +267,5 @@ and a GitHub Pages-path build to verify canonical/hreflang/JSON-LD.
 - Greenery dessert-cart photo still shows parked cars (can't crop without losing the wagon wheel).
 - Backyard hero photo shows a party banner that may contain part of a name (small, under overlay).
 - Set `PUBLIC_FORMSPREE_ENDPOINT` (repo variable) and send one real test quote per language.
-- The "Phase 6 SEO/AEO/GEO" prompt has **not** been applied — not yet received.
+- `TODO(suzette)`: custom domain in `site-url.mjs`, analytics provider, Search Console + Bing
+  verification codes, Google Business Profile URL. `TODO(veronica)`: optional `starting at` prices.

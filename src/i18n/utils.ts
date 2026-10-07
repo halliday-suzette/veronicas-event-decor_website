@@ -20,6 +20,14 @@ export function useTranslations(lang: Lang): Translations {
   return dictionaries[lang];
 }
 
+/**
+ * Language-region code used for hreflang (head + sitemap), og/JSON-LD inLanguage.
+ * Kept identical everywhere so search engines get one consistent signal.
+ */
+export function hreflangCode(lang: Lang): 'en-US' | 'es-US' {
+  return lang === 'en' ? 'en-US' : 'es-US';
+}
+
 /** Narrows Astro's `currentLocale` (or any string) to a supported language. */
 export function toLang(value: string | undefined): Lang {
   return value && value in languages ? (value as Lang) : defaultLang;

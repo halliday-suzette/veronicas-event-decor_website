@@ -7,12 +7,11 @@
  *                       generated from logo.png by `npm run logo`
  *
  * TODO: A vector (SVG) logo would be sharper and smaller. If one exists, save it as
- * src/assets/images/logo.svg (and logo-wordmark.svg), change the two imports below,
- * and the rest of the site picks it up — this is the only file that needs to change.
+ * src/assets/images/logo.svg (and logo-wordmark.svg), change the logo import in
+ * src/lib/logo.ts and the wordmark import below, and the rest of the site picks it up.
  */
 import { Picture } from 'astro:assets';
-// logo-web.png is generated from logo.png by `npm run logo` (same artwork, lighter file).
-import logoFull from '../assets/images/logo-web.png';
+import { LOGO_FULL } from '../lib/logo';
 import logoWordmark from '../assets/images/logo-wordmark.png';
 import { useTranslations, type Lang } from '../i18n/utils';
 
@@ -38,13 +37,17 @@ const alt = decorative ? '' : t.logoAlt;
 ---
 
 {variant === 'full' ? (
+  /* Settings shared with the <head> preload (src/lib/logo.ts) so the URLs match exactly. */
   <Picture
-    src={logoFull}
+    src={LOGO_FULL.src}
     alt={alt}
-    formats={['avif', 'webp']}
-    widths={[360, 560, 720, 960, 1280, 1440]}
-    sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, calc(100vw - 2.5rem)"
-    priority={priority}
+    formats={LOGO_FULL.formats}
+    widths={LOGO_FULL.widths}
+    sizes={LOGO_FULL.sizes}
+    quality={LOGO_FULL.quality}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : undefined}
+    decoding="async"
     class:list={['h-auto w-full', className]}
   />
 ) : (

@@ -2,17 +2,10 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { BASE_PATH, SITE_URL } from './src/config/site-url.mjs';
 
-// Where the site is published. Used for canonical URLs, hreflang links, Open Graph tags,
-// the sitemap and robots.txt.
-//
-// On GitHub Pages these are set automatically by .github/workflows/deploy.yml:
-//   - without a custom domain: SITE_URL=https://halliday-suzette.github.io
-//                              BASE_PATH=/veronicas-event-decor_website
-//   - with a custom domain:    SITE_URL=https://www.your-domain.com, BASE_PATH empty
-// Locally (npm run dev / build) the defaults below are used and the site runs at "/".
-const SITE_URL = process.env.SITE_URL || 'https://halliday-suzette.github.io';
-const BASE_PATH = process.env.BASE_PATH || '/';
+// Where the site lives comes from src/config/site-url.mjs — the single source for every
+// absolute URL (canonical, hreflang, OG, JSON-LD, sitemap, robots.txt, llms.txt).
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,10 +25,11 @@ export default defineConfig({
     },
   },
   integrations: [
+    // Each URL lists its language alternates (xhtml:link hreflang) — same codes as the <head>.
     sitemap({
       i18n: {
         defaultLocale: 'en',
-        locales: { en: 'en', es: 'es' },
+        locales: { en: 'en-US', es: 'es-US' },
       },
     }),
   ],
