@@ -35,6 +35,19 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
 - `src/components/QuoteForm.astro` + `src/components/form/*`: progressive enhancement — plain POST
   without JS; with JS, inline validation + `fetch` (Accept: application/json) + success/error/retry.
 
+## Hosting (GitHub Pages)
+
+- Deployed by `.github/workflows/deploy.yml` on push to `main` (Pages source: GitHub Actions).
+- `astro.config.mjs` takes `site`/`base` from `SITE_URL`/`BASE_PATH`, which the workflow sets from
+  `actions/configure-pages` outputs. Without a custom domain the site lives under
+  `/veronicas-event-decor_website/`; locally both are unset and the site runs at `/`.
+- **Never hard-code root-relative URLs** (`/favicon.ico`, `/es/`). Use `withBase()`,
+  `absoluteUrl()`, `localePath()` or `localeUrl()` from `src/i18n/utils.ts`. In-page `#anchors`
+  and `astro:assets` images are fine as-is. `public/site.webmanifest` uses relative paths.
+- To test the Pages build locally: set `SITE_URL=https://halliday-suzette.github.io` and
+  `BASE_PATH=/veronicas-event-decor_website`, then `npm run build` and `npx astro preview`.
+- `PUBLIC_FORMSPREE_ENDPOINT` comes from a GitHub Actions repository **variable**.
+
 ## Conventions
 
 - **No hard-coded copy in components.** All text goes in `src/i18n/en.ts` and `src/i18n/es.ts`.

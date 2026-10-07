@@ -25,10 +25,25 @@ export function toLang(value: string | undefined): Lang {
   return value && value in languages ? (value as Lang) : defaultLang;
 }
 
-/** Path of the home page for a language: `/` for English, `/es/` for Spanish. */
+/**
+ * Prefixes a root-relative path with the site's base path, so links keep working when the
+ * site is served from a sub-folder (e.g. GitHub Pages: /veronicas-event-decor_website/).
+ * `withBase('/og-image.png')` → `/og-image.png` locally, `/repo-name/og-image.png` on Pages.
+ */
+export function withBase(path: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  return `${base}/${path.replace(/^\//, '')}`;
+}
+
+/** Absolute URL for a root-relative path, including the base path. */
+export function absoluteUrl(path: string, site: URL | undefined): string {
+  return new URL(withBase(path), site).href;
+}
+
+/** Path of the home page for a language: `/` for English, `/es/` for Spanish (plus base path). */
 export function localePath(lang: Lang, hash = ''): string {
-  const base = lang === defaultLang ? '/' : `/${lang}/`;
-  return hash ? `${base}#${hash.replace(/^#/, '')}` : base;
+  const path = withBase(lang === defaultLang ? '/' : `/${lang}/`);
+  return hash ? `${path}#${hash.replace(/^#/, '')}` : path;
 }
 
 /** Absolute URL of a language's home page, for canonical and hreflang tags. */

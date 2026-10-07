@@ -127,8 +127,9 @@ The Instagram handle, service area and business address details are in the same 
    PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/abcdwxyz
    ```
 
-4. On your host (Netlify / Vercel / Cloudflare Pages): add the same variable name and value in the
-   project's **Environment variables** settings, then redeploy.
+4. On GitHub: **Settings → Secrets and variables → Actions → Variables tab → New repository
+   variable**, name `PUBLIC_FORMSPREE_ENDPOINT`, value = the endpoint. Then re-run the deploy
+   (section 6). On another host, add the same name/value in its environment-variable settings.
 5. Send yourself a test request from the live site. Formspree asks you to confirm the first
    submission by email.
 
@@ -147,25 +148,47 @@ on the live site).
 
 ---
 
-## 6. Deploying
+## 6. Deploying (GitHub Pages)
 
-The site is fully static. Connect the GitHub repository to any of these and use:
+The site is hosted on **GitHub Pages** and deploys automatically: every push to `main` runs
+`.github/workflows/deploy.yml`, which builds the site and publishes it (about 1–2 minutes).
+Progress and errors appear in the repository's **Actions** tab.
 
-| Setting          | Value                                                 |
-| ---------------- | ----------------------------------------------------- |
-| Build command    | `npm run build`                                       |
-| Output directory | `dist`                                                |
-| Node version     | 22 (read automatically from `.nvmrc` on most hosts)   |
-| Environment var  | `PUBLIC_FORMSPREE_ENDPOINT` = your Formspree endpoint |
+Live address (until a custom domain is added):
+`https://halliday-suzette.github.io/veronicas-event-decor_website/` (Spanish: `…/es/`)
 
-- **Netlify:** Add new site → Import from GitHub → fill in the settings above.
-- **Vercel:** Add New Project → import the repo. Astro is detected automatically; add the
-  environment variable.
-- **Cloudflare Pages:** Create a project → Connect to Git → framework preset "Astro"; add the
-  environment variable (and `NODE_VERSION = 22` if the build uses an older Node).
+### One-time setup
 
-**Before launch:** set the real domain in `astro.config.mjs` (`site: '…'`). It is used for
-the canonical URLs, language links, social-share image and `sitemap-index.xml`.
+1. **Settings → Pages → Build and deployment → Source:** choose **GitHub Actions**.
+2. **Settings → Secrets and variables → Actions → Variables → New repository variable:**
+   `PUBLIC_FORMSPREE_ENDPOINT` = your Formspree endpoint (section 5).
+3. Push to `main` (or **Actions → Deploy to GitHub Pages → Run workflow**).
+
+### Custom domain (optional)
+
+1. **Settings → Pages → Custom domain:** enter e.g. `www.veronicaseventdecor.com` and save.
+2. At your domain registrar, add DNS records:
+   - `www` → **CNAME** → `halliday-suzette.github.io`
+   - apex domain (no `www`) → **A** records `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153` (GitHub redirects it to `www`)
+3. Once the DNS check passes, tick **Enforce HTTPS**.
+4. Re-run the deploy workflow. The build reads the domain from GitHub automatically, so the
+   canonical URLs, sitemap, social-share image and language links switch to the new domain —
+   no code change needed.
+
+### How the address is configured
+
+`astro.config.mjs` reads `SITE_URL` and `BASE_PATH`, which the workflow fills in from the
+GitHub Pages settings (`/veronicas-event-decor_website` without a custom domain, empty with one).
+Locally they aren't set, so `npm run dev` / `npm run preview` serve the site at `/`.
+Any new link to a file in `public/` must use `withBase('/file.png')` from `src/i18n/utils.ts`
+so it works under the sub-folder.
+
+### Other hosts
+
+The site also deploys to Netlify, Vercel or Cloudflare Pages: build command `npm run build`,
+output directory `dist`, Node 22, and the environment variables `PUBLIC_FORMSPREE_ENDPOINT` and
+`SITE_URL` (your full domain, e.g. `https://www.veronicaseventdecor.com`).
 
 ---
 

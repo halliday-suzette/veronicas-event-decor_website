@@ -3,11 +3,21 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+// Where the site is published. Used for canonical URLs, hreflang links, Open Graph tags,
+// the sitemap and robots.txt.
+//
+// On GitHub Pages these are set automatically by .github/workflows/deploy.yml:
+//   - without a custom domain: SITE_URL=https://halliday-suzette.github.io
+//                              BASE_PATH=/veronicas-event-decor_website
+//   - with a custom domain:    SITE_URL=https://www.your-domain.com, BASE_PATH empty
+// Locally (npm run dev / build) the defaults below are used and the site runs at "/".
+const SITE_URL = process.env.SITE_URL || 'https://halliday-suzette.github.io';
+const BASE_PATH = process.env.BASE_PATH || '/';
+
 // https://astro.build/config
 export default defineConfig({
-  // TODO: Replace with the real production domain before launch.
-  // It is used for canonical URLs, hreflang links, Open Graph tags and the sitemap.
-  site: 'https://www.veronicaseventdecor.com',
+  site: SITE_URL,
+  base: BASE_PATH,
   output: 'static',
   trailingSlash: 'ignore',
   build: {
