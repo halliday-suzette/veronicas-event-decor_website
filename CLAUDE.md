@@ -13,8 +13,12 @@ User-facing docs (editing copy, swapping images, Formspree, deploy) are in READM
 - `npm run logo` — regenerate derived brand assets from `src/assets/images/logo.png`
   (`logo-web.png`, `logo-wordmark.png`, `public/og-image.png`, favicons). Never edit the source logo.
 
-No test suite. Verify changes by building, then checking the page in a browser at 360, 390, 768,
-1024, 1280 and 1536px (no horizontal scroll), in both languages.
+- `npm run check:i18n` — `scripts/check-i18n.ts` (run by Node's built-in TS support): en/es key
+  diff, every `L10n` in `src/data/` filled in both languages, and a banned-word scan
+  (`style/styled/styling`, `estiliz*`, `decoramos`) over all customer-facing text incl. alt text.
+
+No test suite. Verify changes by building and running `check:i18n`, then checking the page in a
+browser at 360, 390, 768, 1024, 1280 and 1536px (no horizontal scroll), in both languages.
 
 ## Stack
 
@@ -25,15 +29,30 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
 ## Architecture
 
 - `src/pages/index.astro` and `src/pages/es/index.astro` only render `<HomePage lang=… />`.
-  All sections are composed in `src/components/HomePage.astro`.
-- Every section component takes a `lang: Lang` prop and gets copy via
+  `src/components/HomePage.astro` sets the section order: Hero → Celebrations → Rentals
+  (SignatureBarrels + RentalsCatalog) → AddOns → Gallery → WhyUs → HowItWorks → About → QuoteForm
+  → Faq, plus Header/Footer.
+- Every section component takes a `lang: Lang` prop and gets page copy via
   `const t = useTranslations(lang)` (`src/i18n/utils.ts`).
-- `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es, x-default),
-  LocalBusiness JSON-LD, skip link.
+- **Data files (`src/data/`)** are the single source of truth for content lists, each entry
+  bilingual (`L10n = { en, es }`): `inventory.ts` (items + categories; drives the Signature
+  section, catalog, Add-Ons and the form's rentals checklist via `featured`/`showInForm`/
+  `published`), `celebrations.ts`, `faq.ts` (UI accordion **and** FAQPage JSON-LD), `photos.ts`
+  (filename → alt text, gallery order). Keep `src/data/` free of Vite-only APIs so
+  `check-i18n.ts` can import it with plain Node.
+- **Photos:** `src/assets/photos/<exact filename>`. `src/lib/photos.ts` (`import.meta.glob`)
+  resolves them; `Photo.astro` renders WebP with explicit width/height (lazy unless `priority`) or
+  a wood-tone placeholder if the file is missing. Never stock/AI images, licensed characters, or
+  children's names without approval.
+- `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es,
+  x-default), LocalBusiness JSON-LD (+ extra blocks via `structuredData` prop), skip link.
 - `src/config/site.ts`: phone/email (`null` = hidden everywhere, incl. JSON-LD), Instagram,
   service area, Formspree endpoint (`PUBLIC_FORMSPREE_ENDPOINT`).
 - `src/components/QuoteForm.astro` + `src/components/form/*`: progressive enhancement — plain POST
-  without JS; with JS, inline validation + `fetch` (Accept: application/json) + success/error/retry.
+  without JS (barrel-table questions visible and optional); with JS, inline validation, barrel
+  questions shown only when barrel tables are checked (hidden ones are **disabled** so they aren't
+  submitted), `_subject` built as "prefix – event type – date", `fetch` with
+  Accept: application/json, success/error/retry.
 
 ## Hosting (GitHub Pages)
 
@@ -50,17 +69,23 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
 
 ## Conventions
 
-- **No hard-coded copy in components.** All text goes in `src/i18n/en.ts` and `src/i18n/es.ts`.
-  `es` is typed as `Translations` (from `en`), so keys must match exactly. Add to both files.
-- Spanish copy: natural, warm, Mexican-American SoCal register, informal "tú"; correct accents/ñ.
-  Brand name stays "Veronica's Event Decor" in English.
+- **No hard-coded copy in components.** Page text goes in `src/i18n/en.ts` / `es.ts` (`es` is
+  typed as `Translations`, so keys must match); list content goes in `src/data/` as `L10n`.
+- **Brand voice:** warm and friendly, like Verónica talking to a friend; short sentences. Spanish
+  is natural Mexican Spanish: always "tú", "renta" (not "alquiler"), "cotización/cotiza", "fiesta",
+  "Mis XV / XV años", "salón de eventos", "bancos altos", "sombrillas". **Never** "style / styled /
+  styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets them up
+  ("set up / montamos", "deliver / te llevamos"). Don't name family members. Celebration of Life
+  copy is soft: no exclamation points, no party language, muted card styling.
+- Missing facts (prices, quantities, dimensions, lead times, "most requested"): leave a
+  `TODO(veronica)` comment and render nothing or neutral copy. Brand name stays in English.
 - Quote form option values submitted to Formspree are always the **English** labels
   (`en.quote.options`); `es` only changes what's displayed. Field `name`s are readable snake_case.
-- Section ids (`home`, `about`, `rentals`, `events`, `packages`, `service-area`, `gallery`, `quote`)
-  are anchor targets and used by the language toggle — don't rename without updating `sectionIds`.
-- Images that need optimization go in `src/assets/images/` (not `public/`) and render with
-  `astro:assets` `<Picture>`/`<Image>`. Gallery images are auto-discovered via `import.meta.glob`;
-  alt text is `gallery.photoAlts` by index. Decorative images/SVGs get `alt=""` / `aria-hidden`.
+- Section ids (`sectionIds` in `src/i18n/utils.ts`: `home`, `celebrations`, `rentals`, `add-ons`,
+  `gallery`, `why-us`, `how-it-works`, `about`, `quote`, `faq`) are anchor targets and used by the
+  language toggle — rename only together with the components.
+- Images that need optimization go in `src/assets/` (not `public/`) and render with
+  `astro:assets`. Decorative images/SVGs get `alt=""` / `aria-hidden`; never "placeholder" alt text.
 - Icons: add paths to `src/components/Icon.astro`; Instagram glyph is `InstagramIcon.astro`.
   No icon fonts, CDNs or third-party embeds.
 - External links: `target="_blank" rel="noopener noreferrer"`. An `aria-label` must contain the

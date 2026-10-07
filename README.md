@@ -21,48 +21,84 @@ npm run dev          # start the local site at http://localhost:4321
 
 Other commands:
 
-| Command           | What it does                                                       |
-| ----------------- | ------------------------------------------------------------------ |
-| `npm run build`   | Type-checks and builds the finished site into `dist/`              |
-| `npm run preview` | Serves the built `dist/` folder locally to double-check it         |
-| `npm run logo`    | Regenerates the header logo, social image and favicons (section 3) |
-| `npm run format`  | Tidies code formatting with Prettier                               |
+| Command              | What it does                                                       |
+| -------------------- | ------------------------------------------------------------------ |
+| `npm run build`      | Type-checks and builds the finished site into `dist/`              |
+| `npm run preview`    | Serves the built `dist/` folder locally to double-check it         |
+| `npm run logo`       | Regenerates the header logo, social image and favicons (section 3) |
+| `npm run format`     | Tidies code formatting with Prettier                               |
+| `npm run check:i18n` | Checks English/Spanish match and the brand-voice word list         |
 
 ---
 
 ## 2. Editing the text (English and Spanish)
 
-All words on the site live in two files:
+The words on the site live in two kinds of files.
+
+**Page text** (headings, buttons, form labels, messages):
 
 - `src/i18n/en.ts` — English
 - `src/i18n/es.ts` — Spanish
 
-Open the file, change the words **between the quotes**, save. For example:
+**Rentals, celebrations and FAQ** — both languages side by side, so they're edited once:
 
-```ts
-hero: {
-  title: 'Rustic Western Elegance for Your Most Memorable Celebrations',
+| File                       | What's in it                                                         |
+| -------------------------- | -------------------------------------------------------------------- |
+| `src/data/inventory.ts`    | Every rental item and add-on, its category, photo, and form checkbox |
+| `src/data/celebrations.ts` | The Celebrations cards                                               |
+| `src/data/faq.ts`          | The FAQ (also feeds Google's FAQ data automatically)                 |
+| `src/data/photos.ts`       | Photo filenames, alt text (EN/ES) and the gallery order              |
+| `src/config/site.ts`       | Phone, email, Instagram, service-area list                           |
+
+Open the file, change the words **between the quotes**, save. Then run:
+
+```bash
+npm run check:i18n
 ```
+
+It confirms English and Spanish match key for key, every data entry has both languages, and no
+customer-facing text uses banned brand-voice words.
 
 Rules of thumb:
 
 - Change the text, not the names before the colons (`title:`, `subtitle:` …).
-- If you add or remove something in `en.ts`, do the same in `es.ts`. The build will stop with an
-  error that names the missing item, so nothing ships half-translated.
-- Inside quotes that use `'single quotes'`, write an apostrophe as `’` (curly) or switch that line
-  to `"double quotes"` — e.g. `"Veronica's Event Decor"`.
+- If you add or remove something in `en.ts`, do the same in `es.ts` — the build stops otherwise.
+- Inside `'single quotes'`, write an apostrophe as `’` or switch that line to `"double quotes"`.
 - Leave `icon: '...'` values alone — they choose a drawing, not words.
-- Quote form choices (`quote.options`): the English wording is what arrives in the Formspree email,
-  whichever language the visitor used. The Spanish file only changes what visitors see.
+- Quote form choices: the English wording is what arrives in the Formspree email, whichever
+  language the visitor used.
 
-Page titles and Google descriptions are under `meta:` at the top of each file.
+### Adding a rental item
+
+Copy an entry in `src/data/inventory.ts`, give it a unique `id`, a `category`, and the name and
+description in both languages. Options:
+
+- `showInForm: true` — also appears as a checkbox in the quote form
+- `published: false` — hidden everywhere (without deleting it)
+- `image: 'file.jpg'` — a photo in `src/assets/photos/` (list it in `src/data/photos.ts` with
+  alt text). Items without `image` show as compact text cards.
+- `quantity` / `dimensions` — once set, a small spec line appears on the card
+
+### Brand voice
+
+Warm and friendly, like Verónica talking to a friend. Spanish is natural Mexican Spanish ("tú",
+"renta", "cotiza", "Mis XV", "salón de eventos", "bancos altos", "sombrillas"). Never "style /
+styled / styling / estilizamos": she rents handcrafted pieces and delivers and sets them up. No
+invented prices, counts, dimensions, years in business or reviews — leave a
+`TODO(veronica)` comment instead.
 
 ---
 
-## 3. Swapping images
+## 3. Photos and images
 
-All images that the site optimizes live in `src/assets/images/`. Astro automatically creates
-small, modern versions (AVIF/WebP at several sizes), so upload large originals.
+### Event and inventory photos
+
+All photos are Verónica's own events and inventory. Put them in **`src/assets/photos/`** using
+the exact filenames listed in `src/assets/photos/README.md`. Each one appears automatically,
+optimized to WebP, lazy-loaded and cropped to fit. Until a file exists, a wood-tone placeholder
+with the item name is shown — never stock or AI images.
+
+When a photo arrives, check its alt text in `src/data/photos.ts` matches what's actually in it.
 
 ### Logo
 
@@ -80,23 +116,11 @@ small, modern versions (AVIF/WebP at several sizes), so upload large originals.
 > `src/assets/images/` and change the two `import` lines at the top of
 > `src/components/Logo.astro` — that is the only file that needs to change.
 
-### Hero photo (top of the page)
+### Hero photo
 
-The hero currently shows the logo. To add a real event photo, save it as e.g.
-`src/assets/images/hero.jpg`, then edit `src/components/HomePage.astro` (instructions are in the
-comment at the top):
-
-- `<Hero lang={lang} backgroundImage={heroPhoto} />` — photo behind everything, logo stays
-- `<Hero lang={lang} featureImage={heroPhoto} featureAlt="…" />` — photo replaces the logo
-
-### Gallery photos
-
-1. Put photos in `src/assets/images/gallery/` (`.jpg`, `.png`, `.webp` or `.avif`). They appear in
-   filename order; the first six are used. The simplest approach is to replace the placeholder
-   files `gallery-01.jpg` … `gallery-06.jpg`, keeping the same names.
-2. Describe each photo for screen readers and Google in `gallery.photoAlts` in **both**
-   `src/i18n/en.ts` and `src/i18n/es.ts` (same order as the files), e.g.
-   `'Whiskey barrel cocktail tables with a balloon garland backdrop'`.
+The hero uses `barrels-umbrellas-backyard.jpg` as its background (under a dark overlay) as soon
+as that file is in `src/assets/photos/`. To use a different photo, change `HERO_PHOTO` in
+`src/components/HomePage.astro`.
 
 ---
 
@@ -109,7 +133,7 @@ phone: '(909) 555-0123',
 email: 'hello@example.com',
 ```
 
-They then appear automatically in the footer and in the search-engine business data. While they
+They then appear automatically in the footer (Call / Text / Email links; on phones the number shows as "Call or Text") and in the search-engine business data. While they
 are `null`, nothing is shown (no fake placeholders).
 
 The Instagram handle, service area and business address details are in the same file.
@@ -196,16 +220,19 @@ output directory `dist`, Node 22, and the environment variables `PUBLIC_FORMSPRE
 
 ```
 src/
-  assets/images/      logo.png (source), generated logo files, gallery/ photos
-  components/         one file per page section (Hero, About, Rentals, …, QuoteForm, Footer)
+  assets/images/      logo.png (source) and generated logo files
+  assets/photos/      Verónica's event & inventory photos (see its README for filenames)
+  components/         one file per page section (Hero, Celebrations, Rentals, …, Faq, Footer)
     form/             reusable form fields used by QuoteForm
   config/site.ts      phone, email, Instagram, service area, Formspree endpoint
-  i18n/               en.ts, es.ts (all copy) and utils.ts (helpers)
+  data/               inventory, celebrations, FAQ, photo list (bilingual)
+  i18n/               en.ts, es.ts (page text) and utils.ts (helpers)
   layouts/            BaseLayout.astro — <head>, SEO tags, hreflang, structured data
+  lib/photos.ts       finds photo files by name (placeholder if missing)
   pages/              index.astro (English) and es/index.astro (Spanish)
   styles/             global.css (colors, fonts, shared styles), fonts.css
 public/               favicons, og-image.png, site.webmanifest
-scripts/              logo-variants.mjs (npm run logo)
+scripts/              logo-variants.mjs (npm run logo), check-i18n.ts (npm run check:i18n)
 ```
 
 ### Brand colors
