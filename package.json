@@ -11,7 +11,8 @@
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "astro": "astro"
+    "astro": "astro",
+    "logo": "node scripts/logo-variants.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

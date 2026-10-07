@@ -8,18 +8,20 @@
 @import '@fontsource/rye/400.css';
 
 /*
- * Brand tokens — derived from the metallic gold logo.
+ * Brand tokens — gold tones tuned to samples from src/assets/images/logo.png
+ * (logo shadow #b06602 · mid #f6b422 · highlight #fcf27e), slightly muted for flat UI.
  * Contrast notes (WCAG AA, normal text needs 4.5:1):
- *   gold on onyx 8.3 · gold-soft on onyx 12.1 · cream on onyx 16.4
+ *   gold on onyx 9.0 · gold-soft on onyx 12.8 · cream on onyx 16.4
+ *   onyx on gold 9.0 · whiskey-dark on gold 7.0 (button text)
  *   whiskey-dark on cream 12.7 · charcoal on cream 15.1 · whiskey on cream 6.5
- *   gold on cream 1.97  -> decorative only on light sections (rules, icons, borders)
- *   gold-deep on onyx 4.1 -> borders/gradient ends only, never body text
+ *   gold on cream 1.8  -> decorative only on light sections (rules, icons, borders)
+ *   gold-deep on onyx 4.0 -> borders/gradient ends only, never text
  */
 @theme {
   --color-onyx: #141210;
-  --color-gold: #d9a520;
-  --color-gold-soft: #f2cc5b;
-  --color-gold-deep: #9a6e12;
+  --color-gold: #e6aa1e;
+  --color-gold-soft: #f7d266;
+  --color-gold-deep: #a2680a;
   --color-whiskey-dark: #3b2416;
   --color-whiskey: #7a4a2a;
   --color-whiskey-light: #c08a57;
