@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
-/* Self-hosted fonts (no Google Fonts request) */
+/* Self-hosted fonts (no Google Fonts request). Only the Latin subset is downloaded
+   by browsers for English/Spanish text, thanks to unicode-range. */
 @import '@fontsource-variable/playfair-display';
-@import '@fontsource-variable/playfair-display/wght-italic.css';
 @import '@fontsource/lato/400.css';
 @import '@fontsource/lato/700.css';
 @import '@fontsource/rye/400.css';
@@ -10,11 +10,12 @@
 /*
  * Brand tokens — gold tones tuned to samples from src/assets/images/logo.png
  * (logo shadow #b06602 · mid #f6b422 · highlight #fcf27e), slightly muted for flat UI.
- * Contrast notes (WCAG AA, normal text needs 4.5:1):
+ * Contrast notes (WCAG AA, normal text needs 4.5:1, UI parts 3:1):
  *   gold on onyx 9.0 · gold-soft on onyx 12.8 · cream on onyx 16.4
  *   onyx on gold 9.0 · whiskey-dark on gold 7.0 (button text)
- *   whiskey-dark on cream 12.7 · charcoal on cream 15.1 · whiskey on cream 6.5
+ *   whiskey-dark on cream 12.7 · charcoal on cream 15.1 · whiskey on cream 6.5 / linen 5.6
  *   gold on cream 1.8  -> decorative only on light sections (rules, icons, borders)
+ *   gold-deep on cream 4.1 -> focus rings + button borders on light sections
  *   gold-deep on onyx 4.0 -> borders/gradient ends only, never text
  */
 @theme {
@@ -34,4 +35,143 @@
   --font-western: 'Rye', 'Playfair Display Variable', Georgia, serif;
 
   --shadow-soft: 0 10px 30px -12px rgb(20 18 16 / 0.35);
+  --shadow-glow: 0 0 0 1px rgb(230 170 30 / 0.35), 0 12px 32px -14px rgb(230 170 30 / 0.45);
+}
+
+@layer base {
+  :root {
+    /* Height of the sticky header — anchor links stop just below it. */
+    --header-h: 4.5rem;
+    --focus-color: var(--color-gold);
+  }
+
+  @media (min-width: 64rem) {
+    :root {
+      --header-h: 5.75rem;
+    }
+  }
+
+  html {
+    scroll-padding-top: calc(var(--header-h) + 0.5rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    @apply bg-onyx font-sans text-base leading-relaxed text-cream antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif text-balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 3px;
+    border-radius: 0.25rem;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-onyx);
+  }
+}
+
+@layer components {
+  /* ---- Section backgrounds -------------------------------------------------- */
+
+  .section-dark {
+    --focus-color: var(--color-gold);
+    @apply bg-onyx text-cream;
+    background-image: radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgb(230 170 30 / 0.06),
+      transparent 70%
+    );
+  }
+
+  /* Cream with a faint paper grain. */
+  .section-cream {
+    --focus-color: var(--color-gold-deep);
+    @apply bg-cream text-charcoal;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .23 0 0 0 0 .14 0 0 0 0 .09 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Linen with a very light horizontal wood grain. */
+  .section-linen {
+    --focus-color: var(--color-gold-deep);
+    @apply bg-linen text-charcoal;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='240'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .18' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .23 0 0 0 0 .14 0 0 0 0 .09 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Buttons (base shape is the `btn` utility below) --------------------------- */
+
+  /* Metallic gold: vertical gradient keeps the text centered on solid gold (9:1). */
+  .btn-gold {
+    @apply btn border border-gold-deep text-onyx shadow-soft;
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-gold-soft) 0%,
+      var(--color-gold) 50%,
+      #c98d14 100%
+    );
+  }
+
+  .btn-gold:hover {
+    @apply shadow-glow;
+    background-image: linear-gradient(
+      to bottom,
+      #fbe08a 0%,
+      var(--color-gold-soft) 45%,
+      var(--color-gold) 100%
+    );
+  }
+
+  /* Outline button for dark sections. */
+  .btn-outline {
+    @apply btn border border-gold/70 text-gold-soft hover:border-gold-soft hover:bg-gold/10;
+  }
+
+  /* Outline button for light sections. */
+  .btn-outline-dark {
+    @apply btn border border-whiskey text-whiskey-dark hover:bg-whiskey-dark hover:text-cream;
+  }
+
+  /* ---- Ornament ----------------------------------------------------------------- */
+
+  .gold-rule {
+    @apply h-px w-full border-0;
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      var(--color-gold-deep) 15%,
+      var(--color-gold) 50%,
+      var(--color-gold-deep) 85%,
+      transparent
+    );
+  }
+}
+
+/* Shared button shape: 44px+ tap target, bold label. */
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-6 py-2.5 text-center font-sans text-base font-bold tracking-wide transition;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

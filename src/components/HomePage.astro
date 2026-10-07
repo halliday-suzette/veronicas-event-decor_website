@@ -1,0 +1,20 @@
+---
+/**
+ * The one-page site. Both src/pages/index.astro (English) and src/pages/es/index.astro
+ * (Spanish) render this component, so sections only need to change here.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout lang={lang}>
+  <main id="main" tabindex="-1">
+    <section id="home" class="section-dark min-h-[60vh]"></section>
+  </main>
+</BaseLayout>

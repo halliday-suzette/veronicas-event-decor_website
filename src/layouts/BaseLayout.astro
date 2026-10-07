@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+import { site } from '../config/site';
+import { languages, localeUrl, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const canonical = localeUrl(lang, Astro.site);
+const ogImage = new URL('/og-image.png', Astro.site).href;
+const alternates = (Object.keys(languages) as Lang[]).map((l) => ({
+  lang: l,
+  href: localeUrl(l, Astro.site),
+}));
+const otherOgLocales = alternates
+  .filter((a) => a.lang !== lang)
+  .map((a) => useTranslations(a.lang).meta.ogLocale);
+
+// Structured data for search engines. Phone/email are included only once set in site.ts.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness'],
+  '@id': `${localeUrl('en', Astro.site)}#business`,
+  name: site.name,
+  description: t.meta.description,
+  url: canonical,
+  logo: new URL('/icon-512.png', Astro.site).href,
+  image: ogImage,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.serviceArea.city,
+    addressRegion: site.serviceArea.region,
+    postalCode: site.serviceArea.postalCode,
+    addressCountry: site.serviceArea.country,
+  },
+  areaServed: site.serviceArea.areasServed.map((area) => ({
+    '@type': area.type,
+    name: area.name,
+  })),
+  sameAs: [site.instagram.url],
+  knowsLanguage: ['en', 'es'],
+  ...(site.phone ? { telephone: site.phone } : {}),
+  ...(site.email ? { email: site.email } : {}),
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141210" />
+    <meta name="color-scheme" content="dark light" />
+
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.lang} href={a.href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={localeUrl('en', Astro.site)} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    {otherOgLocales.map((l) => (
+      <meta property="og:locale:alternate" content={l} />
+    ))}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={t.meta.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={t.meta.ogImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="fixed top-2 left-2 z-[100] -translate-y-24 rounded-md bg-gold px-4 py-3 font-bold text-onyx shadow-soft transition focus:translate-y-0"
+    >
+      {t.skipLink}
+    </a>
+    <slot />
+  </body>
+</html>
