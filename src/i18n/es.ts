@@ -8,7 +8,7 @@ import type { Translations } from './en';
  * in English. Don't translate `icon` values (they choose a drawing, not words).
  *
  * Voz: español mexicano natural y cálido. Siempre "tú", nunca "usted". "Renta", no
- * "alquiler"; "cotización/cotiza"; "quinceañera(s)" (nunca "Mis XV" ni "XV años"); "salón de eventos"; "bancos altos";
+ * "alquiler"; "cotización/cotiza"; "quinceañera(s)" (nunca la abreviatura con números romanos); "salón de eventos"; "bancos altos";
  * "sombrillas". Nunca "estilizamos" ni "decoramos": rentamos piezas hechas a mano, te las
  * llevamos y las montamos.
  */

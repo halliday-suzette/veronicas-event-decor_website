@@ -84,7 +84,7 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   typed as `Translations`, so keys must match); list content goes in `src/data/` as `L10n`.
 - **Brand voice:** warm and friendly, like Verónica talking to a friend; short sentences. Spanish
   is natural Mexican Spanish: always "tú", "renta" (not "alquiler"), "cotización/cotiza", "fiesta",
-  "quinceañera(s)" (never "Mis XV" / "XV años"), "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
+  "quinceañera(s)" (never the Roman-numeral "fifteen" abbreviation), "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
   styled / styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets
   them up ("set up / montamos", "deliver / te llevamos"); "style" as a noun ("What styles…",
   "farmhouse–style table") is fine. **Never "charro" or "charra".** Don't name family members.
