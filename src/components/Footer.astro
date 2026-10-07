@@ -1,0 +1,121 @@
+---
+import Icon from './Icon.astro';
+import InstagramIcon from './InstagramIcon.astro';
+import LanguageToggle from './LanguageToggle.astro';
+import Logo from './Logo.astro';
+import { phoneHref, site } from '../config/site';
+import { navLinks, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="section-dark border-t border-gold-deep/40">
+  <div class="mx-auto max-w-7xl px-5 pt-16 pb-10 sm:px-6 lg:px-8">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+      <!-- Brand -->
+      <div class="text-center md:col-span-2 lg:col-span-1 lg:text-left">
+        <Logo lang={lang} variant="full" class="mx-auto max-w-xs lg:mx-0" />
+        <p class="mx-auto mt-6 max-w-sm text-cream/85 lg:mx-0">{t.footer.tagline}</p>
+        <p class="mx-auto mt-4 max-w-sm text-sm text-cream/75 lg:mx-0">
+          <Icon name="pin" class="mr-1 -mt-0.5 inline size-4 text-gold" />
+          {t.footer.serviceLine}
+        </p>
+      </div>
+
+      <!-- Explore -->
+      <nav aria-labelledby="footer-nav-title" class="text-center md:text-left">
+        <h2 id="footer-nav-title" class="font-western text-sm tracking-[0.2em] text-gold uppercase">
+          {t.footer.navHeading}
+        </h2>
+        <ul class="mt-4 grid grid-cols-2 gap-x-4 md:grid-cols-1">
+          {[...navLinks(t), { id: 'quote', label: t.nav.quote }].map((link) => (
+            <li>
+              <a
+                href={`#${link.id}`}
+                class="inline-flex min-h-11 items-center rounded-md text-cream/85 transition hover:text-gold-soft"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Get in touch -->
+      <div class="text-center md:text-left">
+        <h2 class="font-western text-sm tracking-[0.2em] text-gold uppercase">
+          {t.footer.contactHeading}
+        </h2>
+        <ul class="mt-4 space-y-1">
+          {site.phone && (
+            <li>
+              <a
+                href={phoneHref(site.phone)}
+                class="inline-flex min-h-11 items-center gap-2.5 rounded-md text-cream/90 transition hover:text-gold-soft"
+              >
+                <Icon name="phone" class="size-5 text-gold" />
+                <span>
+                  <span class="sr-only">{t.footer.phoneLabel}: </span>
+                  {site.phone}
+                </span>
+              </a>
+            </li>
+          )}
+          {site.email && (
+            <li>
+              <a
+                href={`mailto:${site.email}`}
+                class="inline-flex min-h-11 items-center gap-2.5 rounded-md break-all text-cream/90 transition hover:text-gold-soft"
+              >
+                <Icon name="mail" class="size-5 shrink-0 text-gold" />
+                <span>
+                  <span class="sr-only">{t.footer.emailLabel}: </span>
+                  {site.email}
+                </span>
+              </a>
+            </li>
+          )}
+          <li>
+            <a
+              href={site.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-h-11 items-center gap-2.5 rounded-md text-cream/90 transition hover:text-gold-soft"
+            >
+              <InstagramIcon class="size-5 text-gold" />
+              <span>
+                <span class="sr-only">Instagram </span>
+                {site.instagram.handle}
+              </span>
+            </a>
+          </li>
+        </ul>
+        {!site.phone && !site.email && (
+          <p class="mt-3 text-sm text-cream/75">{t.footer.contactFallback}</p>
+        )}
+        <a href="#quote" class="btn-gold mt-5">
+          {t.cta.quote}
+        </a>
+      </div>
+    </div>
+
+    <hr class="gold-rule mt-14" />
+
+    <div class="mt-6 flex flex-col items-center gap-4 text-sm text-cream/70 md:flex-row md:justify-between">
+      <p class="text-center md:text-left">
+        © {year} Veronica's Event Decor. {t.footer.rights}
+        <span class="mx-1 text-gold-deep" aria-hidden="true">
+          ·
+        </span>
+        {t.footer.credit}
+      </p>
+      <LanguageToggle lang={lang} />
+    </div>
+  </div>
+</footer>

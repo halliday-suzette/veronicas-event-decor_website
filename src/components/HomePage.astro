@@ -13,6 +13,7 @@ import Packages from './Packages.astro';
 import ServiceArea from './ServiceArea.astro';
 import Gallery from './Gallery.astro';
 import QuoteForm from './QuoteForm.astro';
+import Footer from './Footer.astro';
 import type { Lang } from '../i18n/utils';
 
 // To add a real event photo to the hero later, import it here and pass it below, e.g.
@@ -40,4 +41,5 @@ const { lang } = Astro.props;
     <Gallery lang={lang} />
     <QuoteForm lang={lang} />
   </main>
+  <Footer lang={lang} />
 </BaseLayout>
