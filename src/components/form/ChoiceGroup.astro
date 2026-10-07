@@ -1,0 +1,68 @@
+---
+/**
+ * Radio or checkbox group in a <fieldset> with a <legend>. Each option is a large
+ * (44px+) tap target. The group's error/help are linked to the fieldset and inputs.
+ */
+interface Props {
+  name: string;
+  legend: string;
+  type: 'radio' | 'checkbox';
+  options: { value: string; label: string }[];
+  required?: boolean;
+  help?: string;
+  /** Value to pre-select. */
+  checked?: string;
+  /** Tailwind grid classes for the options, e.g. 'sm:grid-cols-3'. */
+  columns?: string;
+  class?: string;
+}
+
+const {
+  name,
+  legend,
+  type,
+  options,
+  required = false,
+  help,
+  checked,
+  columns = 'sm:grid-cols-2',
+  class: className = '',
+} = Astro.props;
+
+const helpId = help ? `${name}-help` : undefined;
+const errorId = `${name}-error`;
+const describedBy = [helpId, errorId].filter(Boolean).join(' ');
+---
+
+<fieldset class={className} aria-describedby={describedBy} data-group={name}>
+  <legend class="form-label">
+    {legend}
+    {required && (
+      <span class="text-whiskey" aria-hidden="true">
+        *
+      </span>
+    )}
+  </legend>
+  {help && (
+    <p id={helpId} class="form-help">
+      {help}
+    </p>
+  )}
+  <div class:list={['mt-1 grid gap-2.5', columns]}>
+    {options.map((option, i) => (
+      <label class="form-choice">
+        <input
+          type={type}
+          id={`${name}-${i}`}
+          name={name}
+          value={option.value}
+          required={type === 'radio' && required}
+          checked={checked === option.value}
+          class="size-5 shrink-0 accent-whiskey-dark"
+        />
+        <span>{option.label}</span>
+      </label>
+    ))}
+  </div>
+  <p id={errorId} class="form-error" data-error-for={name}></p>
+</fieldset>

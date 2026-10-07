@@ -1,0 +1,87 @@
+---
+/**
+ * Labeled text input or textarea with optional help text and an inline error slot
+ * (filled by the QuoteForm script). Error and help are linked via aria-describedby.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'tel' | 'date';
+  required?: boolean;
+  multiline?: boolean;
+  rows?: number;
+  placeholder?: string;
+  help?: string;
+  autocomplete?: HTMLAttributes<'input'>['autocomplete'];
+  inputmode?: HTMLAttributes<'input'>['inputmode'];
+  min?: string;
+  maxlength?: number;
+  class?: string;
+}
+
+const {
+  name,
+  label,
+  type = 'text',
+  required = false,
+  multiline = false,
+  rows = 5,
+  placeholder,
+  help,
+  autocomplete,
+  inputmode,
+  min,
+  maxlength,
+  class: className = '',
+} = Astro.props;
+
+const helpId = help ? `${name}-help` : undefined;
+const errorId = `${name}-error`;
+const describedBy = [helpId, errorId].filter(Boolean).join(' ');
+const inputClass = 'form-control';
+---
+
+<div class={className}>
+  <label for={name} class="form-label">
+    {label}
+    {required && (
+      <span class="text-whiskey" aria-hidden="true">
+        *
+      </span>
+    )}
+  </label>
+  {help && (
+    <p id={helpId} class="form-help">
+      {help}
+    </p>
+  )}
+  {multiline ? (
+    <textarea
+      id={name}
+      name={name}
+      rows={rows}
+      required={required}
+      placeholder={placeholder}
+      maxlength={maxlength}
+      aria-describedby={describedBy}
+      class:list={[inputClass, 'min-h-32 resize-y']}
+    />
+  ) : (
+    <input
+      id={name}
+      name={name}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      autocomplete={autocomplete}
+      inputmode={inputmode}
+      min={min}
+      maxlength={maxlength}
+      aria-describedby={describedBy}
+      class={inputClass}
+    />
+  )}
+  <p id={errorId} class="form-error" data-error-for={name}></p>
+</div>

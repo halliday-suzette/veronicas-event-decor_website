@@ -29,6 +29,8 @@
   --color-cream: #f6efe4;
   --color-linen: #eadfcc;
   --color-charcoal: #1f1a17;
+  /* Form error text/borders: 7.2:1 on cream. */
+  --color-error: #9b1c1c;
 
   --font-serif: 'Playfair Display Variable', 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-sans: 'Lato', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -143,6 +145,46 @@
   /* Outline button for light sections. */
   .btn-outline-dark {
     @apply btn border border-whiskey text-whiskey-dark hover:bg-whiskey-dark hover:text-cream;
+  }
+
+  /* ---- Form controls (quote form, on light backgrounds) ------------------------- */
+
+  .form-group-title {
+    @apply mb-1 w-full border-b border-whiskey-light/60 pb-2 font-serif text-2xl font-semibold text-whiskey-dark;
+  }
+
+  .form-label {
+    @apply mb-1.5 block font-bold text-whiskey-dark;
+  }
+
+  .form-help {
+    @apply -mt-0.5 mb-2 text-sm text-whiskey;
+  }
+
+  /* Input border is full whiskey brown (7.6:1 on white) so fields are easy to find. */
+  .form-control {
+    @apply block min-h-12 w-full rounded-md border border-whiskey bg-white px-4 py-3 text-base text-charcoal shadow-[inset_0_1px_2px_rgb(59_36_22/0.08)] transition placeholder:text-charcoal/70 hover:border-whiskey-dark focus:border-whiskey-dark;
+  }
+
+  .form-control[aria-invalid='true'] {
+    @apply border-2 border-error;
+  }
+
+  .form-choice {
+    @apply flex min-h-12 cursor-pointer items-center gap-3 rounded-md border border-whiskey/40 bg-white/70 px-3.5 py-2.5 text-charcoal transition hover:border-whiskey has-[:checked]:border-whiskey-dark has-[:checked]:bg-white has-[:checked]:shadow-soft;
+  }
+
+  fieldset:has([aria-invalid='true']) .form-choice {
+    @apply border-error/70;
+  }
+
+  .form-error {
+    @apply mt-1.5 flex items-start gap-1.5 text-sm font-bold text-error empty:hidden;
+  }
+
+  .form-error::before {
+    content: '!';
+    @apply mt-px flex size-4 shrink-0 items-center justify-center rounded-full bg-error text-[0.7rem] leading-none text-white;
   }
 
   /* ---- Ornament ----------------------------------------------------------------- */

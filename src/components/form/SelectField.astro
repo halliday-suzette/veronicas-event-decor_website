@@ -1,0 +1,50 @@
+---
+/** Labeled <select> with an empty first option (so `required` works) and an error slot. */
+interface Props {
+  name: string;
+  label: string;
+  options: { value: string; label: string }[];
+  placeholder: string;
+  required?: boolean;
+  class?: string;
+}
+
+const { name, label, options, placeholder, required = false, class: className = '' } = Astro.props;
+const errorId = `${name}-error`;
+---
+
+<div class={className}>
+  <label for={name} class="form-label">
+    {label}
+    {required && (
+      <span class="text-whiskey" aria-hidden="true">
+        *
+      </span>
+    )}
+  </label>
+  <div class="relative">
+    <select
+      id={name}
+      name={name}
+      required={required}
+      aria-describedby={errorId}
+      class="form-control appearance-none pr-11"
+    >
+      <option value="">{placeholder}</option>
+      {options.map((o) => (
+        <option value={o.value}>{o.label}</option>
+      ))}
+    </select>
+    <svg
+      class="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-whiskey-dark"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
+      <path d="m3 6 5 5 5-5"></path>
+    </svg>
+  </div>
+  <p id={errorId} class="form-error" data-error-for={name}></p>
+</div>

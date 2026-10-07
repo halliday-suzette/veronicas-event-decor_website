@@ -1,0 +1,461 @@
+---
+/**
+ * Free quote request form (#quote), sent to Formspree.
+ *
+ * - Without JavaScript: a normal POST to Formspree (native HTML validation applies).
+ * - With JavaScript: validated inline, sent with fetch, and the visitor stays on the page
+ *   with a translated success or error message.
+ *
+ * The endpoint comes from PUBLIC_FORMSPREE_ENDPOINT (see .env.example and README).
+ * Field names are readable (event_type, guest_count…) so Formspree emails are easy to scan.
+ */
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import ChoiceGroup from './form/ChoiceGroup.astro';
+import SelectField from './form/SelectField.astro';
+import TextField from './form/TextField.astro';
+import { site } from '../config/site';
+import { en, type Translations } from '../i18n/en';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const q = t.quote;
+
+const PLACEHOLDER_ENDPOINT = 'https://formspree.io/f/XXXXXXXX';
+const endpoint = site.formspreeEndpoint || PLACEHOLDER_ENDPOINT;
+const showSetupNotice = import.meta.env.DEV && !site.formspreeEndpoint;
+
+type OptionGroup = keyof Translations['quote']['options'];
+
+/** Options for a group: the English wording is submitted, the current language is shown. */
+function options(group: OptionGroup) {
+  const values = en.quote.options[group] as Record<string, string>;
+  const labels = q.options[group] as Record<string, string>;
+  return Object.keys(values).map((key) => ({ value: values[key]!, label: labels[key]! }));
+}
+
+// Build-time fallback for "no past dates"; the script updates it to the visitor's today.
+const today = new Date().toISOString().slice(0, 10);
+
+// Messages the script needs, in the page language.
+const messages = JSON.stringify({ ...q.errors, sending: q.sending, submit: q.submit });
+---
+
+<section id="quote" aria-labelledby="quote-title" class="section-linen py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
+    <SectionHeading
+      id="quote-title"
+      tone="light"
+      eyebrow={q.eyebrow}
+      title={q.title}
+      intro={q.intro}
+    />
+
+    <div class="rounded-lg border border-whiskey-light/60 bg-cream p-5 shadow-soft sm:p-8 lg:p-10">
+      {showSetupNotice && (
+        <p class="mb-6 rounded-md border border-dashed border-whiskey bg-white p-3 text-sm text-whiskey-dark">
+          Dev note (not shown on the live site): PUBLIC_FORMSPREE_ENDPOINT is not set. Copy
+          .env.example to .env and add your Formspree form ID.
+        </p>
+      )}
+
+      <form
+        id="quote-form"
+        action={endpoint}
+        method="POST"
+        accept-charset="UTF-8"
+        data-messages={messages}
+        class="space-y-10"
+      >
+        <input type="hidden" name="_subject" value={q.subject} />
+        <input type="hidden" name="form_language" value={lang} />
+        <!-- Honeypot: real people never see or fill this; Formspree discards submissions that do. -->
+        <div class="hidden" aria-hidden="true">
+          <label for="_gotcha">Leave this field empty</label>
+          <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <p class="text-sm font-bold text-whiskey">{q.requiredNote}</p>
+
+        <div id="quote-error-summary" class="form-error text-base" role="alert"></div>
+
+        <!-- Your contact info -->
+        <fieldset class="space-y-5">
+          <legend class="form-group-title">{q.groups.contact}</legend>
+          <div class="grid gap-5 md:grid-cols-2">
+            <TextField
+              name="full_name"
+              label={q.fields.fullName.label}
+              required
+              autocomplete="name"
+              maxlength={120}
+            />
+            <TextField
+              name="email"
+              type="email"
+              label={q.fields.email.label}
+              placeholder={q.fields.email.placeholder}
+              required
+              autocomplete="email"
+              inputmode="email"
+              maxlength={160}
+            />
+            <TextField
+              name="phone"
+              type="tel"
+              label={q.fields.phone.label}
+              help={q.fields.phone.help}
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              maxlength={30}
+            />
+            <ChoiceGroup
+              name="preferred_language"
+              type="radio"
+              legend={q.fields.language.label}
+              options={options('language')}
+              checked={en.quote.options.language[lang]}
+              required
+              columns="grid-cols-2"
+            />
+            <ChoiceGroup
+              name="contact_method"
+              type="radio"
+              legend={q.fields.contactMethod.label}
+              options={options('contactMethod')}
+              required
+              columns="sm:grid-cols-3"
+              class="md:col-span-2"
+            />
+          </div>
+        </fieldset>
+
+        <!-- Your event -->
+        <fieldset class="space-y-5">
+          <legend class="form-group-title">{q.groups.event}</legend>
+          <div class="grid gap-5 md:grid-cols-2">
+            <SelectField
+              name="event_type"
+              label={q.fields.eventType.label}
+              placeholder={q.selectPlaceholder}
+              options={options('eventType')}
+              required
+            />
+            <TextField
+              name="event_date"
+              type="date"
+              label={q.fields.eventDate.label}
+              min={today}
+              required
+            />
+            <TextField
+              name="event_location"
+              label={q.fields.eventLocation.label}
+              placeholder={q.fields.eventLocation.placeholder}
+              required
+              maxlength={120}
+            />
+            <SelectField
+              name="guest_count"
+              label={q.fields.guestCount.label}
+              placeholder={q.selectPlaceholder}
+              options={options('guestCount')}
+              required
+            />
+            <ChoiceGroup
+              name="venue_setting"
+              type="radio"
+              legend={q.fields.venueSetting.label}
+              options={options('venueSetting')}
+              columns="grid-cols-2 sm:grid-cols-4"
+              class="md:col-span-2"
+            />
+            <TextField
+              name="venue_name"
+              label={q.fields.venueName.label}
+              placeholder={q.fields.venueName.placeholder}
+              maxlength={160}
+              class="md:col-span-2"
+            />
+          </div>
+        </fieldset>
+
+        <!-- Rentals & style -->
+        <fieldset class="space-y-5">
+          <legend class="form-group-title">{q.groups.style}</legend>
+          <div class="grid gap-5 md:grid-cols-2">
+            <ChoiceGroup
+              name="rental_items"
+              type="checkbox"
+              legend={q.fields.rentalItems.label}
+              help={q.fields.rentalItems.help}
+              options={options('rentalItems')}
+              columns="sm:grid-cols-2"
+              class="md:col-span-2"
+            />
+            <ChoiceGroup
+              name="barrel_finish"
+              type="radio"
+              legend={q.fields.barrelFinish.label}
+              options={options('barrelFinish')}
+              columns="sm:grid-cols-2"
+              class="md:col-span-2"
+            />
+            <TextField
+              name="colors_theme"
+              label={q.fields.colorsTheme.label}
+              placeholder={q.fields.colorsTheme.placeholder}
+              maxlength={200}
+            />
+            <SelectField
+              name="budget"
+              label={q.fields.budget.label}
+              placeholder={q.selectPlaceholder}
+              options={options('budget')}
+            />
+          </div>
+        </fieldset>
+
+        <!-- Details -->
+        <fieldset class="space-y-5">
+          <legend class="form-group-title">{q.groups.details}</legend>
+          <div class="grid gap-5 md:grid-cols-2">
+            <TextField
+              name="event_details"
+              multiline
+              rows={6}
+              label={q.fields.eventDetails.label}
+              help={q.fields.eventDetails.help}
+              required
+              maxlength={5000}
+              class="md:col-span-2"
+            />
+            <SelectField
+              name="referral_source"
+              label={q.fields.referral.label}
+              placeholder={q.selectPlaceholder}
+              options={options('referral')}
+            />
+            <div class="md:col-span-2">
+              <label class="form-choice items-start py-3">
+                <input
+                  type="checkbox"
+                  id="consent"
+                  name="consent"
+                  value="Yes"
+                  required
+                  aria-describedby="consent-error"
+                  class="mt-0.5 size-5 shrink-0 accent-whiskey-dark"
+                />
+                <span>
+                  {q.fields.consent.label}
+                  <span class="text-whiskey" aria-hidden="true">
+                    *
+                  </span>
+                </span>
+              </label>
+              <p id="consent-error" class="form-error" data-error-for="consent"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="border-t border-whiskey-light/50 pt-8">
+          <button type="submit" class="btn-gold w-full text-lg sm:w-auto sm:min-w-64">
+            <span
+              class="spinner hidden size-5 rounded-full border-2 border-onyx/30 border-t-onyx"
+              aria-hidden="true"
+            ></span>
+            <span data-submit-label>{q.submit}</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Shown by the script after a successful send. -->
+      <div id="quote-success" class="py-8 text-center" tabindex="-1" hidden>
+        <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-onyx text-gold ring-1 ring-gold-deep ring-offset-4 ring-offset-cream">
+          <Icon name="check" class="size-8" strokeWidth={2} />
+        </span>
+        <h3 class="mt-6 text-3xl font-semibold text-whiskey-dark">{q.successTitle}</h3>
+        <p class="mx-auto mt-3 max-w-md text-lg text-charcoal">{q.successText}</p>
+      </div>
+
+      <!-- Shown by the script if sending fails. -->
+      <div
+        id="quote-failure"
+        class="mt-6 rounded-md border-2 border-error bg-white p-5"
+        role="alert"
+        hidden
+      >
+        <div class="flex gap-3">
+          <Icon name="alert" class="size-6 shrink-0 text-error" strokeWidth={2} />
+          <div>
+            <h3 class="font-sans text-lg font-bold text-error">{q.errorTitle}</h3>
+            <p class="mt-1 text-charcoal">{q.errorText}</p>
+            <button type="button" data-retry class="btn-outline-dark mt-4">
+              {q.retry}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #quote-form[aria-busy='true'] .spinner {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  type Messages = Record<
+    | 'required'
+    | 'choose'
+    | 'email'
+    | 'phone'
+    | 'date'
+    | 'consent'
+    | 'summary'
+    | 'sending'
+    | 'submit',
+    string
+  >;
+  type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  const form = document.getElementById('quote-form') as HTMLFormElement | null;
+  const success = document.getElementById('quote-success');
+  const failure = document.getElementById('quote-failure');
+  const summary = document.getElementById('quote-error-summary');
+
+  if (form && success && failure && summary) {
+    const messages = JSON.parse(form.dataset.messages ?? '{}') as Messages;
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+
+    // JS handles validation messages from here on (native bubbles stay off).
+    form.noValidate = true;
+
+    // "No past dates", based on the visitor's own today.
+    const dateInput = form.querySelector<HTMLInputElement>('input[name="event_date"]');
+    if (dateInput) {
+      const now = new Date();
+      dateInput.min = new Date(now.getTime() - now.getTimezoneOffset() * 60_000)
+        .toISOString()
+        .slice(0, 10);
+    }
+
+    /** Fields that get validated: anything required, plus email/phone format checks. */
+    const fieldNames = [
+      ...new Set(
+        [...form.querySelectorAll<Control>('[required], [type="email"], [type="tel"]')].map(
+          (el) => el.name,
+        ),
+      ),
+    ];
+
+    const controls = (name: string) =>
+      [...form.querySelectorAll<Control>(`[name="${name}"]`)].filter((el) => el.type !== 'hidden');
+
+    function messageFor(el: Control): string {
+      if (el instanceof HTMLInputElement && el.type === 'tel') {
+        const digits = el.value.replace(/\D/g, '').length;
+        el.setCustomValidity(el.value && digits < 10 ? messages.phone : '');
+      }
+      const v = el.validity;
+      if (v.valid) return '';
+      if (v.valueMissing) {
+        if (el.type === 'checkbox') return messages.consent;
+        if (el.type === 'radio' || el instanceof HTMLSelectElement) return messages.choose;
+        return messages.required;
+      }
+      if (v.typeMismatch) return messages.email;
+      if (v.rangeUnderflow || v.badInput) return messages.date;
+      if (v.customError) return el.validationMessage;
+      return messages.required;
+    }
+
+    /** Validates one field (or radio group), updates its inline error. Returns true if valid. */
+    function validate(name: string): boolean {
+      const els = controls(name);
+      if (!els.length) return true;
+      const message = messageFor(els[0]!);
+      els.forEach((el) =>
+        message ? el.setAttribute('aria-invalid', 'true') : el.removeAttribute('aria-invalid'),
+      );
+      const errorEl = form!.querySelector(`[data-error-for="${name}"]`);
+      if (errorEl) errorEl.textContent = message;
+      return !message;
+    }
+
+    let attempted = false;
+    const revalidate = (event: Event) => {
+      const target = event.target as Control;
+      if (attempted && fieldNames.includes(target.name)) validate(target.name);
+    };
+    form.addEventListener('input', revalidate);
+    form.addEventListener('change', revalidate);
+
+    function setBusy(busy: boolean) {
+      form!.setAttribute('aria-busy', String(busy));
+      submitButton.disabled = busy;
+      submitLabel.textContent = busy ? messages.sending : messages.submit;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      attempted = true;
+      failure.hidden = true;
+
+      const invalid = fieldNames.filter((name) => !validate(name));
+      if (invalid.length) {
+        summary.textContent = messages.summary;
+        controls(invalid[0]!)[0]?.focus();
+        return;
+      }
+      summary.textContent = '';
+
+      setBusy(true);
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error(`Formspree responded ${response.status}`);
+
+        form.reset();
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      } catch (error) {
+        console.error(error);
+        failure.hidden = false;
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    failure.querySelector('[data-retry]')?.addEventListener('click', () => {
+      failure.hidden = true;
+      form.requestSubmit();
+    });
+  }
+</script>
