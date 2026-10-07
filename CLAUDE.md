@@ -84,7 +84,7 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   typed as `Translations`, so keys must match); list content goes in `src/data/` as `L10n`.
 - **Brand voice:** warm and friendly, like Verónica talking to a friend; short sentences. Spanish
   is natural Mexican Spanish: always "tú", "renta" (not "alquiler"), "cotización/cotiza", "fiesta",
-  "Mis XV / XV años", "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
+  "quinceañera(s)" (never "Mis XV" / "XV años"), "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
   styled / styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets
   them up ("set up / montamos", "deliver / te llevamos"); "style" as a noun ("What styles…",
   "farmhouse–style table") is fine. **Never "charro" or "charra".** Don't name family members.
@@ -124,6 +124,11 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   classes in `global.css`). `SectionHeading` takes `tone="dark" | "light"` to match.
 - Buttons: `btn-gold`, `btn-outline` (dark bg), `btn-outline-dark` (light bg); min 44px tap targets.
 - Any animation must respect `prefers-reduced-motion`.
+- **Hero photo overlay:** `--hero-overlay-photo` (0.3, photo/logo side) and `--hero-overlay-text`
+  (0.72, behind the text) in `:root` of `global.css`, used by `.hero-overlay` (left→right on
+  desktop, top→bottom when stacked). Hero text has `.hero-text-shadow`; the hero eyebrow is
+  `gold-soft` (plain `gold` fails AA over the sky). After changing either value, re-measure hero
+  text contrast against the rendered photo (worst-case pixel), at 768/1280/1536px.
 
 ## Content rules
 

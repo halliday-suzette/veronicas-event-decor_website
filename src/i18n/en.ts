@@ -57,7 +57,7 @@ export const en = {
 
   celebrations: {
     eyebrow: 'Celebrations',
-    title: 'From Mis XV to Graduations',
+    title: 'From Quinceañeras to Graduations',
     intro:
       "Whatever you're celebrating, we'll help make it feel warm, beautiful and unmistakably yours.",
   },
@@ -250,7 +250,7 @@ export const en = {
       language: { en: 'English', es: 'Español' },
       contactMethod: { call: 'Call', text: 'Text', email: 'Email' },
       eventType: {
-        quinceanera: 'Quinceañera / Mis XV',
+        quinceanera: 'Quinceañera',
         sweet16: 'Sweet 16',
         graduation: 'Graduation',
         birthday: 'Birthday',

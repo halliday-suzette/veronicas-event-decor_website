@@ -8,7 +8,7 @@ import type { Translations } from './en';
  * in English. Don't translate `icon` values (they choose a drawing, not words).
  *
  * Voz: español mexicano natural y cálido. Siempre "tú", nunca "usted". "Renta", no
- * "alquiler"; "cotización/cotiza"; "Mis XV / XV años"; "salón de eventos"; "bancos altos";
+ * "alquiler"; "cotización/cotiza"; "quinceañera(s)" (nunca "Mis XV" ni "XV años"); "salón de eventos"; "bancos altos";
  * "sombrillas". Nunca "estilizamos" ni "decoramos": rentamos piezas hechas a mano, te las
  * llevamos y las montamos.
  */
@@ -16,7 +16,7 @@ export const es: Translations = {
   meta: {
     title: "Renta de mobiliario rústico western en Pomona | Veronica's",
     description:
-      'Renta de mobiliario rústico western en Pomona: mesas de barril hechas a mano y decoración estilo rancho para XV años, sweet 16, graduaciones y cumpleaños.',
+      'Renta de mobiliario rústico western en Pomona: mesas de barril hechas a mano y decoración estilo rancho para quinceañeras, sweet 16, graduaciones y cumpleaños.',
     ogLocale: 'es_US',
     ogImageAlt: "Logo dorado de Veronica's Event Decor sobre fondo negro",
   },
@@ -52,14 +52,14 @@ export const es: Translations = {
     eyebrow: 'Negocio de una mujer latina · Atendemos en inglés y en español · Pomona, CA',
     title: 'Mesas de barril hechas a mano y renta de mobiliario rústico western',
     subtitle:
-      'Renta de mobiliario rústico western y decoración estilo rancho para tus XV años, sweet 16, graduaciones, cumpleaños y todas tus celebraciones — te lo llevamos y lo montamos en el Inland Empire, Orange County y Riverside.',
+      'Renta de mobiliario rústico western y decoración estilo rancho para tu quinceañera, sweet 16, graduaciones, cumpleaños y todas tus celebraciones — te lo llevamos y lo montamos en el Inland Empire, Orange County y Riverside.',
     primary: 'Revisa disponibilidad y cotiza',
     secondary: 'Mira lo que rentamos',
   },
 
   celebrations: {
     eyebrow: 'Celebraciones',
-    title: 'De Mis XV a graduaciones',
+    title: 'De quinceañeras a graduaciones',
     intro: 'Sea lo que sea que celebres, te ayudamos a que se sienta cálido, bonito y muy tuyo.',
   },
 
@@ -247,7 +247,7 @@ export const es: Translations = {
       language: { en: 'English', es: 'Español' },
       contactMethod: { call: 'Llamada', text: 'Mensaje de texto', email: 'Correo' },
       eventType: {
-        quinceanera: 'Quinceañera / Mis XV',
+        quinceanera: 'Quinceañera',
         sweet16: 'Sweet 16',
         graduation: 'Graduación',
         birthday: 'Cumpleaños',
@@ -309,7 +309,7 @@ export const es: Translations = {
       'renta de mobiliario rústico western',
       'decoración western estilo rancho',
       'renta de mesas de barril',
-      'decoración para XV años',
+      'decoración para quinceañeras',
       'decoración para sweet 16',
       'renta de mobiliario para graduaciones',
       'arcos de globos',

@@ -501,7 +501,7 @@ const scriptText = JSON.stringify({
     form.addEventListener('input', revalidate);
     form.addEventListener('change', revalidate);
 
-    // ---- Email subject: "New quote request – Quinceañera / Mis XV – June 6, 2027" ----------
+    // ---- Email subject: "New quote request – Quinceañera – June 6, 2027" ----------
     function buildSubject(): string {
       const parts = [text.subjectPrefix];
       const type = form!.querySelector<HTMLSelectElement>('[name="event_type"]');

@@ -71,7 +71,8 @@ for (const [file, info] of Object.entries(photos)) checkL10n(`photo ${file}.alt`
 // 3. Brand voice ---------------------------------------------------------------------------
 // The service is renting + delivering + setting up, never "styling" (style as a noun/adjective,
 // e.g. "What styles do you offer?", is fine). "charro/charra" is not used for this brand.
-const banned = /\b(we style|styled|styling|estiliz\w*|decoramos|charr[oa]s?)\b/i;
+// "Mis XV" / "XV años" are replaced by "quinceañera(s)" everywhere.
+const banned = /\b(we style|styled|styling|estiliz\w*|decoramos|charr[oa]s?|xv)\b/i;
 /** Both languages of each bilingual entry, labeled with where it came from. */
 const both = (where: string, ...texts: (L10n | undefined)[]): [string, string][] =>
   texts.flatMap((t) =>

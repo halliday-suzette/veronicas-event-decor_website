@@ -82,7 +82,7 @@ description in both languages. Options:
 ### Brand voice
 
 Warm and friendly, like Verónica talking to a friend. Spanish is natural Mexican Spanish ("tú",
-"renta", "cotiza", "Mis XV", "salón de eventos", "bancos altos", "sombrillas"). Never "style /
+"renta", "cotiza", "quinceañera" (never "Mis XV"), "salón de eventos", "bancos altos", "sombrillas"). Never "style /
 styled / styling / estilizamos": she rents handcrafted pieces and delivers and sets them up. No
 invented prices, counts, dimensions, years in business or reviews — leave a
 `TODO(veronica)` comment instead.

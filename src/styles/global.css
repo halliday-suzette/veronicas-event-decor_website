@@ -41,6 +41,16 @@
     /* Height of the sticky header — anchor links stop just below it. */
     --header-h: 4.5rem;
     --focus-color: var(--color-gold);
+
+    /*
+     * HERO PHOTO OVERLAY — how dark the onyx layer over the hero photo is (0 = no overlay,
+     * 1 = solid black). Lower = lighter photo. Used by `.hero-overlay` below.
+     *   --hero-overlay-photo: over the photo/logo side (left on desktop, top when stacked)
+     *   --hero-overlay-text:  behind the eyebrow, headline, sub text and buttons
+     * If you lighten --hero-overlay-text, re-check text contrast (WCAG AA).
+     */
+    --hero-overlay-photo: 0.3;
+    --hero-overlay-text: 0.72;
   }
 
   @media (min-width: 64rem) {
@@ -181,6 +191,44 @@
   .form-error::before {
     content: '!';
     @apply mt-px flex size-4 shrink-0 items-center justify-center rounded-full bg-error text-[0.7rem] leading-none text-white;
+  }
+
+  /* ---- Hero photo overlay (strength set by --hero-overlay-* in :root) ------------- */
+
+  /* Stacked layout (phones/tablets): logo on top over the lighter part, text below. */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgb(20 18 16 / var(--hero-overlay-photo)) 0%,
+      rgb(20 18 16 / var(--hero-overlay-photo)) 30%,
+      rgb(20 18 16 / var(--hero-overlay-text)) 46%,
+      rgb(20 18 16 / var(--hero-overlay-text)) 100%
+    );
+  }
+
+  /* Two columns (desktop): photo + logo on the left stay light, text column darker. */
+  @media (min-width: 64rem) {
+    .hero-overlay {
+      background: linear-gradient(
+        to right,
+        rgb(20 18 16 / var(--hero-overlay-photo)) 0%,
+        rgb(20 18 16 / var(--hero-overlay-photo)) 36%,
+        rgb(20 18 16 / var(--hero-overlay-text)) 52%,
+        rgb(20 18 16 / var(--hero-overlay-text)) 100%
+      );
+    }
+  }
+
+  /* Soft lift for hero text over the photo (legibility only; contrast passes without it). */
+  .hero-text-shadow {
+    text-shadow:
+      0 1px 2px rgb(0 0 0 / 0.5),
+      0 0 14px rgb(0 0 0 / 0.35);
+  }
+
+  /* Dark text on the solid gold button needs no shadow. */
+  .hero-text-shadow .btn-gold {
+    text-shadow: none;
   }
 
   /* ---- Ornament ----------------------------------------------------------------- */

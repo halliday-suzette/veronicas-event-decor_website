@@ -25,7 +25,7 @@ export const celebrations: Celebration[] = [
   {
     id: 'quinceanera',
     tier: 'primary',
-    name: { en: 'Quinceañeras / Mis XV', es: 'Mis XV / Quinceañeras' },
+    name: { en: 'Quinceañeras', es: 'Quinceañeras' },
     description: {
       en: 'A once-in-a-lifetime celebration deserves pieces as special as she is.',
       es: 'Una celebración única merece piezas tan especiales como ella.',

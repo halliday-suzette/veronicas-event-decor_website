@@ -69,7 +69,7 @@ export const faq: FaqItem[] = [
     },
     answer: {
       en: 'As early as you can, especially for quinceañeras, graduations and spring and summer weekends. Dates fill up fast.',
-      es: 'Lo antes posible, sobre todo para XV años, graduaciones y fines de semana de primavera y verano. Las fechas se llenan rápido.',
+      es: 'Lo antes posible, sobre todo para quinceañeras, graduaciones y fines de semana de primavera y verano. Las fechas se llenan rápido.',
     },
   },
   {
