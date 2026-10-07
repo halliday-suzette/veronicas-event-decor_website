@@ -5,7 +5,14 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
+import Hero from './Hero.astro';
 import type { Lang } from '../i18n/utils';
+
+// To add a real event photo to the hero later, import it here and pass it below, e.g.
+//   import heroPhoto from '../assets/images/hero.jpg';
+//   <Hero lang={lang} backgroundImage={heroPhoto} />
+// or replace the logo with the photo:
+//   <Hero lang={lang} featureImage={heroPhoto} featureAlt="Rustic barrel setup at a quinceañera" />
 
 interface Props {
   lang: Lang;
@@ -17,6 +24,6 @@ const { lang } = Astro.props;
 <BaseLayout lang={lang}>
   <Header lang={lang} />
   <main id="main" tabindex="-1">
-    <section id="home" class="section-dark min-h-[60vh]"></section>
+    <Hero lang={lang} />
   </main>
 </BaseLayout>
