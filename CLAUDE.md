@@ -48,7 +48,9 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   names; `balloons-rodeo-first-birthday.jpg` is permanently excluded.
 - **Photo privacy (public repo):** before adding any photo, re-encode it with `sharp` (no
   `.withMetadata()`/`.keepMetadata()`) so EXIF/GPS/XMP/ICC/IPTC are stripped, and verify. Keep
-  originals outside the repo — `Photos/` is git-ignored.
+  originals outside the repo — `/Photos/` is git-ignored. Keep that leading slash: on Windows
+  (case-insensitive) an unanchored `Photos/` also matched `src/assets/photos/` and hid the
+  real photos from git.
 - `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es,
   x-default), LocalBusiness JSON-LD (+ extra blocks via `structuredData` prop), skip link.
 - `src/config/site.ts`: phone/email (`null` = hidden everywhere, incl. JSON-LD), Instagram,
@@ -131,3 +133,101 @@ Pomona is in **Los Angeles County** — don't describe it as San Bernardino Coun
 ## Git
 
 Small, logical conventional commits (`feat:`, `fix:`, `perf:`, `docs:`, `chore:`).
+
+## Project history
+
+What has been built so far, in order, and the decisions behind it. Commit hashes are on `main`.
+
+### Phase 1 — Initial build (2026-10-06)
+
+Built from the original brief: a production-ready, bilingual one-page brochure site.
+
+- **Scaffold** (`1645d6d`): Astro 7 static, Tailwind v4 via `@tailwindcss/vite`, strict TS,
+  `@astrojs/sitemap`, `@fontsource` fonts, Prettier with astro + tailwind plugins, `.env.example`.
+- **Logo** (`874a8e2`): client's transparent metallic PNG (no EXIF, no white background, no halos).
+  `npm run logo` (`scripts/logo-variants.mjs`) auto-detects the two gold bars and crops the compact
+  header wordmark. Gold tokens were tuned to colors sampled from the logo (shadow `#b06602`, mid
+  `#f6b422`, highlight `#fcf27e`) → `gold #e6aa1e`, `gold-soft #f7d266`, `gold-deep #a2680a`.
+  Decision: logo source lives in `src/assets/images/` (not `public/`) so `astro:assets` optimizes it.
+- **Translations & config** (`883cfed`): `en.ts`/`es.ts` as typed TS (not JSON) so a missing key
+  is a build error; `site.ts` with phone/email `null` until known.
+- **Layout & SEO** (`6d85541`): BaseLayout (title/description, canonical, hreflang en/es/x-default,
+  OG/Twitter, LocalBusiness JSON-LD, skip link), `robots.txt` endpoint, web manifest; `npm run
+logo` also generates `og-image.png` and a gold "V" monogram favicon set.
+- **Header** (`539d0f8`): sticky header, compact logo, EN|ES toggle that keeps the current section
+  anchor, Instagram icon, quote button; mobile menu on a native `<dialog>` (focus trap, Escape,
+  aria-expanded).
+- **Sections** (`10cfa5e`, `5908410`, `bee9624`, `537f842`): hero with lit logo + glow, about,
+  rentals, events, packages, service area, gallery, footer.
+- **Quote form** (`7c87e65`): Formspree, progressive enhancement, honeypot, inline accessible
+  validation, fetch submit with success/error/retry.
+- **Performance & a11y** (`8ac2816`): Latin-only font subsets, inline CSS, `logo-web.png`
+  (invisible edge pixels cleared, ~15% smaller), language-link label-in-name fix, darker
+  placeholder text. Lighthouse 96/100/100/100 mobile.
+- **Docs** (`31c1563`, `4470238`): README for non-developers; this CLAUDE.md.
+
+### Phase 2 — GitHub Pages hosting (2026-10-06, `fb5fb84`)
+
+- `.github/workflows/deploy.yml` (checkout v7, setup-node v7, configure-pages v6,
+  upload-pages-artifact v5, deploy-pages v5). Repo: `halliday-suzette/veronicas-event-decor_website`
+  (public). Live at `https://halliday-suzette.github.io/veronicas-event-decor_website/`.
+- `site`/`base` come from `SITE_URL`/`BASE_PATH` (filled from the Pages settings), so a custom
+  domain later needs no code change. Added `withBase()`/`absoluteUrl()`; manifest uses relative
+  paths. First deploy failed with "Get Pages site failed / Not Found" because Pages wasn't yet set
+  to **Source: GitHub Actions** — fixed in repo settings, not code.
+
+### Phase 3 — Restructure & copy rewrite (2026-10-07, `bc3794f`, `265134b`)
+
+From the client restructure brief (not a redesign — logo, palette, fonts, Formspree kept):
+
+- **Data files** (`src/data/`): inventory (5 categories, 22 items), celebrations (primary/secondary,
+  `gentle` Celebration of Life), FAQ, photo registry. Single source for catalog, Add-Ons, the form's
+  rentals checklist, the FAQ accordion and FAQPage JSON-LD.
+- **New section order**: Hero → Celebrations → Signature Barrel Tables + Rentals catalog → Add-Ons →
+  Real Event Setups gallery (keyboard lightbox on `<dialog>`) → Why Families Choose Verónica's →
+  How It Works (+ example packages, no prices) → Our Story & Service Area → Quote → FAQ.
+  Removed: Events, Packages, ServiceArea components and the old placeholder gallery.
+- **Copy**: rewritten in Verónica's brand voice (see Conventions); `npm run check:i18n` added.
+  Three "style" words from the brief itself were rewritten ("farmhouse-style", "selfie-style").
+- **Form**: new field order (city + ZIP, event location, inventory-driven rentals, budget,
+  notes, consent); barrel-table count/finish only when barrel tables are checked; subject
+  "New quote request – {event type} – {date}" in the page language. "How did you hear" removed.
+- **SEO**: new titles/descriptions; LocalBusiness in page language with 5 areas served; FAQPage.
+- Fixes found in testing: Spanish catalog heading overflowed at 360px; hero overlay raised to ≥80%
+  so small gold text stays AA over bright photos; footer "FAQ" link widened to 44px.
+
+### Phase 4 — Real photos & client answers (2026-10-07, `edb3626`)
+
+- 14 originals received (in `Photos/_incoming/`, not `src/assets/photos/_incoming/` as the brief
+  said). None had EXIF/GPS, but all kept photos were re-encoded metadata-free and verified
+  byte-level before committing; one exact duplicate dropped; 12px edge strip trimmed from the night
+  dessert-cart photo. Originals deleted afterward. 13 photos committed; gallery shows 12.
+- **No placeholders anywhere**: `Photo.astro` renders nothing for missing files; cards become
+  finished designs (framed text cards with gold line icons for Quinceañeras/Sweet 16s, icon band
+  for add-ons, compact text cards in the catalog). Finish cards are text + wood swatch because no
+  photo clearly shows a light vs. dark finish.
+- Photos are only ~560–900px wide, so `fitSize()` never upscales. To keep mobile Lighthouse ≥95:
+  logo stays the high-priority LCP, the hero background is lazy/low-priority and skipped on phones,
+  content photos use WebP quality 68. Result: 95/100/100/100 mobile, 100/100/100/100 desktop.
+- Client answers applied: rustic dessert table confirmed (TODO removed); photo booth gets a neutral
+  description + TODOs; rodeo first-birthday photo permanently excluded; Quinceañera/Sweet 16 stay
+  photo-less for now; phone/email stay blank.
+
+### Testing done each phase
+
+Build (0 errors/warnings), `check:i18n`, both pages at 360–1536px with an overflow check,
+Playwright + installed Edge for form behaviour (both languages, JS off, intercepted Formspree
+requests — **no real submission has been sent yet**; no endpoint locally), keyboard (menu, FAQ,
+lightbox), axe-core (0 violations), tap targets ≥44px, console errors, Lighthouse mobile/desktop,
+and a GitHub Pages-path build to verify canonical/hreflang/JSON-LD.
+
+### Open items
+
+- `TODO(veronica)` (grep for it): missing photos (horse/horseshoe backdrop, arched backdrops,
+  "Most Wanted" saloon, saloon facade, longhorn bar, photo booth, cowgirl baby shower; optional
+  clear light/dark finish photos), public phone/email, most-requested finish, inventory quantities
+  and sizes, photo booth details, delivery fees/distance, booking lead time.
+- Greenery dessert-cart photo still shows parked cars (can't crop without losing the wagon wheel).
+- Backyard hero photo shows a party banner that may contain part of a name (small, under overlay).
+- Set `PUBLIC_FORMSPREE_ENDPOINT` (repo variable) and send one real test quote per language.
+- The "Phase 6 SEO/AEO/GEO" prompt has **not** been applied — not yet received.
