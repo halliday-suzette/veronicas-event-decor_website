@@ -1,6 +1,10 @@
 /**
- * Celebrations shown in the Celebrations section. Primary = large photo cards,
+ * Celebrations shown in the Celebrations section. Primary = large cards (a photo card when
+ * `image` is set and the file exists, otherwise an elegant text card with a line icon);
  * secondary = smaller text cards. `gentle` gives a card calm, muted styling.
+ *
+ * To add a photo later: put it in src/assets/photos/, list it with alt text in
+ * src/data/photos.ts, and set `image: 'filename.jpg'` here.
  */
 import type { L10n } from './types';
 
@@ -17,7 +21,7 @@ export interface Celebration {
 
 export const celebrations: Celebration[] = [
   // ---- Primary ------------------------------------------------------------------------------
-  // TODO(veronica): need a real quinceañera photo
+  // No photo for now (shown as a text card). Set `image` when a photo is ready.
   {
     id: 'quinceanera',
     tier: 'primary',
@@ -26,9 +30,8 @@ export const celebrations: Celebration[] = [
       en: 'A once-in-a-lifetime celebration deserves pieces as special as she is.',
       es: 'Una celebración única merece piezas tan especiales como ella.',
     },
-    image: 'quinceanera.jpg',
   },
-  // TODO(veronica): need a real sweet 16 photo
+  // No photo for now (shown as a text card). Set `image` when a photo is ready.
   {
     id: 'sweet-16',
     tier: 'primary',
@@ -37,7 +40,6 @@ export const celebrations: Celebration[] = [
       en: "A milestone birthday with a photo-ready rustic look she'll love.",
       es: 'Un cumpleaños inolvidable con un look rústico perfecto para las fotos.',
     },
-    image: 'sweet-16.jpg',
   },
   {
     id: 'graduation',

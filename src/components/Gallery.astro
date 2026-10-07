@@ -21,23 +21,27 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+// Only photos that exist are shown (no placeholders).
 const items = await Promise.all(
-  galleryPhotos.map(async (file) => {
-    const photo = resolvePhoto(file, lang);
-    // Photos with a crop position (e.g. to hide parked cars at the edge) keep the same square
-    // crop as their gallery tile when enlarged. TODO(veronica): check this crop on the real photo.
-    const large = photo?.src
-      ? await getImage({
-          src: photo.src,
-          width: 1600,
-          ...(photo.position ? { height: 1600, fit: 'cover', position: photo.position } : {}),
-          format: 'webp',
-        })
-      : undefined;
-    return { file, alt: photo?.alt ?? '', large: large?.src };
-  }),
+  galleryPhotos
+    .map((file) => ({ file, photo: resolvePhoto(file, lang) }))
+    .filter(({ photo }) => photo?.src)
+    .map(async ({ file, photo }) => {
+      const src = photo!.src!;
+      // Enlarged view: full photo, never upscaled. Photos with a crop position keep a square
+      // crop toward that side, like their gallery tile.
+      const size = Math.min(1600, src.width);
+      const large = await getImage({
+        src,
+        width: size,
+        ...(photo!.position
+          ? { height: Math.min(size, src.height), fit: 'cover' as const, position: photo!.position }
+          : {}),
+        format: 'webp',
+      });
+      return { file, alt: photo!.alt, large: large.src };
+    }),
 );
-const viewable = items.filter((i) => i.large);
 const counterTemplate = t.gallery.counter;
 ---
 
@@ -51,37 +55,27 @@ const counterTemplate = t.gallery.counter;
     />
 
     <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {items.map((item) => {
-        const tile = (
-          <Photo
-            file={item.file}
-            lang={lang}
-            label={item.alt}
-            width={600}
-            height={600}
-            widths={[300, 450, 600]}
-            sizes="(min-width: 1280px) 300px, (min-width: 1024px) 24vw, (min-width: 768px) 32vw, 48vw"
-            class="transition duration-500 group-hover:scale-[1.03]"
-          />
-        );
-        return (
-          <li class="overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal">
-            {item.large ? (
-              <button
-                type="button"
-                class="group block w-full cursor-zoom-in overflow-hidden"
-                data-lightbox-index={viewable.findIndex((v) => v.file === item.file)}
-                aria-label={`${t.gallery.open}: ${item.alt}`}
-                aria-haspopup="dialog"
-              >
-                {tile}
-              </button>
-            ) : (
-              tile
-            )}
-          </li>
-        );
-      })}
+      {items.map((item, index) => (
+        <li class="overflow-hidden rounded-lg border border-gold-deep/40 bg-charcoal">
+          <button
+            type="button"
+            class="group block w-full cursor-zoom-in overflow-hidden"
+            data-lightbox-index={index}
+            aria-label={`${t.gallery.open}: ${item.alt}`}
+            aria-haspopup="dialog"
+          >
+            <Photo
+              file={item.file}
+              lang={lang}
+              width={600}
+              height={600}
+              widths={[300, 450, 600]}
+              sizes="(min-width: 1280px) 300px, (min-width: 1024px) 24vw, (min-width: 768px) 32vw, 48vw"
+              class="transition duration-500 group-hover:scale-[1.03]"
+            />
+          </button>
+        </li>
+      ))}
     </ul>
 
     <div class="mt-12 text-center">
@@ -98,12 +92,12 @@ const counterTemplate = t.gallery.counter;
     </div>
   </div>
 
-  {viewable.length > 0 && (
+  {items.length > 0 && (
     <dialog
       id="lightbox"
       class="lightbox m-auto max-h-none max-w-none bg-transparent p-0"
       aria-label={t.gallery.title}
-      data-photos={JSON.stringify(viewable.map((v) => ({ src: v.large, alt: v.alt })))}
+      data-photos={JSON.stringify(items.map((v) => ({ src: v.large, alt: v.alt })))}
       data-counter={counterTemplate}
     >
       <figure class="flex h-dvh w-screen flex-col items-center justify-center gap-3 p-4 sm:p-8">
@@ -125,7 +119,7 @@ const counterTemplate = t.gallery.counter;
       >
         <Icon name="close" class="size-7" />
       </button>
-      {viewable.length > 1 && (
+      {items.length > 1 && (
         <>
           <button
             type="button"

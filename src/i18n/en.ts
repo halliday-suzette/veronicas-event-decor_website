@@ -21,7 +21,6 @@ export const en = {
 
   skipLink: 'Skip to main content',
   logoAlt: "Veronica's Event Decor logo",
-  photoComingSoon: 'Photo coming soon',
 
   nav: {
     label: 'Main',

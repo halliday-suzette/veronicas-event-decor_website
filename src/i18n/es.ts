@@ -23,7 +23,6 @@ export const es: Translations = {
 
   skipLink: 'Saltar al contenido principal',
   logoAlt: "Logo de Veronica's Event Decor",
-  photoComingSoon: 'Foto muy pronto',
 
   nav: {
     label: 'Principal',

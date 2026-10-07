@@ -124,7 +124,6 @@ export const inventory: InventoryItem[] = [
     showInForm: true,
     published: true,
   },
-  // TODO(veronica): confirm this table is a rental item
   {
     id: 'farmhouse-dessert-table',
     category: 'bars-carts',
@@ -297,14 +296,17 @@ export const inventory: InventoryItem[] = [
     showInForm: true,
     published: true,
   },
-  // TODO(veronica): confirm booth type and what's included
+  // TODO(veronica): photo booth type (e.g. selfie, 360, printed photos)?
+  // TODO(veronica): what's included (props, backdrop, prints, digital copies, attendant)?
+  // TODO(veronica): any other details to mention (rental time, setup space, power needs)?
+  // Until confirmed, the description stays warm and general — no specific claims.
   {
     id: 'photo-booth',
     category: 'add-ons',
     name: { en: 'Photo Booth', es: 'Cabina de fotos' },
     description: {
-      en: 'A selfie photo booth that keeps your guests smiling all night.',
-      es: 'Una cabina tipo selfie para que tus invitados se diviertan toda la noche.',
+      en: 'A fun photo booth so your guests can capture memories of your celebration together.',
+      es: 'Una cabina de fotos divertida para que tus invitados se lleven recuerdos de tu fiesta.',
     },
     image: 'photo-booth.jpg',
     showInForm: true,

@@ -7,6 +7,7 @@ import Photo from './Photo.astro';
 import SectionHeading from './SectionHeading.astro';
 import SpecRow from './SpecRow.astro';
 import { featuredItem } from '../data/inventory';
+import { hasPhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -31,41 +32,45 @@ const finishCards = (featuredItem?.finishes ?? ['light', 'dark']).map((finish) =
   intro={t.signature.craft}
 />
 
-<div class="overflow-hidden rounded-lg border border-gold-deep/50 shadow-soft">
-  <Photo
-    file={featuredItem?.image}
-    lang={lang}
-    label={featuredItem?.name[lang] ?? t.signature.title}
-    altOverride={featuredItem?.imageAlt}
-    width={1600}
-    height={700}
-    widths={[640, 960, 1280, 1600]}
-    sizes="(min-width: 1280px) 1216px, calc(100vw - 2.5rem)"
-  />
-</div>
-
-<ul class="mt-6 grid gap-6 md:grid-cols-2">
-  {finishCards.map((card) => (
-    <li class="flex flex-col overflow-hidden rounded-lg border border-gold-deep/50 bg-charcoal shadow-soft">
+<div class="grid items-stretch gap-6 lg:grid-cols-[1.15fr_1fr]">
+  {hasPhoto(featuredItem?.image) && (
+    <div class="overflow-hidden rounded-lg border border-gold-deep/50 shadow-soft">
       <Photo
-        file={card.file}
+        file={featuredItem?.image}
         lang={lang}
-        label={card.title}
-        width={800}
-        height={600}
-        widths={[400, 600, 800]}
-        sizes="(min-width: 1280px) 600px, (min-width: 768px) 46vw, calc(100vw - 2.5rem)"
+        altOverride={featuredItem?.imageAlt}
+        width={900}
+        height={675}
+        widths={[450, 675, 900]}
+        sizes="(min-width: 1280px) 650px, (min-width: 1024px) 53vw, calc(100vw - 2.5rem)"
+        class="h-full"
       />
-      <div class="flex items-start gap-4 p-6">
-        <span class:list={['swatch mt-1', `swatch-${card.finish}`]} aria-hidden="true" />
-        <div>
-          <h3 class="text-2xl font-semibold text-gold-soft">{card.title}</h3>
-          <p class="mt-2 text-cream/85">{card.text}</p>
+    </div>
+  )}
+
+  <!-- Finish cards: text + wood swatch; a photo appears if barrel-table-light/dark.jpg is added. -->
+  <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
+    {finishCards.map((card) => (
+      <li class="flex flex-col overflow-hidden rounded-lg border border-gold-deep/50 bg-charcoal shadow-soft">
+        <Photo
+          file={card.file}
+          lang={lang}
+          width={800}
+          height={600}
+          widths={[400, 600, 800]}
+          sizes="(min-width: 1024px) 560px, (min-width: 768px) 46vw, calc(100vw - 2.5rem)"
+        />
+        <div class="flex flex-1 items-center gap-5 p-6 sm:p-8">
+          <span class:list={['swatch', `swatch-${card.finish}`]} aria-hidden="true" />
+          <div>
+            <h3 class="text-2xl font-semibold text-gold-soft">{card.title}</h3>
+            <p class="mt-2 text-cream/85">{card.text}</p>
+          </div>
         </div>
-      </div>
-    </li>
-  ))}
-</ul>
+      </li>
+    ))}
+  </ul>
+</div>
 
 <p class="mx-auto mt-8 max-w-2xl text-center font-serif text-xl text-cream/90">
   {t.signature.pairLine}
@@ -75,8 +80,8 @@ const finishCards = (featuredItem?.finishes ?? ['light', 'dark']).map((finish) =
 <style>
   .swatch {
     display: inline-block;
-    width: 2rem;
-    height: 2rem;
+    width: 3rem;
+    height: 3rem;
     flex-shrink: 0;
     border-radius: 9999px;
     border: 1.5px solid var(--color-gold);

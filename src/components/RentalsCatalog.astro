@@ -7,6 +7,7 @@
 import Photo from './Photo.astro';
 import SpecRow from './SpecRow.astro';
 import { categories, publishedItems } from '../data/inventory';
+import { hasPhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -22,8 +23,8 @@ const groups = categories
     const items = publishedItems.filter((i) => i.category === category.id && !i.featured);
     return {
       ...category,
-      withPhoto: items.filter((i) => i.image),
-      textOnly: items.filter((i) => !i.image),
+      withPhoto: items.filter((i) => hasPhoto(i.image)),
+      textOnly: items.filter((i) => !hasPhoto(i.image)),
     };
   })
   .filter((g) => g.withPhoto.length + g.textOnly.length > 0);
@@ -52,7 +53,6 @@ const groups = categories
                 <Photo
                   file={item.image}
                   lang={lang}
-                  label={item.name[lang]}
                   altOverride={item.imageAlt}
                   width={600}
                   height={450}

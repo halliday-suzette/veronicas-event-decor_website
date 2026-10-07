@@ -95,8 +95,13 @@ invented prices, counts, dimensions, years in business or reviews — leave a
 
 All photos are Verónica's own events and inventory. Put them in **`src/assets/photos/`** using
 the exact filenames listed in `src/assets/photos/README.md`. Each one appears automatically,
-optimized to WebP, lazy-loaded and cropped to fit. Until a file exists, a wood-tone placeholder
-with the item name is shown — never stock or AI images.
+optimized to WebP, lazy-loaded and cropped to fit. Until a file exists, that card shows as a
+finished text card — never stock or AI images, and no "coming soon" placeholders.
+
+> **Privacy first:** this repository is public. Phone photos often contain the GPS location
+> where they were taken. Before adding a photo, strip all metadata (EXIF, GPS, XMP, ICC) — for
+> example by re-encoding it with `sharp`, which drops metadata by default. Keep the originals
+> outside the repository (the `Photos/` folder is git-ignored).
 
 When a photo arrives, check its alt text in `src/data/photos.ts` matches what's actually in it.
 

@@ -6,7 +6,7 @@
  */
 import { Image } from 'astro:assets';
 import Logo from './Logo.astro';
-import { resolvePhoto } from '../lib/photos';
+import { fitSize, resolvePhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -18,6 +18,9 @@ interface Props {
 const { lang, backgroundFile } = Astro.props;
 const t = useTranslations(lang);
 const background = resolvePhoto(backgroundFile, lang);
+const bgSize = background?.src
+  ? fitSize(background.src, 1920, 1080, [640, 960, 1280, 1920])
+  : undefined;
 ---
 
 <section
@@ -25,18 +28,23 @@ const background = resolvePhoto(backgroundFile, lang);
   aria-labelledby="hero-title"
   class="section-dark relative isolate overflow-hidden"
 >
-  {background?.src && (
-    <div class="absolute inset-0 -z-10" aria-hidden="true">
+  {background?.src && bgSize && (
+    <div class="absolute inset-0 -z-10 hidden sm:block" aria-hidden="true">
+      {/* Hidden on phones (barely visible under the overlay) so it isn't downloaded there:
+          lazy images inside display:none are never fetched. */}
       <Image
         src={background.src}
         alt=""
-        width={1920}
-        height={1080}
-        widths={[640, 960, 1280, 1920]}
+        width={bgSize.width}
+        height={bgSize.height}
+        widths={bgSize.widths}
         sizes="100vw"
         format="webp"
         fit="cover"
-        priority
+        quality={55}
+        loading="lazy"
+        fetchpriority="low"
+        decoding="async"
         class="h-full w-full object-cover"
       />
       {/* At least 80% onyx everywhere: text stays WCAG AA even over a white patch of photo. */}
@@ -48,7 +56,9 @@ const background = resolvePhoto(backgroundFile, lang);
   <div class="mx-auto grid max-w-7xl items-center gap-8 px-5 pt-8 pb-16 sm:px-6 sm:pt-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:px-8 lg:py-20 xl:py-24">
     <div class="relative mx-auto w-full max-w-[640px]">
       <div class="hero-glow absolute -inset-[12%] -z-10 rounded-full" aria-hidden="true"></div>
-      <Logo lang={lang} variant="full" priority={!background?.src} />
+      {/* The logo is the largest visible element, so it loads first; the darkened background
+          photo is decorative and loads at low priority. */}
+      <Logo lang={lang} variant="full" priority />
     </div>
 
     <div class="text-center lg:text-left">

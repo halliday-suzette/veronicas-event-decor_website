@@ -18,3 +18,6 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 .idea/
+
+# Original client photos (may contain GPS/EXIF). Only stripped copies go in src/assets/photos/.
+/Photos/

@@ -37,6 +37,33 @@ export function resolvePhoto(
   };
 }
 
+/** True if the photo file exists in src/assets/photos/. */
+export function hasPhoto(filename: string | undefined): boolean {
+  return !!filename && byName.has(filename);
+}
+
+/**
+ * Output size and srcset widths that never upscale the original: if the requested width is
+ * larger than the photo, the size shrinks to the photo's width (same aspect ratio) and srcset
+ * widths larger than the photo are dropped.
+ */
+export function fitSize(
+  src: ImageMetadata,
+  width: number,
+  height: number,
+  widths: number[],
+): { width: number; height: number; widths: number[] } {
+  const scale = Math.min(1, src.width / width);
+  const fitted = widths.filter((w) => w <= src.width);
+  // If larger sizes were dropped, offer the photo's full width as the sharpest option.
+  if (fitted.length < widths.length && !fitted.includes(src.width)) fitted.push(src.width);
+  return {
+    width: Math.round(width * scale),
+    height: Math.round(height * scale),
+    widths: fitted,
+  };
+}
+
 /** Filenames listed in src/data/photos.ts whose files don't exist yet. */
 export function missingPhotos(): string[] {
   return Object.keys(photos).filter((name) => !byName.has(name));

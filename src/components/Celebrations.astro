@@ -8,7 +8,7 @@ import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import SectionHeading from './SectionHeading.astro';
 import { celebrations } from '../data/celebrations';
-import { resolvePhoto } from '../lib/photos';
+import { hasPhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -20,6 +20,14 @@ const t = useTranslations(lang);
 
 const primary = celebrations.filter((c) => c.tier === 'primary');
 const secondary = celebrations.filter((c) => c.tier === 'secondary');
+
+// Line icons for primary cards that don't have a photo yet.
+const primaryIcons: Record<string, string> = {
+  quinceanera: 'crown',
+  'sweet-16': 'cake',
+  graduation: 'sparkle',
+  birthday: 'gift',
+};
 
 const icons: Record<string, string> = {
   wedding: 'rings',
@@ -44,31 +52,53 @@ const icons: Record<string, string> = {
     />
 
     <ul class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-      {primary.map((c) => (
-        <li class="flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
-          <Photo
-            file={c.image}
-            lang={lang}
-            label={c.name[lang]}
-            altOverride={c.imageAlt}
-            width={600}
-            height={500}
-            widths={[300, 450, 600]}
-            sizes="(min-width: 1280px) 290px, (min-width: 1024px) 23vw, 46vw"
-          />
-          <div class="flex flex-1 flex-col border-t border-gold-deep/60 p-3.5 sm:p-5">
-            <h3 class="text-base leading-snug font-semibold text-gold-soft sm:text-xl">
-              {c.name[lang]}
-            </h3>
-            <p class="mt-1.5 text-sm text-cream/85 sm:text-base">{c.description[lang]}</p>
-          </div>
-        </li>
-      ))}
+      {primary.map((c) =>
+        hasPhoto(c.image) ? (
+          <li class="flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
+            <Photo
+              file={c.image}
+              lang={lang}
+              altOverride={c.imageAlt}
+              width={600}
+              height={500}
+              widths={[300, 450, 600]}
+              sizes="(min-width: 1280px) 290px, (min-width: 1024px) 23vw, 46vw"
+            />
+            <div class="flex flex-1 flex-col border-t border-gold-deep/60 p-3.5 sm:p-5">
+              <h3 class="text-base leading-snug font-semibold text-gold-soft sm:text-xl">
+                {c.name[lang]}
+              </h3>
+              <p class="mt-1.5 text-sm text-cream/85 sm:text-base">{c.description[lang]}</p>
+            </div>
+          </li>
+        ) : (
+          /* No photo: an elegant framed text card, same size as the photo cards. */
+          <li class="celebration-text-card relative flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
+            <div
+              class="pointer-events-none absolute inset-2 rounded-md border border-gold-deep/60"
+              aria-hidden="true"
+            />
+            <div class="relative flex flex-1 flex-col items-center justify-center px-4 py-8 text-center sm:px-6 sm:py-10">
+              <span class="flex size-14 items-center justify-center rounded-full border border-gold/70 text-gold sm:size-20">
+                <Icon
+                  name={primaryIcons[c.id] ?? 'sparkle'}
+                  class="size-7 sm:size-10"
+                  strokeWidth={1.25}
+                />
+              </span>
+              <hr class="gold-rule mt-5 max-w-20" />
+              <h3 class="mt-4 text-base leading-snug font-semibold text-gold-soft sm:text-xl">
+                {c.name[lang]}
+              </h3>
+              <p class="mt-1.5 text-sm text-cream/85 sm:text-base">{c.description[lang]}</p>
+            </div>
+          </li>
+        ),
+      )}
     </ul>
 
     <ul class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {secondary.map((c) => {
-        const photo = resolvePhoto(c.image, lang, c.imageAlt);
         return (
           <li
             class:list={[
@@ -79,18 +109,15 @@ const icons: Record<string, string> = {
             ]}
           >
             {/* Small photo only once the real file exists — these are text cards. */}
-            {photo?.src && (
-              <Photo
-                file={c.image}
-                lang={lang}
-                label={c.name[lang]}
-                altOverride={c.imageAlt}
-                width={600}
-                height={300}
-                widths={[300, 600]}
-                sizes="(min-width: 1024px) 290px, (min-width: 640px) 46vw, 100vw"
-              />
-            )}
+            <Photo
+              file={c.image}
+              lang={lang}
+              altOverride={c.imageAlt}
+              width={600}
+              height={300}
+              widths={[300, 600]}
+              sizes="(min-width: 1024px) 290px, (min-width: 640px) 46vw, 100vw"
+            />
             <div class="flex flex-1 flex-col p-5 sm:p-6">
               {c.gentle ? (
                 <Icon

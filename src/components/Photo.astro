@@ -1,21 +1,19 @@
 ---
 /**
  * One of Verónica's photos from src/assets/photos/ (listed in src/data/photos.ts).
- * Renders an optimized WebP with explicit width/height (no layout shift), lazy-loaded unless
- * `priority`. If the file hasn't been added yet, shows a neutral dark wood-tone placeholder
- * with the item name — never stock imagery.
+ * Renders an optimized WebP with explicit width/height (no layout shift), cropped to the given
+ * aspect ratio, lazy-loaded unless `priority`. Renders nothing if the file doesn't exist yet —
+ * the surrounding card decides how to look without a photo (use `hasPhoto()`).
  */
 import { Image } from 'astro:assets';
-import { resolvePhoto } from '../lib/photos';
+import { fitSize, resolvePhoto } from '../lib/photos';
 import type { L10n } from '../data/types';
-import { useTranslations, type Lang } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
 
 interface Props {
   file: string | undefined;
   lang: Lang;
-  /** Shown on the placeholder until the photo exists. */
-  label: string;
-  /** Output size; sets the aspect ratio (the photo is cropped to fit). */
+  /** Requested output size; sets the aspect ratio (the photo is cropped to fit). */
   width: number;
   height: number;
   widths: number[];
@@ -28,7 +26,6 @@ interface Props {
 const {
   file,
   lang,
-  label,
   width,
   height,
   widths,
@@ -37,31 +34,23 @@ const {
   priority = false,
   class: className = '',
 } = Astro.props;
-const t = useTranslations(lang);
 const photo = resolvePhoto(file, lang, altOverride);
+const size = photo?.src ? fitSize(photo.src, width, height, widths) : undefined;
 ---
 
-{photo?.src ? (
+{photo?.src && size && (
   <Image
     src={photo.src}
     alt={photo.alt}
-    width={width}
-    height={height}
-    widths={widths}
+    width={size.width}
+    height={size.height}
+    widths={size.widths}
     sizes={sizes}
     format="webp"
+    quality={68}
     fit="cover"
     position={photo.position}
     priority={priority}
-    class:list={['h-auto w-full object-cover', className]}
+    class:list={['w-full object-cover', !/\bh-/.test(className) && 'h-auto', className]}
   />
-) : (
-  <div
-    class:list={['photo-placeholder', className]}
-    style={`aspect-ratio: ${width} / ${height}`}
-    aria-hidden="true"
-  >
-    <span class="font-serif text-lg leading-snug text-cream/90">{label}</span>
-    <span class="mt-1 text-xs tracking-widest text-cream/60 uppercase">{t.photoComingSoon}</span>
-  </div>
 )}

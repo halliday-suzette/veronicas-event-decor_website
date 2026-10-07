@@ -3,9 +3,11 @@
  * Add-Ons (#add-ons): feature photo, then a card for every published add-on in
  * src/data/inventory.ts. The grid wraps, so it works for 3 items or 12+.
  */
+import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import SectionHeading from './SectionHeading.astro';
 import { publishedItems } from '../data/inventory';
+import { hasPhoto } from '../lib/photos';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -15,7 +17,14 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const addOns = publishedItems.filter((i) => i.category === 'add-ons');
+// Shown above the cards once the file is in src/assets/photos/.
 const FEATURE_PHOTO = 'balloons-cowgirl-shower.jpg';
+// Line icons for add-ons without a photo yet.
+const addOnIcons: Record<string, string> = {
+  'photo-booth': 'camera',
+  'balloon-garlands': 'sparkle',
+  'neon-signs': 'sparkle',
+};
 ---
 
 <section id="add-ons" aria-labelledby="add-ons-title" class="section-linen py-20 sm:py-24 lg:py-28">
@@ -28,32 +37,41 @@ const FEATURE_PHOTO = 'balloons-cowgirl-shower.jpg';
       intro={t.addOns.intro}
     />
 
-    <div class="overflow-hidden rounded-lg shadow-soft">
-      <Photo
-        file={FEATURE_PHOTO}
-        lang={lang}
-        label={t.addOns.title}
-        width={1600}
-        height={700}
-        widths={[640, 960, 1280, 1600]}
-        sizes="(min-width: 1280px) 1216px, calc(100vw - 2.5rem)"
-      />
-    </div>
+    {hasPhoto(FEATURE_PHOTO) && (
+      <div class="mx-auto mb-6 max-w-5xl overflow-hidden rounded-lg shadow-soft">
+        <Photo
+          file={FEATURE_PHOTO}
+          lang={lang}
+          width={1200}
+          height={700}
+          widths={[640, 960, 1200]}
+          sizes="(min-width: 1024px) 1024px, calc(100vw - 2.5rem)"
+        />
+      </div>
+    )}
 
-    <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {addOns.map((item) => (
         <li class="flex flex-col overflow-hidden rounded-lg border border-whiskey-light/60 bg-white/60 shadow-soft">
-          {item.image && (
+          {hasPhoto(item.image) ? (
             <Photo
               file={item.image}
               lang={lang}
-              label={item.name[lang]}
               altOverride={item.imageAlt}
               width={600}
               height={400}
               widths={[300, 450, 600]}
               sizes="(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, calc(100vw - 2.5rem)"
             />
+          ) : (
+            /* No photo yet: a dark band with a gold line icon, same height as a photo. */
+            <div
+              class="relative flex aspect-[3/2] items-center justify-center bg-onyx text-gold"
+              aria-hidden="true"
+            >
+              <div class="absolute inset-2 rounded-md border border-gold-deep/60" />
+              <Icon name={addOnIcons[item.id] ?? 'sparkle'} class="size-14" strokeWidth={1} />
+            </div>
           )}
           <div class="flex-1 p-6">
             <h3 class="text-xl font-semibold text-whiskey-dark">{item.name[lang]}</h3>

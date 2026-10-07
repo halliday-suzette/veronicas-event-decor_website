@@ -41,9 +41,14 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   (filename → alt text, gallery order). Keep `src/data/` free of Vite-only APIs so
   `check-i18n.ts` can import it with plain Node.
 - **Photos:** `src/assets/photos/<exact filename>`. `src/lib/photos.ts` (`import.meta.glob`)
-  resolves them; `Photo.astro` renders WebP with explicit width/height (lazy unless `priority`) or
-  a wood-tone placeholder if the file is missing. Never stock/AI images, licensed characters, or
-  children's names without approval.
+  resolves them (`hasPhoto`, `fitSize` — never upscale; the source photos are ~900px wide);
+  `Photo.astro` renders WebP (quality 68) with explicit width/height, lazy unless `priority`, and
+  renders **nothing** if the file is missing — cards switch to finished text layouts (no
+  placeholders or "coming soon" text). Never stock/AI images, licensed characters, or children's
+  names; `balloons-rodeo-first-birthday.jpg` is permanently excluded.
+- **Photo privacy (public repo):** before adding any photo, re-encode it with `sharp` (no
+  `.withMetadata()`/`.keepMetadata()`) so EXIF/GPS/XMP/ICC/IPTC are stripped, and verify. Keep
+  originals outside the repo — `Photos/` is git-ignored.
 - `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es,
   x-default), LocalBusiness JSON-LD (+ extra blocks via `structuredData` prop), skip link.
 - `src/config/site.ts`: phone/email (`null` = hidden everywhere, incl. JSON-LD), Instagram,
