@@ -1,0 +1,59 @@
+---
+/**
+ * Veronica's Event Decor logo.
+ *
+ *   variant="full"    — complete logo with filigree (hero, footer)
+ *   variant="compact" — center wordmark band only (header, mobile menu);
+ *                       generated from logo.png by `npm run logo`
+ *
+ * TODO: A vector (SVG) logo would be sharper and smaller. If one exists, save it as
+ * src/assets/images/logo.svg (and logo-wordmark.svg), change the two imports below,
+ * and the rest of the site picks it up — this is the only file that needs to change.
+ */
+import { Picture } from 'astro:assets';
+import logoFull from '../assets/images/logo.png';
+import logoWordmark from '../assets/images/logo-wordmark.png';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  variant?: 'full' | 'compact';
+  /** Load immediately with high priority (use for the hero logo only). */
+  priority?: boolean;
+  /** Decorative copies (e.g. a second logo next to visible brand text) get alt="". */
+  decorative?: boolean;
+  class?: string;
+}
+
+const {
+  lang,
+  variant = 'full',
+  priority = false,
+  decorative = false,
+  class: className = '',
+} = Astro.props;
+const t = useTranslations(lang);
+const alt = decorative ? '' : t.logoAlt;
+---
+
+{variant === 'full' ? (
+  <Picture
+    src={logoFull}
+    alt={alt}
+    formats={['avif', 'webp']}
+    widths={[360, 560, 720, 960, 1280, 1440]}
+    sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, calc(100vw - 2.5rem)"
+    priority={priority}
+    class:list={['h-auto w-full', className]}
+  />
+) : (
+  <Picture
+    src={logoWordmark}
+    alt={alt}
+    formats={['avif', 'webp']}
+    widths={[170, 220, 340, 440]}
+    sizes="(min-width: 1024px) 220px, 165px"
+    priority={priority}
+    class:list={['h-12 w-auto lg:h-16', className]}
+  />
+)}

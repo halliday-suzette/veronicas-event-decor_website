@@ -1,0 +1,46 @@
+---
+/**
+ * Section heading: flourish, small western-style eyebrow, serif <h2>, optional intro.
+ * `tone` matches the section background so text keeps WCAG AA contrast
+ * (gold text only on dark backgrounds; whiskey browns on light).
+ */
+import Flourish from './Flourish.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  tone?: 'dark' | 'light';
+  /** id for the <h2>, so the section can use aria-labelledby. */
+  id: string;
+}
+
+const { eyebrow, title, intro, tone = 'dark', id } = Astro.props;
+const dark = tone === 'dark';
+---
+
+<header class="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
+  <Flourish class={dark ? 'text-gold' : 'text-gold-deep'} />
+  <p
+    class:list={[
+      'mt-4 font-western text-xs tracking-[0.2em] uppercase sm:text-sm',
+      dark ? 'text-gold' : 'text-whiskey',
+    ]}
+  >
+    {eyebrow}
+  </p>
+  <h2
+    id={id}
+    class:list={[
+      'mt-3 text-3xl leading-tight font-semibold sm:text-4xl lg:text-5xl',
+      dark ? 'text-gold-soft' : 'text-whiskey-dark',
+    ]}
+  >
+    {title}
+  </h2>
+  {intro && (
+    <p class:list={['mx-auto mt-5 max-w-2xl text-lg', dark ? 'text-cream/85' : 'text-charcoal/85']}>
+      {intro}
+    </p>
+  )}
+</header>

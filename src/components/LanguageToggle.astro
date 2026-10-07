@@ -1,0 +1,48 @@
+---
+/**
+ * EN | ES toggle. Links go to the other language's page; a small script in Header.astro
+ * adds the current section anchor on click, so visitors stay on the same section.
+ */
+import { languages, localePath, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+
+const { lang, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+const codes = Object.keys(languages) as Lang[];
+---
+
+<div
+  role="group"
+  aria-label={t.language.label}
+  class:list={['flex items-center font-sans text-sm font-bold tracking-wider', className]}
+>
+  {codes.map((code, i) => (
+    <>
+      {i > 0 && (
+        <span class="px-0.5 text-gold-deep" aria-hidden="true">
+          |
+        </span>
+      )}
+      <a
+        href={localePath(code)}
+        lang={code}
+        hreflang={code}
+        aria-label={languages[code]}
+        aria-current={code === lang ? 'page' : undefined}
+        data-lang-switch={code === lang ? undefined : code}
+        class:list={[
+          'inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-1.5 uppercase transition',
+          code === lang
+            ? 'text-gold-soft underline decoration-gold decoration-2 underline-offset-6'
+            : 'text-cream/80 hover:text-gold-soft',
+        ]}
+      >
+        {code}
+      </a>
+    </>
+  ))}
+</div>

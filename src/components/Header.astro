@@ -1,0 +1,119 @@
+---
+import Icon from './Icon.astro';
+import InstagramIcon from './InstagramIcon.astro';
+import LanguageToggle from './LanguageToggle.astro';
+import Logo from './Logo.astro';
+import MobileMenu from './MobileMenu.astro';
+import { site } from '../config/site';
+import { navLinks, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-gold-deep/40 bg-onyx/95 backdrop-blur supports-[backdrop-filter]:bg-onyx/85"
+>
+  <div class="mx-auto flex h-[var(--header-h)] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+    <a href="#home" class="shrink-0 rounded-md">
+      <Logo lang={lang} variant="compact" priority />
+    </a>
+
+    <nav aria-label={t.nav.label} class="hidden xl:block">
+      <ul class="flex items-center gap-1">
+        {navLinks(t).map((link) => (
+          <li>
+            <a
+              href={`#${link.id}`}
+              class="inline-flex min-h-11 items-center rounded-md px-3 text-[0.95rem] text-cream/90 transition hover:text-gold-soft"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-1 sm:gap-2">
+      <LanguageToggle lang={lang} />
+      <a
+        href={site.instagram.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t.instagram.label}
+        class="hidden size-11 items-center justify-center rounded-md text-gold-soft transition hover:bg-gold/10 hover:text-gold sm:inline-flex"
+      >
+        <InstagramIcon class="size-6" />
+      </a>
+      <a href="#quote" class="btn-gold hidden px-5 sm:inline-flex">
+        {t.cta.quote}
+      </a>
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex size-11 items-center justify-center rounded-md text-gold-soft transition hover:bg-gold/10 xl:hidden"
+        aria-label={t.nav.openMenu}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Icon name="menu" class="size-7" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu lang={lang} />
+
+<script>
+  // ---- Mobile menu --------------------------------------------------------
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  if (toggle && menu instanceof HTMLDialogElement) {
+    toggle.addEventListener('click', () => {
+      menu.showModal();
+      toggle.setAttribute('aria-expanded', 'true');
+    });
+
+    // Fires for the close button, link clicks and Escape alike.
+    menu.addEventListener('close', () => toggle.setAttribute('aria-expanded', 'false'));
+
+    menu.querySelector('[data-menu-close]')?.addEventListener('click', () => menu.close());
+
+    // Close first, then let the browser follow the anchor link.
+    menu.querySelectorAll('[data-menu-link]').forEach((link) => {
+      link.addEventListener('click', () => menu.close());
+    });
+
+    // Close if the screen grows to desktop size while the menu is open.
+    window.matchMedia('(min-width: 80rem)').addEventListener('change', (e) => {
+      if (e.matches && menu.open) menu.close();
+    });
+  }
+
+  // ---- Language toggle keeps the current section ---------------------------
+  const header = document.getElementById('site-header');
+
+  function currentSectionId(): string | null {
+    const offset = (header?.offsetHeight ?? 0) + window.innerHeight * 0.25;
+    let current: string | null = null;
+    document.querySelectorAll<HTMLElement>('main section[id]').forEach((section) => {
+      if (section.getBoundingClientRect().top <= offset) current = section.id;
+    });
+    return current;
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('a[data-lang-switch]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const id = currentSectionId();
+      const url = new URL(link.href);
+      url.hash = id && id !== 'home' ? id : '';
+      link.href = url.href;
+    });
+  });
+</script>

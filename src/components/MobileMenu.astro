@@ -1,0 +1,103 @@
+---
+/**
+ * Full-screen mobile menu, built on a native <dialog> opened with showModal():
+ * the browser traps focus inside, closes it on Escape, and returns focus to the
+ * menu button. The open/close wiring lives in Header.astro.
+ */
+import Icon from './Icon.astro';
+import InstagramIcon from './InstagramIcon.astro';
+import LanguageToggle from './LanguageToggle.astro';
+import Logo from './Logo.astro';
+import { site } from '../config/site';
+import { navLinks, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<dialog
+  id="mobile-menu"
+  aria-labelledby="mobile-menu-title"
+  class="mobile-menu m-0 h-dvh max-h-none w-full max-w-none bg-onyx p-0 text-cream"
+>
+  <div class="flex h-full flex-col px-5 pt-3 pb-8 sm:px-8">
+    <div class="flex items-center justify-between gap-4 border-b border-gold-deep/40 pb-3">
+      <a href="#home" data-menu-link class="rounded-md">
+        <Logo lang={lang} variant="compact" />
+      </a>
+      <h2 id="mobile-menu-title" class="sr-only">
+        {t.nav.menuTitle}
+      </h2>
+      <button
+        type="button"
+        data-menu-close
+        class="inline-flex size-11 items-center justify-center rounded-md text-gold-soft transition hover:bg-gold/10"
+        aria-label={t.nav.closeMenu}
+      >
+        <Icon name="close" class="size-7" />
+      </button>
+    </div>
+
+    <nav aria-label={t.nav.label} class="mt-6 flex-1 overflow-y-auto">
+      <ul class="space-y-1">
+        {navLinks(t).map((link) => (
+          <li>
+            <a
+              href={`#${link.id}`}
+              data-menu-link
+              class="flex min-h-12 items-center rounded-md px-2 font-serif text-2xl text-cream transition hover:bg-gold/10 hover:text-gold-soft"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="mt-6 space-y-5 border-t border-gold-deep/40 pt-6">
+      <a href="#quote" data-menu-link class="btn-gold w-full">
+        {t.cta.quote}
+      </a>
+      <div class="flex items-center justify-between">
+        <LanguageToggle lang={lang} />
+        <a
+          href={site.instagram.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t.instagram.label}
+          class="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-gold-soft transition hover:text-gold"
+        >
+          <InstagramIcon class="size-6" />
+          <span class="text-sm">{site.instagram.handle}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .mobile-menu::backdrop {
+    background: rgb(20 18 16 / 0.7);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-menu[open] {
+      animation: menu-in 180ms ease-out;
+    }
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  :global(html:has(.mobile-menu[open])) {
+    overflow: hidden;
+  }
+</style>
