@@ -17,9 +17,9 @@ photos showing a child's name. `balloons-rodeo-first-birthday.jpg` is permanentl
 
 | Filename                                | Used for                                                   |
 | --------------------------------------- | ---------------------------------------------------------- |
-| `barrels-umbrellas-backyard.jpg`        | Hero background; Signature Barrel Tables                   |
+| `barrels-umbrellas-backyard.jpg`        | Signature Barrel Tables                                    |
 | `barrel-table-umbrella-stools.jpg`      | Matching Barstools; Gallery (1st)                          |
-| `barrels-umbrellas-patio-dusk.jpg`      | Weddings card; Gallery                                     |
+| `barrels-umbrellas-patio-dusk.jpg`      | Hero background; Weddings card; Gallery                    |
 | `barrels-umbrellas-ranch.jpg`           | Gallery                                                    |
 | `barrels-stools-lawn.jpg`               | Not shown right now (available)                            |
 | `barrel-bar-wagon-wheel.jpg`            | Barrel Bar                                                 |

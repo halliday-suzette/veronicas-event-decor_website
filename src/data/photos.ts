@@ -195,12 +195,12 @@ export const photos: Record<string, PhotoInfo> = {
 };
 
 /** Hero background photo; also the WebPage `primaryImageOfPage` in the structured data. */
-export const heroPhoto = 'barrels-umbrellas-backyard.jpg';
+export const heroPhoto = 'barrels-umbrellas-patio-dusk.jpg';
 
 /**
  * Gallery order (12 photos). Leads with barrel tables, then mixes backdrops, bars, carts and a
  * couple of balloon setups (balloons shouldn't dominate). Only photos whose files exist show.
- * Also in src/assets/photos/ but not in the gallery: barrels-umbrellas-backyard (hero),
+ * Also in src/assets/photos/ but not in the gallery: barrels-umbrellas-backyard (Signature),
  * barrels-stools-lawn, wood-backdrop-birthday-salud, barrel-bar-wagon-wheel,
  * balloons-graduation-arch, balloons-sunflower-gold, balloons-bee-column, dessert-cart-greenery,
  * western-bar-hay-bale-longhorn (wide; used on its card).
