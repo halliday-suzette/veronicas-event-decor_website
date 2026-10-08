@@ -22,6 +22,8 @@ export interface SiteConfig {
   /** `null` hides it everywhere. */
   email: string | null;
   instagram: { handle: string; url: string };
+  /** Web designer's site, linked from the footer credit. */
+  creditUrl: string;
   /** Google Business Profile URL; added to JSON-LD `sameAs` when set. */
   googleBusinessProfileUrl: string | null;
   serviceArea: {
@@ -56,6 +58,8 @@ export const site: SiteConfig = {
     handle: '@veronica_eventdecor',
     url: 'https://www.instagram.com/veronica_eventdecor/',
   },
+
+  creditUrl: 'https://hallidayinc.com/',
 
   // TODO(suzette): add GBP URL after profile is live.
   googleBusinessProfileUrl: null,

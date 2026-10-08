@@ -343,7 +343,10 @@ export const en = {
     callOrText: 'Call or Text',
     textLabel: 'Text us',
     emailLabel: 'Email',
-    credit: 'Website by Halliday',
+    // Footer credit: "Website by" + a link to the web designer (URL in src/config/site.ts).
+    credit: 'Website by',
+    creditLink: 'Halliday Inc.',
+    creditLinkLabel: 'Halliday Inc. (opens in a new tab)',
   },
 };
 

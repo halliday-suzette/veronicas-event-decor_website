@@ -340,6 +340,8 @@ export const es: Translations = {
     callOrText: 'Llama o manda mensaje',
     textLabel: 'Mándanos mensaje',
     emailLabel: 'Correo',
-    credit: 'Sitio web por Halliday',
+    credit: 'Sitio web por',
+    creditLink: 'Halliday Inc.',
+    creditLinkLabel: 'Halliday Inc. (se abre en una pestaña nueva)',
   },
 };
