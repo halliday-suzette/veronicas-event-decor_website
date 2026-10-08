@@ -49,11 +49,13 @@ export const es: Translations = {
   },
 
   hero: {
-    eyebrow: 'Negocio de una mujer latina · Atendemos en inglés y en español · Pomona, CA',
-    title: 'Mesas de barril hechas a mano y renta de mobiliario rústico western',
+    eyebrow: 'Negocio de una emprendedora latina · Atención bilingüe · Pomona, CA',
+    title: 'Renta de mesas artesanales de barril y mobiliario rústico estilo western',
     subtitle:
-      'Renta de mobiliario rústico western y decoración estilo rancho para tu quinceañera, sweet 16, graduaciones, cumpleaños y todas tus celebraciones — te lo llevamos y lo montamos en el Inland Empire, Orange County y Riverside.',
-    primary: 'Revisa disponibilidad y cotiza',
+      'Dale un toque rústico y elegante a tu celebración con nuestras mesas artesanales de barril de whisky, mobiliario estilo rancho y decoración western.\n\n' +
+      'Ideales para quinceañeras, fiestas de 16 años, graduaciones, cumpleaños y todo tipo de eventos especiales.\n\n' +
+      'Ofrecemos servicio de entrega y montaje en el Inland Empire, el condado de Orange y Riverside.',
+    primary: 'Consulta disponibilidad y solicita tu cotización',
     secondary: 'Mira lo que rentamos',
   },
 

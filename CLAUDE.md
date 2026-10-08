@@ -99,8 +99,9 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   language, muted card styling.
 - **Keywords (SEO/AEO/GEO):** primary "rustic western party rentals" / "renta de mobiliario rústico
   western", secondary "western farmhouse décor" / "decoración (western) estilo rancho". Max 2–3
-  visible uses of each per page (currently exactly 3 primary per page: hero subtitle, catalog H3,
-  Our Story / ES: H1, hero subtitle, catalog H3). "Farmhouse"/"estilo rancho" only on weddings,
+  visible uses of each per page (currently EN: 3 — hero subtitle, catalog H3, Our Story; ES: 1 —
+  catalog H3, because the ES hero uses the client's own wording since 2026-10-08 — the ES
+  `<title>`/description still carry the phrase). "Farmhouse"/"estilo rancho" only on weddings,
   baby showers, wood & arched backdrops, dessert pieces/table (plus the hero, definition and
   "styles" FAQ). Western stays the lead identity. No stuffing, hidden text or keyword lists.
 - **Business definition** = `about.definition` (first sentence of Our Story); it's also the

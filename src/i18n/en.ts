@@ -49,6 +49,7 @@ export const en = {
   hero: {
     eyebrow: 'Latina Woman-Owned · Bilingual Service · Pomona, CA',
     title: 'Handcrafted Whiskey Barrel Tables & Rustic Western Rentals',
+    // A blank line ("\n\n") starts a new paragraph.
     subtitle:
       'Rustic western party rentals and western farmhouse décor for quinceañeras, sweet 16s, graduations, birthdays and every celebration in between — delivered and set up across the Inland Empire, Orange County and Riverside.',
     primary: 'Check Availability & Get a Quote',
