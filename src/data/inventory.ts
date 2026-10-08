@@ -54,8 +54,8 @@ export const inventory: InventoryItem[] = [
     category: 'barrel-tables',
     name: { en: 'Whiskey Barrel Cocktail Tables', es: 'Mesas de barril altas' },
     description: {
-      en: 'Tall, handcrafted barrel tables, perfect for mingling, toasts and dessert plates.',
-      es: 'Mesas de barril hechas a mano, perfectas para convivir, brindar y disfrutar el postre.',
+      en: 'Tall, handcrafted barrel tables that come with matching barstools and a patio umbrella, perfect for mingling, toasts and dessert plates.',
+      es: 'Mesas de barril hechas a mano que vienen con sus bancos altos y sombrilla, perfectas para convivir, brindar y disfrutar el postre.',
     },
     image: 'barrels-umbrellas-backyard.jpg',
     finishes: ['light', 'dark'],
@@ -71,23 +71,13 @@ export const inventory: InventoryItem[] = [
       en: 'Black metal barstools with warm wood seats that pair perfectly with our barrel tables.',
       es: 'Bancos de metal negro con asiento de madera que combinan perfecto con nuestras mesas de barril.',
     },
-    // Clear product shot: one table, three stools (the lawn photo now shows the umbrellas).
+    // Clear product shot: one table, three stools.
     image: 'barrel-table-umbrella-stools.jpg',
     showInForm: true,
     published: true,
   },
-  {
-    id: 'patio-umbrellas',
-    category: 'barrel-tables',
-    name: { en: 'Patio Umbrellas', es: 'Sombrillas' },
-    description: {
-      en: 'Shade for your guests at outdoor celebrations.',
-      es: 'Sombra para tus invitados en fiestas al aire libre.',
-    },
-    image: 'barrels-stools-lawn.jpg',
-    showInForm: true,
-    published: true,
-  },
+  // Patio umbrellas aren't a separate rental: the barrel cocktail tables come with their
+  // matching barstools and umbrella (per Verónica), so there's no umbrella item or form option.
 
   // ---- Bars & Carts ---------------------------------------------------------------------
   {

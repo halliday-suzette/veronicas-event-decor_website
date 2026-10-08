@@ -21,7 +21,7 @@ photos showing a child's name. `balloons-rodeo-first-birthday.jpg` is permanentl
 | `barrel-table-umbrella-stools.jpg`      | Matching Barstools; Gallery (1st)                          |
 | `barrels-umbrellas-patio-dusk.jpg`      | Weddings card; Gallery                                     |
 | `barrels-umbrellas-ranch.jpg`           | Gallery                                                    |
-| `barrels-stools-lawn.jpg`               | Patio Umbrellas                                            |
+| `barrels-stools-lawn.jpg`               | Not shown right now (available)                            |
 | `barrel-bar-wagon-wheel.jpg`            | Barrel Bar                                                 |
 | `barrel-buffet-table-setup.jpg`         | Gallery; (unpublished) Barrel Buffet Table                 |
 | `western-bar-hay-bale-longhorn.jpg`     | Western Longhorn Bar (cropped from the left)               |

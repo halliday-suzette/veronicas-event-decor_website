@@ -87,8 +87,8 @@ export const faq: FaqItem[] = [
     id: 'outdoor',
     question: { en: 'Do you do outdoor events?', es: '¿Hacen eventos al aire libre?' },
     answer: {
-      en: 'Yes. Our barrel tables are made for backyards, ranches and patios, and we have patio umbrellas for shade.',
-      es: 'Sí. Nuestras mesas de barril son ideales para patios, ranchos y jardines, y tenemos sombrillas para dar sombra.',
+      en: 'Yes. Our barrel tables are made for backyards, ranches and patios, and they come with patio umbrellas for shade.',
+      es: 'Sí. Nuestras mesas de barril son ideales para patios, ranchos y jardines, y vienen con sombrillas para dar sombra.',
     },
   },
   {

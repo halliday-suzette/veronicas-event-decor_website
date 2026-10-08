@@ -76,7 +76,7 @@ export const es: Translations = {
       title: 'Acabado oscuro',
       text: 'Un tono profundo y elegante que le da un toque especial a cualquier montaje.',
     },
-    pairLine: 'Complétalas con nuestros bancos altos y sombrillas para armar un lounge completo.',
+    pairLine: 'Cada mesa viene con sus bancos altos y su sombrilla para armar un lounge completo.',
     specQuantity: 'Disponibles',
     specDimensions: 'Medidas',
   },
@@ -163,7 +163,11 @@ export const es: Translations = {
       {
         title: 'Lounge de barriles',
         text: 'Un espacio relajado para convivir, platicar y brindar.',
-        includes: ['Mesas de barril altas', 'Bancos altos', 'Sombrillas'],
+        includes: [
+          'Mesas de barril altas con bancos y sombrillas',
+          'Barra de barriles',
+          'Accesorios rústicos',
+        ],
       },
       {
         title: 'Backdrop western',

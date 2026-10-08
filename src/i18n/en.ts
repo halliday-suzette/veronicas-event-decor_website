@@ -76,7 +76,8 @@ export const en = {
       title: 'Dark Whiskey Finish',
       text: 'A rich, deep finish that brings a bold, elegant look to any setup.',
     },
-    pairLine: 'Pair them with our matching barstools and patio umbrellas for a complete lounge.',
+    pairLine:
+      'Every table comes with its matching barstools and a patio umbrella for a complete lounge.',
     specQuantity: 'Available',
     specDimensions: 'Size',
   },
@@ -163,7 +164,11 @@ export const en = {
       {
         title: 'Barrel Bar Lounge',
         text: 'A relaxed gathering spot for drinks and conversation.',
-        includes: ['Whiskey barrel cocktail tables', 'Matching barstools', 'Patio umbrellas'],
+        includes: [
+          'Whiskey barrel cocktail tables with barstools & umbrellas',
+          'Barrel bar',
+          'Rustic accessories',
+        ],
       },
       {
         title: 'Western Backdrop Showcase',
