@@ -1,38 +1,45 @@
 /**
- * Hero background photo settings, shared by Hero.astro and the <head> preload so both use the
- * exact same responsive URLs (no double download).
+ * Hero photo settings, shared by Hero.astro and the <head> preload so both use the exact same
+ * responsive URLs (no double download).
  *
- * The photo only shows from 640px up (on phones it's barely visible under the dark overlay, and
- * the logo is the LCP element there), so its <source> and preload carry this media query and
- * phones never request it. On tablets/desktops it's the largest element → eager + high priority.
+ * The hero photo (`heroPhoto` in src/data/photos.ts) is a real photo of Verónica's whiskey barrel
+ * tables, shown on every screen size and cropped to 4:3. It's the page's LCP element, so it's
+ * preloaded (AVIF) and rendered eager with high priority.
  */
 import { getImage } from 'astro:assets';
 import { heroPhoto } from '../data/photos';
+import type { Locale } from '../data/types';
 import { fitSize, resolvePhoto } from './photos';
 
-export const HERO_BG_MEDIA = '(min-width: 640px)';
-export const HERO_BG_SIZES = '100vw';
+/** Full width minus the page gutters on phones; capped at max-w-2xl on tablets; a column on desktop. */
+export const HERO_SIZES =
+  '(min-width: 1280px) 600px, (min-width: 1024px) 48vw, (min-width: 640px) 42rem, calc(100vw - 2.5rem)';
 
-export async function heroBackground() {
-  const photo = resolvePhoto(heroPhoto, 'en');
+export async function heroImage(lang: Locale) {
+  const photo = resolvePhoto(heroPhoto, lang);
   if (!photo?.src) return undefined;
-  const size = fitSize(photo.src, 1920, 1080, [640, 960, 1280, 1920]);
-  const image = await getImage({
+  // Never upscales: the source is ~900px wide, so the largest file is the photo's own width.
+  const size = fitSize(photo.src, 1200, 900, [480, 640, 800, 1200]);
+  const options = {
     src: photo.src,
     width: size.width,
     height: size.height,
     widths: size.widths,
-    sizes: HERO_BG_SIZES,
-    format: 'webp',
-    fit: 'cover',
-    // Sits under an 80% dark overlay, so a lighter file looks identical.
-    quality: 55,
-  });
+    sizes: HERO_SIZES,
+    fit: 'cover' as const,
+  };
+  const [avif, webp] = await Promise.all([
+    getImage({ ...options, format: 'avif', quality: 50 }),
+    getImage({ ...options, format: 'webp', quality: 70 }),
+  ]);
   return {
-    srcset: image.srcSet.attribute,
-    sizes: HERO_BG_SIZES,
-    media: HERO_BG_MEDIA,
+    alt: photo.alt,
+    position: photo.position,
     width: size.width,
     height: size.height,
+    sizes: HERO_SIZES,
+    avifSrcset: avif.srcSet.attribute,
+    webpSrcset: webp.srcSet.attribute,
+    fallbackSrc: webp.src,
   };
 }

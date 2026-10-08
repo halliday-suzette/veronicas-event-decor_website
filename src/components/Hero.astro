@@ -1,11 +1,16 @@
 ---
 /**
- * Hero (#home): background event photo under a dark gradient (for legibility), the lit
- * logo, the H1 and the two calls to action. The photo is `heroPhoto` in src/data/photos.ts;
- * until the file exists, the hero shows the plain onyx background.
+ * Hero (#home): eyebrow, H1, a short intro and the two calls to action, then a real photo of
+ * Verónica's whiskey barrel tables (`heroPhoto` in src/data/photos.ts) and chips for the main
+ * celebrations. The header logo is the brand mark, so the hero has no logo of its own.
+ *
+ *   Phones/tablets: stacked — text, buttons, photo, chips (CTA and part of the photo above the fold).
+ *   Desktop (lg):   text + chips on the left, photo on the right; the hero stays under ~85vh.
+ *
+ * The photo is the LCP element: eager, high priority, and preloaded in <head> (src/lib/hero.ts).
  */
-import Logo from './Logo.astro';
-import { heroBackground } from '../lib/hero';
+import { celebrations } from '../data/celebrations';
+import { heroImage } from '../lib/hero';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -14,10 +19,9 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const background = await heroBackground();
-// 1×1 transparent GIF: the <img> fallback on phones, so no photo is downloaded there.
-const EMPTY_IMAGE =
-  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+const photo = await heroImage(lang);
+// The main celebrations (quinceañeras, sweet 16s, graduations, birthdays), linked to their cards.
+const mainEvents = celebrations.filter((c) => c.tier === 'primary');
 ---
 
 <section
@@ -25,66 +29,87 @@ const EMPTY_IMAGE =
   aria-labelledby="hero-title"
   class="section-dark relative isolate overflow-hidden"
 >
-  {background && (
-    <div class="absolute inset-0 -z-10 hidden sm:block" aria-hidden="true">
-      {/* From 640px up the <source> supplies the photo (largest element → eager, high priority,
-          preloaded in <head>). On phones the empty inline image is used: no request at all. */}
-      <picture>
-        <source
-          media={background.media}
-          srcset={background.srcset}
-          sizes={background.sizes}
-          type="image/webp"
-        />
-        <img
-          src={EMPTY_IMAGE}
-          alt=""
-          width={background.width}
-          height={background.height}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-          class="h-full w-full object-cover"
-        />
-      </picture>
-      {/* Directional overlay: light over the photo/logo, darker behind the text. Strength is
-          set by --hero-overlay-photo / --hero-overlay-text in src/styles/global.css. */}
-      <div class="hero-overlay absolute inset-0" />
-    </div>
-  )}
-
-  <div class="mx-auto grid max-w-7xl items-center gap-8 px-5 pt-8 pb-16 sm:px-6 sm:pt-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:px-8 lg:py-20 xl:py-24">
-    <div class="relative mx-auto w-full max-w-[640px]">
-      <div class="hero-glow absolute -inset-[12%] -z-10 rounded-full" aria-hidden="true"></div>
-      {/* LCP on phones → preloaded, eager, high priority (see src/lib/logo.ts). */}
-      <Logo lang={lang} variant="full" priority />
-    </div>
-
-    <div class="hero-text-shadow text-center lg:text-left">
-      {/* gold-soft (not gold): stays ≥4.5:1 over the brightest part of the photo. */}
-      <p class="font-western text-xs leading-relaxed tracking-[0.16em] text-gold-soft uppercase sm:text-sm">
+  <div class="mx-auto grid max-w-7xl gap-y-7 px-5 pt-6 pb-10 sm:px-6 sm:pt-10 sm:pb-14 lg:grid-cols-[1fr_1.05fr] lg:gap-x-12 lg:gap-y-6 lg:px-8 lg:py-10 xl:gap-x-16 xl:py-12">
+    <div class="text-center lg:col-start-1 lg:row-start-1 lg:self-end lg:text-left">
+      <p
+        data-hero-eyebrow
+        class="font-western text-[0.7rem] leading-relaxed tracking-[0.14em] text-gold-soft uppercase sm:text-sm"
+      >
         {t.hero.eyebrow}
       </p>
       <h1
         id="hero-title"
-        class="mt-4 text-[2rem] leading-[1.15] font-semibold text-cream sm:text-5xl lg:text-[3.1rem] xl:text-[3.4rem]"
+        class="mt-3 text-[1.55rem] leading-[1.15] font-semibold text-cream min-[380px]:text-[1.7rem] min-[400px]:text-[1.85rem] sm:mt-4 sm:text-[2.6rem] lg:text-[2.5rem] xl:text-5xl"
       >
         {t.hero.title}
       </h1>
-      <hr class="gold-rule mx-auto mt-6 max-w-48 lg:mx-0" />
-      <div class="mx-auto mt-6 max-w-xl space-y-3 text-lg text-cream/90 lg:mx-0">
-        {t.hero.subtitle.split('\n\n').map((paragraph) => (
-          <p>{paragraph}</p>
-        ))}
-      </div>
-      <div class="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center lg:justify-start">
-        <a href="#quote" class="btn-gold">
+      <p
+        data-hero-intro
+        class="mx-auto mt-4 max-w-xl text-base text-cream/90 sm:mt-5 sm:text-lg lg:mx-0"
+      >
+        {t.hero.intro}
+      </p>
+      <div class="mt-6 flex flex-col items-center gap-1 sm:flex-row sm:justify-center sm:gap-4 lg:justify-start">
+        <a href="#quote" class="btn-gold w-full sm:w-auto">
           {t.hero.primary}
         </a>
-        <a href="#rentals" class="btn-outline bg-onyx/40">
+        {/* A text link on phones (saves space above the fold); an outline button from 640px. */}
+        <a
+          href="#rentals"
+          class="btn border border-transparent text-gold-soft underline decoration-gold/60 underline-offset-4 hover:decoration-gold-soft sm:border-gold/70 sm:no-underline sm:hover:border-gold-soft sm:hover:bg-gold/10"
+        >
           {t.hero.secondary}
+          <span aria-hidden="true">→</span>
         </a>
       </div>
+    </div>
+
+    {photo && (
+      <div
+        data-hero-photo
+        class="relative mx-auto w-full max-w-2xl lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:max-w-none lg:self-center"
+      >
+        <div class="hero-glow absolute -inset-[10%] -z-10 rounded-full" aria-hidden="true" />
+        {/* Gold double frame, matching the theme's framed cards. */}
+        <div class="rounded-xl border border-gold-deep/60 p-1.5 shadow-soft sm:p-2">
+          <picture>
+            <source type="image/avif" srcset={photo.avifSrcset} sizes={photo.sizes} />
+            <source type="image/webp" srcset={photo.webpSrcset} sizes={photo.sizes} />
+            <img
+              src={photo.fallbackSrc}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[4/3] w-full rounded-lg border border-gold/50 object-cover lg:max-h-[calc(85vh-12rem)]"
+              style={photo.position ? `object-position: ${photo.position}` : undefined}
+            />
+          </picture>
+        </div>
+      </div>
+    )}
+
+    <div class="text-center lg:col-start-1 lg:row-start-2 lg:self-start lg:text-left">
+      <p id="hero-events-label" class="text-sm font-bold tracking-wide text-cream/80">
+        {t.hero.eventsLabel}
+      </p>
+      <ul
+        aria-labelledby="hero-events-label"
+        class="mt-2 flex flex-wrap justify-center gap-2 lg:justify-start"
+      >
+        {mainEvents.map((c) => (
+          <li>
+            <a
+              href={`#celebration-${c.id}`}
+              class="inline-flex min-h-11 items-center rounded-full border border-gold/50 bg-gold/5 px-4 text-sm font-bold text-gold-soft transition hover:border-gold-soft hover:bg-gold/15"
+            >
+              {c.name[lang]}
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
@@ -93,9 +118,8 @@ const EMPTY_IMAGE =
   .hero-glow {
     background: radial-gradient(
       closest-side,
-      rgb(247 210 102 / 0.2),
-      rgb(230 170 30 / 0.12) 45%,
-      rgb(162 104 10 / 0.05) 70%,
+      rgb(247 210 102 / 0.16),
+      rgb(230 170 30 / 0.08) 50%,
       transparent
     );
   }
@@ -108,12 +132,10 @@ const EMPTY_IMAGE =
 
   @keyframes candlelight {
     from {
-      opacity: 0.8;
-      transform: scale(0.98);
+      opacity: 0.75;
     }
     to {
       opacity: 1;
-      transform: scale(1.02);
     }
   }
 </style>

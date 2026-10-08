@@ -2,15 +2,14 @@
 import { getImage } from 'astro:assets';
 import '../styles/global.css';
 // The hero H1 font — preloaded so the headline renders sooner. (Body text is preloaded by nothing:
-// on a slow phone connection a second font preload delays the hero logo, the LCP image.)
+// on a slow phone connection a second font preload delays the hero photo, the LCP image.)
 // Same files the CSS references, so the preload is reused (no double download).
 import playfairUrl from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url';
 import Analytics from '../components/Analytics.astro';
 import { site } from '../config/site';
 import { heroPhoto } from '../data/photos';
 import { resolvePhoto } from '../lib/photos';
-import { heroBackground } from '../lib/hero';
-import { logoPreload } from '../lib/logo';
+import { heroImage } from '../lib/hero';
 import { buildGraph } from '../lib/structured-data';
 import {
   absoluteUrl,
@@ -40,21 +39,20 @@ const otherOgLocales = (Object.keys(languages) as Lang[])
   .filter((l) => l !== lang)
   .map((l) => useTranslations(l).meta.ogLocale);
 
-// Hero preloads — same responsive URLs as the rendered images (no double download):
-// the logo (LCP on phones) and, from 640px up, the background photo (LCP on larger screens).
-const logo = await logoPreload();
-const heroBg = await heroBackground();
+// Hero photo preload (the LCP image on every screen size) — same responsive AVIF URLs as the
+// rendered <picture> (no double download); `type` lets browsers without AVIF skip it.
+const heroPhotoPreload = await heroImage(lang);
 
 // Primary image of the page for the structured data: the hero event photo, if present.
 const hero = resolvePhoto(heroPhoto, lang);
-const heroImage = hero?.src
+const schemaImage = hero?.src
   ? await getImage({ src: hero.src, width: Math.min(1200, hero.src.width), format: 'webp' })
   : undefined;
-const primaryImage = heroImage
+const primaryImage = schemaImage
   ? {
-      url: new URL(heroImage.src, Astro.site).href,
-      width: Number(heroImage.attributes.width),
-      height: Number(heroImage.attributes.height),
+      url: new URL(schemaImage.src, Astro.site).href,
+      width: Number(schemaImage.attributes.width),
+      height: Number(schemaImage.attributes.height),
     }
   : undefined;
 
@@ -78,23 +76,14 @@ const jsonLd = buildGraph({ lang, t, siteUrl: Astro.site, pageUrl: canonical, pr
     <link rel="alternate" hreflang="x-default" href={localeUrl('en', Astro.site)} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 
-    <!-- Critical resources: the hero logo (LCP) and the two above-the-fold fonts. -->
-    <link
-      rel="preload"
-      as="image"
-      type={logo.type}
-      imagesrcset={logo.srcset}
-      imagesizes={logo.sizes}
-      fetchpriority="high"
-    />
-    {heroBg && (
+    <!-- Critical resources: the hero photo (LCP) and the headline font. -->
+    {heroPhotoPreload && (
       <link
         rel="preload"
         as="image"
-        type="image/webp"
-        media={heroBg.media}
-        imagesrcset={heroBg.srcset}
-        imagesizes={heroBg.sizes}
+        type="image/avif"
+        imagesrcset={heroPhotoPreload.avifSrcset}
+        imagesizes={heroPhotoPreload.sizes}
         fetchpriority="high"
       />
     )}

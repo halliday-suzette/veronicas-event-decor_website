@@ -60,7 +60,7 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   real photos from git.
 - `src/layouts/BaseLayout.astro`: `<head>`, meta/OG/Twitter, canonical + hreflang (en, es,
   x-default, codes `en-US`/`es-US` via `hreflangCode()`, same as the sitemap), OG/Twitter,
-  preloads (hero logo AVIF, hero background ≥640px, Playfair font), verification metas, one
+  preloads (hero photo AVIF, Playfair font), verification metas, one
   JSON-LD `@graph` from `src/lib/structured-data.ts` (WebSite, WebPage, LocalBusiness with an
   OfferCatalog generated from inventory, FAQPage from faq.ts), `<Analytics />` only when enabled.
 - `src/config/site.ts`: phone/email (`null` = hidden everywhere, incl. JSON-LD), Instagram,
@@ -99,9 +99,8 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   language, muted card styling.
 - **Keywords (SEO/AEO/GEO):** primary "rustic western party rentals" / "renta de mobiliario rústico
   western", secondary "western farmhouse décor" / "decoración (western) estilo rancho". Max 2–3
-  visible uses of each per page (currently EN: 3 — hero subtitle, catalog H3, Our Story; ES: 1 —
-  catalog H3, because the ES hero uses the client's own wording since 2026-10-08 — the ES
-  `<title>`/description still carry the phrase). "Farmhouse"/"estilo rancho" only on weddings,
+  visible uses of each per page (currently EN: 3 — hero intro, catalog H3, Our Story; ES: 2 —
+  hero intro, catalog H3; the ES H1/eyebrow are the client's own wording). "Farmhouse"/"estilo rancho" only on weddings,
   baby showers, wood & arched backdrops, dessert pieces/table (plus the hero, definition and
   "styles" FAQ). Western stays the lead identity. No stuffing, hidden text or keyword lists.
 - **Business definition** = `about.definition` (first sentence of Our Story); it's also the
@@ -132,11 +131,12 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   classes in `global.css`). `SectionHeading` takes `tone="dark" | "light"` to match.
 - Buttons: `btn-gold`, `btn-outline` (dark bg), `btn-outline-dark` (light bg); min 44px tap targets.
 - Any animation must respect `prefers-reduced-motion`.
-- **Hero photo overlay:** `--hero-overlay-photo` (0.3, photo/logo side) and `--hero-overlay-text`
-  (0.72, behind the text) in `:root` of `global.css`, used by `.hero-overlay` (left→right on
-  desktop, top→bottom when stacked). Hero text has `.hero-text-shadow`; the hero eyebrow is
-  `gold-soft` (plain `gold` fails AA over the sky). After changing either value, re-measure hero
-  text contrast against the rendered photo (worst-case pixel), at 768/1280/1536px.
+- **Hero:** no big logo (the header wordmark is the brand mark). Text sits on solid onyx; the
+  barrel photo (`heroPhoto`, 4:3, gold double frame) is the LCP image — eager, high priority,
+  AVIF preload from `src/lib/hero.ts`. Phones/tablets: eyebrow → H1 → 1–2 sentence intro → CTA
+  (+ "View Rentals" text link on phones) → photo → event chips (`#celebration-<id>` card
+  anchors). Desktop: text + chips left, photo right, hero under 85vh. Keep the intro short: on
+  390×844 and 768×1024 the CTA and part of the photo must stay above the fold, in both languages.
 
 ## Content rules
 
@@ -263,6 +263,17 @@ From the client restructure brief (not a redesign — logo, palette, fonts, Form
   click events; **verification** metas for Google/Bing, rendered only when set.
 - check-i18n banned-word list narrowed to the client's actual rule and extended with charro/charra.
 
+### Phase 6 — Hero restructure (2026-10-08)
+
+- Big hero logo removed (it repeated the header logo and pushed the CTA below the fold on
+  phones). The hero now leads with the barrel-table photo (`barrels-umbrellas-patio-dusk.jpg`,
+  the client's pick) in a gold frame; the old full-bleed background + overlay CSS is gone.
+- Intro shortened to 2 sentences (keeps "rustic western party rentals" / "western farmhouse");
+  event types moved to chips under the hero linking to the Celebrations cards; the service-area
+  sentence moved to Our Story (`about.deliveryLine`). CTA "Get a Free Quote" / "Pide tu
+  cotización gratis". ES eyebrow and H1 are the client's own wording.
+- Lighthouse mobile: Performance 95 → 98, LCP 2.8 s → 2.3 s, CLS ≤ 0.005, Accessibility 100.
+
 ### Testing done each phase
 
 Build (0 errors/warnings), `check:i18n`, both pages at 360–1536px with an overflow check,
@@ -278,7 +289,7 @@ and a GitHub Pages-path build to verify canonical/hreflang/JSON-LD.
   clear light/dark finish photos), public phone/email, most-requested finish, inventory quantities
   and sizes, photo booth details, delivery fees/distance, booking lead time.
 - Greenery dessert-cart photo still shows parked cars (can't crop without losing the wagon wheel).
-- Backyard hero photo shows a party banner that may contain part of a name (small, under overlay).
+- Backyard photo (Signature section) shows a party banner that may contain part of a name (small).
 - Set `PUBLIC_FORMSPREE_ENDPOINT` (repo variable) and send one real test quote per language.
 - `TODO(suzette)`: custom domain in `site-url.mjs`, analytics provider, Search Console + Bing
   verification codes, Google Business Profile URL. `TODO(veronica)`: optional `starting at` prices.

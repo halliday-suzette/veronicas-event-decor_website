@@ -3,6 +3,7 @@
  * Celebrations (#celebrations): large photo cards for the primary tier, smaller text cards
  * for the secondary tier. Content comes from src/data/celebrations.ts.
  * "Gentle" cards (Celebration of Life) get calm, muted styling: no accent badge, no motion.
+ * Primary cards have ids (`celebration-<id>`) — the hero's event chips link to them.
  */
 import Icon from './Icon.astro';
 import Photo from './Photo.astro';
@@ -54,7 +55,10 @@ const icons: Record<string, string> = {
     <ul class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
       {primary.map((c) =>
         hasPhoto(c.image) ? (
-          <li class="flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
+          <li
+            id={`celebration-${c.id}`}
+            class="flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft"
+          >
             <Photo
               file={c.image}
               lang={lang}
@@ -73,7 +77,10 @@ const icons: Record<string, string> = {
           </li>
         ) : (
           /* No photo: an elegant framed text card, same size as the photo cards. */
-          <li class="celebration-text-card relative flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft">
+          <li
+            id={`celebration-${c.id}`}
+            class="celebration-text-card relative flex flex-col overflow-hidden rounded-lg bg-onyx text-cream shadow-soft"
+          >
             <div
               class="pointer-events-none absolute inset-2 rounded-md border border-gold-deep/60"
               aria-hidden="true"

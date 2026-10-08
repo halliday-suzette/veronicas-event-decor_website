@@ -27,8 +27,8 @@ export const photos: Record<string, PhotoInfo> = {
   },
   'barrels-umbrellas-patio-dusk.jpg': {
     alt: {
-      en: 'Whiskey barrel cocktail tables with black umbrellas and wood-seat barstools lined up along a concrete walkway at dusk',
-      es: 'Mesas de barril altas con sombrillas negras y bancos altos con asiento de madera, en fila sobre un pasillo de concreto al atardecer',
+      en: 'Handcrafted whiskey barrel cocktail tables with black umbrellas and wood-seat barstools, set up along a patio walkway at dusk',
+      es: 'Mesas de barril altas hechas a mano, con sombrillas negras y bancos altos con asiento de madera, montadas en un pasillo de patio al atardecer',
     },
   },
   'barrels-umbrellas-ranch.jpg': {
@@ -203,7 +203,10 @@ export const photos: Record<string, PhotoInfo> = {
   },
 };
 
-/** Hero background photo; also the WebPage `primaryImageOfPage` in the structured data. */
+/**
+ * Hero photo (Verónica's whiskey barrel tables; the LCP image, cropped to 4:3); also the WebPage
+ * `primaryImageOfPage` in the structured data.
+ */
 export const heroPhoto = 'barrels-umbrellas-patio-dusk.jpg';
 
 /**

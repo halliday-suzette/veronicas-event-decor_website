@@ -123,9 +123,10 @@ When a photo arrives, check its alt text in `src/data/photos.ts` matches what's 
 
 ### Hero photo
 
-The hero uses `barrels-umbrellas-backyard.jpg` as its background (under a dark overlay, from
-tablet width up). To use a different photo, change `heroPhoto` in `src/data/photos.ts` — the
-`<head>` preload and the structured data follow automatically.
+The hero shows `barrels-umbrellas-patio-dusk.jpg` (Verónica's barrel tables) in a gold frame,
+cropped to 4:3: beside the text on desktop, below the buttons on phones and tablets. To use a
+different photo, change `heroPhoto` in `src/data/photos.ts` — the `<head>` preload and the
+structured data follow automatically. The hero has no big logo; the header logo is the brand mark.
 
 ---
 

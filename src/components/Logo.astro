@@ -2,7 +2,7 @@
 /**
  * Veronica's Event Decor logo.
  *
- *   variant="full"    — complete logo with filigree (hero, footer)
+ *   variant="full"    — complete logo with filigree (footer)
  *   variant="compact" — center wordmark band only (header, mobile menu);
  *                       generated from logo.png by `npm run logo`
  *
@@ -18,7 +18,7 @@ import { useTranslations, type Lang } from '../i18n/utils';
 interface Props {
   lang: Lang;
   variant?: 'full' | 'compact';
-  /** Load immediately with high priority (use for the hero logo only). */
+  /** Load immediately with high priority (only for a logo that is the page's main image). */
   priority?: boolean;
   /** Decorative copies (e.g. a second logo next to visible brand text) get alt="". */
   decorative?: boolean;
@@ -37,7 +37,7 @@ const alt = decorative ? '' : t.logoAlt;
 ---
 
 {variant === 'full' ? (
-  /* Settings shared with the <head> preload (src/lib/logo.ts) so the URLs match exactly. */
+  /* Settings live in src/lib/logo.ts. */
   <Picture
     src={LOGO_FULL.src}
     alt={alt}
