@@ -2,7 +2,7 @@
  * Hero photo settings, shared by Hero.astro and the <head> preload so both use the exact same
  * responsive URLs (no double download).
  *
- * The hero photo (`heroPhoto` in src/data/photos.ts) is a real photo of Verónica's whiskey barrel
+ * The hero photo (`heroPhoto` in src/data/photos.ts) is a real photo of Veronica's whiskey barrel
  * tables, shown on every screen size and cropped to 4:3. It's the page's LCP element, so it's
  * preloaded (AVIF) and rendered eager with high priority.
  */

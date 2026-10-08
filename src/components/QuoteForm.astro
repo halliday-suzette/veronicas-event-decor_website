@@ -98,7 +98,7 @@ const scriptText = JSON.stringify({
         <input type="hidden" name="form_language" value={lang} />
         <!-- Honeypot: real people never see or fill this; Formspree discards submissions that do. -->
         <div class="hidden" aria-hidden="true">
-          <label for="_gotcha">Leave this field empty</label>
+          <label for="_gotcha">{q.honeypotLabel}</label>
           <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
         </div>
 

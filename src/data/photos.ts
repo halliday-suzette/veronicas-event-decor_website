@@ -1,5 +1,5 @@
 /**
- * Photo registry. All photos are Verónica's own events and inventory and live in
+ * Photo registry. All photos are Veronica's own events and inventory and live in
  * src/assets/photos/ (metadata/GPS stripped before committing). A photo appears on the site
  * as soon as its file exists; until then the card shows as a finished text card.
  *
@@ -204,7 +204,7 @@ export const photos: Record<string, PhotoInfo> = {
 };
 
 /**
- * Hero photo (Verónica's whiskey barrel tables; the LCP image, cropped to 4:3); also the WebPage
+ * Hero photo (Veronica's whiskey barrel tables; the LCP image, cropped to 4:3); also the WebPage
  * `primaryImageOfPage` in the structured data.
  */
 export const heroPhoto = 'barrels-umbrellas-patio-dusk.jpg';

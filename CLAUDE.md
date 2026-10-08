@@ -89,12 +89,15 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
 
 - **No hard-coded copy in components.** Page text goes in `src/i18n/en.ts` / `es.ts` (`es` is
   typed as `Translations`, so keys must match); list content goes in `src/data/` as `L10n`.
-- **Brand voice:** warm and friendly, like Verónica talking to a friend; short sentences. Spanish
+- **Brand voice:** warm and friendly, like Veronica talking to a friend; short sentences. Spanish
   is natural Mexican Spanish: always "tú", "renta" (not "alquiler"), "cotización/cotiza", "fiesta",
   "quinceañera(s)" (never the Roman-numeral "fifteen" abbreviation), "salón de eventos", "bancos altos", "sombrillas". **Never** "We Style /
   styled / styling / estilizamos / decoramos" — she rents handcrafted pieces and delivers and sets
   them up ("set up / montamos", "deliver / te llevamos"); "style" as a noun ("What styles…",
   "farmhouse–style table") is fine. **Never "charro" or "charra".** Don't name family members.
+  Spelling (both languages): "Veronica" with no accent; always "whiskey", never "whisky"; ES uses
+  "Orange County", not "condado de Orange". Barstools and umbrellas come with every barrel table
+  rental — they are not separate items. (`check:i18n` flags "whisky" and "Verónica".)
   Celebration of Life copy is soft: no exclamation points, no party language, no theme/keyword
   language, muted card styling.
 - **Keywords (SEO/AEO/GEO):** primary "rustic western party rentals" / "renta de mobiliario rústico
@@ -211,10 +214,10 @@ From the client restructure brief (not a redesign — logo, palette, fonts, Form
   `gentle` Celebration of Life), FAQ, photo registry. Single source for catalog, Add-Ons, the form's
   rentals checklist, the FAQ accordion and FAQPage JSON-LD.
 - **New section order**: Hero → Celebrations → Signature Barrel Tables + Rentals catalog → Add-Ons →
-  Real Event Setups gallery (keyboard lightbox on `<dialog>`) → Why Families Choose Verónica's →
+  Real Event Setups gallery (keyboard lightbox on `<dialog>`) → Why Families Choose Veronica's →
   How It Works (+ example packages, no prices) → Our Story & Service Area → Quote → FAQ.
   Removed: Events, Packages, ServiceArea components and the old placeholder gallery.
-- **Copy**: rewritten in Verónica's brand voice (see Conventions); `npm run check:i18n` added.
+- **Copy**: rewritten in Veronica's brand voice (see Conventions); `npm run check:i18n` added.
   Three "style" words from the brief itself were rewritten ("farmhouse-style", "selfie-style").
 - **Form**: new field order (city + ZIP, event location, inventory-driven rentals, budget,
   notes, consent); barrel-table count/finish only when barrel tables are checked; subject

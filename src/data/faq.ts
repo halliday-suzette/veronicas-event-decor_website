@@ -96,7 +96,7 @@ export const faq: FaqItem[] = [
     question: { en: 'Do you speak Spanish?', es: '¿Hablan español?' },
     answer: {
       en: '¡Sí! We do business in English and Spanish, so plan your celebration in whichever feels most comfortable.',
-      es: '¡Claro que sí! Te atendemos en inglés y en español, como te sientas más cómodo.',
+      es: '¡Claro que sí! Te atendemos en inglés y en español, como te sea más cómodo.',
     },
   },
 ];

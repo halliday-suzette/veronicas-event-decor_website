@@ -1,5 +1,5 @@
 /**
- * Verónica's rental inventory — the single source of truth for the Signature Barrel Tables
+ * Veronica's rental inventory — the single source of truth for the Signature Barrel Tables
  * section, the Rentals catalog, the Add-Ons section and the quote form's rentals checklist.
  *
  * To add an item: copy an existing entry, give it a unique `id`, pick a `category`, and write
@@ -63,21 +63,9 @@ export const inventory: InventoryItem[] = [
     showInForm: true,
     published: true,
   },
-  {
-    id: 'barstools',
-    category: 'barrel-tables',
-    name: { en: 'Matching Barstools', es: 'Bancos altos' },
-    description: {
-      en: 'Black metal barstools with warm wood seats that pair perfectly with our barrel tables.',
-      es: 'Bancos de metal negro con asiento de madera que combinan perfecto con nuestras mesas de barril.',
-    },
-    // Clear product shot: one table, three stools.
-    image: 'barrel-table-umbrella-stools.jpg',
-    showInForm: true,
-    published: true,
-  },
-  // Patio umbrellas aren't a separate rental: the barrel cocktail tables come with their
-  // matching barstools and umbrella (per Verónica), so there's no umbrella item or form option.
+  // Barstools and patio umbrellas aren't separate rentals: each barrel cocktail table rental
+  // includes its matching barstools and umbrella (per Veronica), so there's no barstool or
+  // umbrella item or form option. (The catalog hides this category: its only item is featured.)
 
   // ---- Bars & Carts ---------------------------------------------------------------------
   {

@@ -1,7 +1,8 @@
 // Checks the bilingual copy:
 //   1. en.ts and es.ts have exactly the same keys (and the same array lengths)
 //   2. every bilingual entry in src/data/ has non-empty English AND Spanish text
-//   3. customer-facing text avoids banned words ("we style", "styled", "styling", "estiliz…", "decoramos", "charro/charra")
+//   3. customer-facing text avoids banned words ("we style", "styled", "styling", "estiliz…", "decoramos", "charro/charra",
+//      "whisky", "Verónica")
 //
 //   npm run check:i18n
 //
@@ -73,7 +74,9 @@ for (const [file, info] of Object.entries(photos)) checkL10n(`photo ${file}.alt`
 // e.g. "What styles do you offer?", is fine). "charro/charra" is not used for this brand.
 // The Roman-numeral "fifteen" abbreviation is never used — always "quinceañera(s)".
 // (Written as x[v] so the literal term doesn't appear in the codebase.)
-const banned = /\b(we style|styled|styling|estiliz\w*|decoramos|charr[oa]s?|x[v])\b/i;
+// Also: "whiskey" is always the American spelling (both languages), and "Veronica" has no accent.
+const banned =
+  /\b(we style|styled|styling|estiliz\w*|decoramos|charr[oa]s?|x[v]|whisky|verónica)\b/i;
 /** Both languages of each bilingual entry, labeled with where it came from. */
 const both = (where: string, ...texts: (L10n | undefined)[]): [string, string][] =>
   texts.flatMap((t) =>

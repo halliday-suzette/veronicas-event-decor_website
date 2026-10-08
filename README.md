@@ -81,7 +81,7 @@ description in both languages. Options:
 
 ### Brand voice
 
-Warm and friendly, like Verónica talking to a friend. Spanish is natural Mexican Spanish ("tú",
+Warm and friendly, like Veronica talking to a friend. Spanish is natural Mexican Spanish ("tú",
 "renta", "cotiza", "quinceañera" (never the Roman-numeral "fifteen" abbreviation), "salón de eventos", "bancos altos", "sombrillas"). Never "style /
 styled / styling / estilizamos": she rents handcrafted pieces and delivers and sets them up. No
 invented prices, counts, dimensions, years in business or reviews — leave a
@@ -93,7 +93,7 @@ invented prices, counts, dimensions, years in business or reviews — leave a
 
 ### Event and inventory photos
 
-All photos are Verónica's own events and inventory. Put them in **`src/assets/photos/`** using
+All photos are Veronica's own events and inventory. Put them in **`src/assets/photos/`** using
 the exact filenames listed in `src/assets/photos/README.md`. Each one appears automatically,
 optimized to WebP, lazy-loaded and cropped to fit. Until a file exists, that card shows as a
 finished text card — never stock or AI images, and no "coming soon" placeholders.
@@ -123,7 +123,7 @@ When a photo arrives, check its alt text in `src/data/photos.ts` matches what's 
 
 ### Hero photo
 
-The hero shows `barrels-umbrellas-patio-dusk.jpg` (Verónica's barrel tables) in a gold frame,
+The hero shows `barrels-umbrellas-patio-dusk.jpg` (Veronica's barrel tables) in a gold frame,
 cropped to 4:3: beside the text on desktop, below the buttons on phones and tablets. To use a
 different photo, change `heroPhoto` in `src/data/photos.ts` — the `<head>` preload and the
 structured data follow automatically. The hero has no big logo; the header logo is the brand mark.
@@ -265,7 +265,7 @@ custom-event goal to see it in the dashboard.
 ```
 src/
   assets/images/      logo.png (source) and generated logo files
-  assets/photos/      Verónica's event & inventory photos (see its README for filenames)
+  assets/photos/      Veronica's event & inventory photos (see its README for filenames)
   components/         one file per page section (Hero, Celebrations, Rentals, …, Faq, Footer)
     form/             reusable form fields used by QuoteForm
   config/site-url.mjs the site's address (one setting for every absolute URL)

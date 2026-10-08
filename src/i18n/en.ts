@@ -7,7 +7,7 @@
  *
  * Rental items, celebrations and FAQ live in src/data/ (both languages side by side).
  *
- * Brand voice: warm and friendly, like Verónica talking to a friend. Never "style/styled/
+ * Brand voice: warm and friendly, like Veronica talking to a friend. Never "style/styled/
  * styling" — she rents handcrafted pieces and delivers and sets them up.
  */
 export const en = {
@@ -80,7 +80,7 @@ export const en = {
       text: 'A rich, deep finish that brings a bold, elegant look to any setup.',
     },
     pairLine:
-      'Every table comes with its matching barstools and a patio umbrella for a complete lounge.',
+      'Each barrel table rental includes its matching barstools and a patio umbrella for a complete lounge.',
     specQuantity: 'Available',
     specDimensions: 'Size',
   },
@@ -113,7 +113,7 @@ export const en = {
 
   why: {
     eyebrow: 'Why Us',
-    title: "Why Families Choose Verónica's",
+    title: "Why Families Choose Veronica's",
     items: [
       {
         icon: 'hammer',
@@ -217,6 +217,8 @@ export const en = {
       "Tell us about your event and the pieces you love. We'll check availability for your date and get back to you within 1–2 business days.",
     requiredNote: '* Required',
     subjectPrefix: 'New quote request',
+    // Label of the hidden spam-trap field (never shown; screen readers skip it too).
+    honeypotLabel: 'Leave this field empty',
     selectPlaceholder: 'Select an option',
 
     groups: {

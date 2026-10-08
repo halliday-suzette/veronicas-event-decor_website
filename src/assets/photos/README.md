@@ -1,6 +1,6 @@
 # Photos
 
-Verónica's own event and inventory photos. Use the **exact filenames** below — each one appears on
+Veronica's own event and inventory photos. Use the **exact filenames** below — each one appears on
 the site automatically (optimized to WebP, lazy-loaded). Until a file exists, its card shows as a
 finished text card (no placeholder). Alt text for each photo is in `src/data/photos.ts` — update
 it to match the real photo.
@@ -18,7 +18,7 @@ photos showing a child's name. `balloons-rodeo-first-birthday.jpg` is permanentl
 | Filename                                | Used for                                                   |
 | --------------------------------------- | ---------------------------------------------------------- |
 | `barrels-umbrellas-backyard.jpg`        | Signature Barrel Tables                                    |
-| `barrel-table-umbrella-stools.jpg`      | Matching Barstools; Gallery (1st)                          |
+| `barrel-table-umbrella-stools.jpg`      | Gallery (1st)                                              |
 | `barrels-umbrellas-patio-dusk.jpg`      | Hero photo; Weddings card; Gallery                         |
 | `barrels-umbrellas-ranch.jpg`           | Gallery                                                    |
 | `barrels-stools-lawn.jpg`               | Not shown right now (available)                            |

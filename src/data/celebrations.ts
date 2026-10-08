@@ -81,7 +81,7 @@ export const celebrations: Celebration[] = [
       en: 'Sweet, cozy cowboy, cowgirl and farmhouse setups to welcome your little one.',
       es: 'Montajes tiernos y acogedores, vaqueros o estilo rancho, para darle la bienvenida a tu bebé.',
     },
-    // The cowgirl shower photo never arrived; the bee shower is Verónica's own baby shower setup.
+    // The cowgirl shower photo never arrived; the bee shower is Veronica's own baby shower setup.
     image: 'balloons-bee-backdrop-pedestals.jpg',
   },
   {

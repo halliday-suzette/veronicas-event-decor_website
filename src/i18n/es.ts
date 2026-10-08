@@ -52,7 +52,7 @@ export const es: Translations = {
     eyebrow: 'Negocio de una emprendedora latina · Atención bilingüe · Pomona, CA',
     title: 'Renta de mesas artesanales de barril y mobiliario rústico estilo western',
     intro:
-      'Dale un toque rústico y elegante a tu celebración con nuestras mesas artesanales de barril de whisky y decoración western estilo rancho. Renta de mobiliario rústico western: te lo llevamos y lo montamos.',
+      'Dale un toque rústico y elegante a tu celebración con nuestras mesas artesanales de barril de whiskey y decoración western estilo rancho. Renta de mobiliario rústico western: te lo llevamos y lo montamos.',
     primary: 'Pide tu cotización gratis',
     secondary: 'Mira lo que rentamos',
     eventsLabel: 'Ideales para',
@@ -77,7 +77,8 @@ export const es: Translations = {
       title: 'Acabado oscuro',
       text: 'Un tono profundo y elegante que le da un toque especial a cualquier montaje.',
     },
-    pairLine: 'Cada mesa viene con sus bancos altos y su sombrilla para armar un lounge completo.',
+    pairLine:
+      'La renta de cada mesa de barril incluye sus bancos altos y su sombrilla para armar un lounge completo.',
     specQuantity: 'Disponibles',
     specDimensions: 'Medidas',
   },
@@ -120,7 +121,7 @@ export const es: Translations = {
       {
         icon: 'heart',
         title: 'Negocio de una mujer latina',
-        text: 'Un negocio familiar de Pomona que celebra a nuestra comunidad, fiesta tras fiesta.',
+        text: 'Un negocio familiar que celebra a nuestra comunidad, fiesta tras fiesta.',
       },
       {
         icon: 'chat',
@@ -201,7 +202,7 @@ export const es: Translations = {
       'Nos encantan las fiestas, y ese cariño lo ponemos en cada pieza hecha a mano que rentamos. Cada evento recibe nuestra atención personal: escuchamos tus ideas, te ayudamos a escoger las piezas ideales y nos encargamos de los detalles para que tú disfrutes con tu familia.',
     serviceTitle: 'Hasta dónde te lo llevamos',
     deliveryLine:
-      'Ofrecemos servicio de entrega y montaje en el Inland Empire, el condado de Orange y Riverside.',
+      'Ofrecemos servicio de entrega y montaje en el Inland Empire, Orange County y Riverside.',
     baseLabel: 'Nuestra base',
     base: 'Pomona, CA 91767',
     note: '¿No sabes si llegamos a tu zona? ¡Pregúntanos!',
@@ -214,6 +215,7 @@ export const es: Translations = {
       'Cuéntanos de tu fiesta y de las piezas que te gustan. Revisamos la disponibilidad para tu fecha y te contestamos en 1 a 2 días hábiles.',
     requiredNote: '* Obligatorio',
     subjectPrefix: 'Nueva solicitud de cotización',
+    honeypotLabel: 'Deja este campo vacío',
     selectPlaceholder: 'Selecciona una opción',
 
     groups: {
