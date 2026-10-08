@@ -97,6 +97,56 @@ export const photos: Record<string, PhotoInfo> = {
       es: 'Arco de globos de abejitas en tonos mostaza, rosa palo y crema, con girasoles y globos de abejitas sonrientes',
     },
   },
+  'sweet-16-light-wood-backdrop.jpg': {
+    alt: {
+      en: 'Sweet 16 setup with a rustic wood backdrop, coiled rope and giant white marquee numbers "16"',
+      es: 'Montaje de sweet 16 con backdrop de madera rústica, una soga enrollada y números gigantes "16" blancos con foquitos',
+    },
+  },
+  'sweet-16-arched-backdrop-marquee.jpg': {
+    alt: {
+      en: 'Sweet 16 backdrop with a natural wood arch, a second arch draped in dusty-blue fabric and tall silver "16" numbers',
+      es: 'Backdrop de sweet 16 con un arco de madera natural, otro arco cubierto con tela azul empolvado y números "16" plateados',
+    },
+  },
+  'birthday-backdrop-whiskey-barrels.jpg': {
+    alt: {
+      en: 'Rustic western birthday setup at dusk: dark wood backdrop with a "Happy Birthday" neon sign, string lights, and a barrel bar lit in blue with a wagon wheel',
+      es: 'Cumpleaños western rústico al atardecer: backdrop de madera oscura con letrero de neón "Happy Birthday", series de luces y una barra de barriles iluminada en azul con rueda de carreta',
+    },
+  },
+  'western-bar-hay-bale-longhorn.jpg': {
+    alt: {
+      en: 'Handcrafted wood western bar with a longhorn accent next to stacked hay bales and a whiskey barrel',
+      es: 'Barra western de madera hecha a mano con cuernos de res, junto a pacas de paja y un barril de whiskey',
+    },
+    // Wide photo: keep the bar (left) in square/4:3 crops; crops out the people and cars on the right.
+    position: 'left',
+  },
+  'barrel-buffet-table-setup.jpg': {
+    alt: {
+      en: 'Barrel bars with thick wood plank tops set up as a buffet with chafing dish racks, more whiskey barrels and a wagon wheel at sunset',
+      es: 'Barras de barriles con tablas gruesas de madera montadas como buffet con bases para charolas, más barriles de whiskey y una rueda de carreta al atardecer',
+    },
+  },
+  'barrel-table-umbrella-stools.jpg': {
+    alt: {
+      en: 'Whiskey barrel cocktail table with a black patio umbrella and three black metal barstools with wood seats',
+      es: 'Mesa de barril alta con sombrilla negra y tres bancos altos de metal negro con asiento de madera',
+    },
+  },
+  'balloons-black-gold-barrel-bar.jpg': {
+    alt: {
+      en: 'Black, gold and peach balloon garland over a dark wood backdrop with a "Happy Birthday" neon sign, above a barrel bar with a wagon wheel, a cake and drinks in galvanized tubs',
+      es: 'Arco de globos negro, dorado y durazno sobre un backdrop de madera oscura con letrero de neón "Happy Birthday", encima de una barra de barriles con rueda de carreta, pastel y bebidas en tinas de metal',
+    },
+  },
+  'balloons-bee-backdrop-pedestals.jpg': {
+    alt: {
+      en: 'Bumble bee baby shower backdrop that reads "What will baby bee", with a yellow, white and brown balloon garland, sunflowers and white pedestal stands',
+      es: 'Backdrop de baby shower de abejitas con la frase "What will baby bee", arco de globos amarillo, blanco y café, girasoles y bases blancas tipo pedestal',
+    },
+  },
 
   // ---- Not received yet (the item shows as a text card until the file is added) -----------
   // TODO(veronica): send these photos (update the alt text to match each real photo).
@@ -104,18 +154,6 @@ export const photos: Record<string, PhotoInfo> = {
     alt: {
       en: 'Barrel bar in front of a rustic wood backdrop with rope, a horse cutout and a horseshoe',
       es: 'Barra de barriles frente a un backdrop de madera rústica con soga, silueta de caballo y herradura',
-    },
-  },
-  'longhorn-bar.jpg': {
-    alt: {
-      en: 'Handcrafted wood bar with a longhorn accent beside a whiskey barrel cocktail table and stools',
-      es: 'Barra de madera hecha a mano con cuernos de res junto a una mesa de barril alta y bancos',
-    },
-  },
-  'arched-backdrops.jpg': {
-    alt: {
-      en: 'Rustic wood arched backdrops set up for a celebration',
-      es: 'Arcos de madera rústica montados para una fiesta',
     },
   },
   'saloon-facade-wanted.jpg': {
@@ -159,19 +197,26 @@ export const photos: Record<string, PhotoInfo> = {
 /** Hero background photo; also the WebPage `primaryImageOfPage` in the structured data. */
 export const heroPhoto = 'barrels-umbrellas-backyard.jpg';
 
-/** Gallery order (8–12 photos). Only photos whose files exist are shown. */
+/**
+ * Gallery order (12 photos). Leads with barrel tables, then mixes backdrops, bars, carts and a
+ * couple of balloon setups (balloons shouldn't dominate). Only photos whose files exist show.
+ * Also in src/assets/photos/ but not in the gallery: barrels-umbrellas-backyard (hero),
+ * barrels-stools-lawn, wood-backdrop-birthday-salud, barrel-bar-wagon-wheel,
+ * balloons-graduation-arch, balloons-sunflower-gold, balloons-bee-column, dessert-cart-greenery,
+ * western-bar-hay-bale-longhorn (wide; used on its card).
+ */
 export const galleryPhotos: string[] = [
+  'barrel-table-umbrella-stools.jpg',
   'barrels-umbrellas-patio-dusk.jpg',
+  'sweet-16-light-wood-backdrop.jpg',
   'dessert-cart-night.jpg',
-  'wood-backdrop-cactus.jpg',
   'barrels-umbrellas-ranch.jpg',
-  'balloons-sunflower-gold.jpg',
-  'barrel-bar-wagon-wheel.jpg',
+  'birthday-backdrop-whiskey-barrels.jpg',
+  'balloons-black-gold-barrel-bar.jpg',
+  'barrel-buffet-table-setup.jpg',
+  'wood-backdrop-cactus.jpg',
+  'sweet-16-arched-backdrop-marquee.jpg',
   'dessert-cart-day.jpg',
-  'barrels-stools-lawn.jpg',
-  'balloons-bee-column.jpg',
-  'wood-backdrop-birthday-salud.jpg',
-  'dessert-cart-greenery.jpg',
-  'balloons-graduation-arch.jpg',
+  'balloons-bee-backdrop-pedestals.jpg',
   // Add when received: 'barrel-bar-horse-backdrop.jpg', 'saloon-facade-wanted.jpg'
 ];

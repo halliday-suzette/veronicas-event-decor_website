@@ -15,32 +15,38 @@ photos showing a child's name. `balloons-rodeo-first-birthday.jpg` is permanentl
 
 ## In place
 
-| Filename                           | Used for                                                            |
-| ---------------------------------- | ------------------------------------------------------------------- |
-| `barrels-umbrellas-backyard.jpg`   | Hero background; Signature Barrel Tables                            |
-| `barrels-umbrellas-patio-dusk.jpg` | Gallery; Weddings card                                              |
-| `barrels-umbrellas-ranch.jpg`      | Gallery                                                             |
-| `barrels-stools-lawn.jpg`          | Matching Barstools; Gallery                                         |
-| `barrel-bar-wagon-wheel.jpg`       | Barrel Bar; Gallery                                                 |
-| `wood-backdrop-birthday-salud.jpg` | Wood Backdrop; "Salud" display; Neon Signs; Birthdays card; Gallery |
-| `wood-backdrop-cactus.jpg`         | Cactus Accents; Gallery                                             |
-| `dessert-cart-night.jpg`           | Rustic Dessert Cart; Gallery                                        |
-| `dessert-cart-day.jpg`             | Gallery                                                             |
-| `dessert-cart-greenery.jpg`        | Gallery                                                             |
-| `balloons-graduation-arch.jpg`     | Graduations card; Gallery                                           |
-| `balloons-sunflower-gold.jpg`      | Balloon Garlands; Gallery                                           |
-| `balloons-bee-column.jpg`          | Gallery                                                             |
+| Filename                                | Used for                                                   |
+| --------------------------------------- | ---------------------------------------------------------- |
+| `barrels-umbrellas-backyard.jpg`        | Hero background; Signature Barrel Tables                   |
+| `barrel-table-umbrella-stools.jpg`      | Matching Barstools; Gallery (1st)                          |
+| `barrels-umbrellas-patio-dusk.jpg`      | Weddings card; Gallery                                     |
+| `barrels-umbrellas-ranch.jpg`           | Gallery                                                    |
+| `barrels-stools-lawn.jpg`               | Patio Umbrellas                                            |
+| `barrel-bar-wagon-wheel.jpg`            | Barrel Bar                                                 |
+| `barrel-buffet-table-setup.jpg`         | Gallery; (unpublished) Barrel Buffet Table                 |
+| `western-bar-hay-bale-longhorn.jpg`     | Western Longhorn Bar (cropped from the left)               |
+| `wood-backdrop-birthday-salud.jpg`      | Birthdays card; Wood Backdrop; "Salud" display; Neon Signs |
+| `birthday-backdrop-whiskey-barrels.jpg` | Gallery                                                    |
+| `wood-backdrop-cactus.jpg`              | Cactus Accents; Gallery                                    |
+| `sweet-16-light-wood-backdrop.jpg`      | Sweet 16 card; Gallery; (unpublished) Marquee Numbers      |
+| `sweet-16-arched-backdrop-marquee.jpg`  | Arched Wood Backdrops; Gallery                             |
+| `dessert-cart-night.jpg`                | Rustic Dessert Cart; Gallery                               |
+| `dessert-cart-day.jpg`                  | Gallery                                                    |
+| `balloons-black-gold-barrel-bar.jpg`    | Balloon Garlands; Gallery                                  |
+| `balloons-bee-backdrop-pedestals.jpg`   | Baby Showers card; Gallery; (unpublished) White Pedestals  |
+| `balloons-graduation-arch.jpg`          | Graduations card                                           |
+| `balloons-sunflower-gold.jpg`           | Not shown right now (available)                            |
+| `balloons-bee-column.jpg`               | Not shown right now (available)                            |
+| `dessert-cart-greenery.jpg`             | Not shown right now (parked cars visible)                  |
 
 ## Not received yet (cards show as text until added)
 
-| Filename                        | Would be used for                                              |
-| ------------------------------- | -------------------------------------------------------------- |
-| `barrel-bar-horse-backdrop.jpg` | Horse & Horseshoe Cutouts (and Gallery)                        |
-| `longhorn-bar.jpg`              | Western Longhorn Bar                                           |
-| `arched-backdrops.jpg`          | Arched Wood Backdrops                                          |
-| `saloon-facade-wanted.jpg`      | "Wanted" Photo Frame (and Gallery)                             |
-| `saloon-facade.jpg`             | Western Saloon Facade                                          |
-| `balloons-cowgirl-shower.jpg`   | Add-Ons feature photo; Baby Showers card; Rustic Dessert Table |
-| `photo-booth.jpg`               | Photo Booth                                                    |
-| `barrel-table-light.jpg`        | Light finish card (a clearly light-finish table)               |
-| `barrel-table-dark.jpg`         | Dark finish card (a clearly dark-finish table)                 |
+| Filename                        | Would be used for                                |
+| ------------------------------- | ------------------------------------------------ |
+| `barrel-bar-horse-backdrop.jpg` | Horse & Horseshoe Cutouts (and Gallery)          |
+| `saloon-facade-wanted.jpg`      | "Wanted" Photo Frame (and Gallery)               |
+| `saloon-facade.jpg`             | Western Saloon Facade                            |
+| `balloons-cowgirl-shower.jpg`   | Add-Ons feature photo; Rustic Dessert Table      |
+| `photo-booth.jpg`               | Photo Booth                                      |
+| `barrel-table-light.jpg`        | Light finish card (a clearly light-finish table) |
+| `barrel-table-dark.jpg`         | Dark finish card (a clearly dark-finish table)   |

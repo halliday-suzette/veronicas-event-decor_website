@@ -71,7 +71,8 @@ export const inventory: InventoryItem[] = [
       en: 'Black metal barstools with warm wood seats that pair perfectly with our barrel tables.',
       es: 'Bancos de metal negro con asiento de madera que combinan perfecto con nuestras mesas de barril.',
     },
-    image: 'barrels-stools-lawn.jpg',
+    // Clear product shot: one table, three stools (the lawn photo now shows the umbrellas).
+    image: 'barrel-table-umbrella-stools.jpg',
     showInForm: true,
     published: true,
   },
@@ -83,6 +84,7 @@ export const inventory: InventoryItem[] = [
       en: 'Shade for your guests at outdoor celebrations.',
       es: 'Sombra para tus invitados en fiestas al aire libre.',
     },
+    image: 'barrels-stools-lawn.jpg',
     showInForm: true,
     published: true,
   },
@@ -108,7 +110,7 @@ export const inventory: InventoryItem[] = [
       en: 'A handcrafted wood bar with a longhorn accent that steals the show.',
       es: 'Una barra de madera hecha a mano con cuernos de res que se roba las miradas.',
     },
-    image: 'longhorn-bar.jpg',
+    image: 'western-bar-hay-bale-longhorn.jpg',
     showInForm: true,
     published: true,
   },
@@ -170,7 +172,7 @@ export const inventory: InventoryItem[] = [
       en: 'Elegant wood arches that add height and a modern western farmhouse feel.',
       es: 'Arcos elegantes de madera que le dan altura y un toque western moderno estilo rancho.',
     },
-    image: 'arched-backdrops.jpg',
+    image: 'sweet-16-arched-backdrop-marquee.jpg',
     showInForm: true,
     published: true,
   },
@@ -292,7 +294,7 @@ export const inventory: InventoryItem[] = [
       en: 'Custom garlands in your colors to complete your rental setup.',
       es: 'Arcos personalizados en tus colores para completar tu montaje.',
     },
-    image: 'balloons-sunflower-gold.jpg',
+    image: 'balloons-black-gold-barrel-bar.jpg',
     showInForm: true,
     published: true,
   },
@@ -323,6 +325,65 @@ export const inventory: InventoryItem[] = [
     image: 'wood-backdrop-birthday-salud.jpg',
     showInForm: true,
     published: true,
+  },
+
+  // ---- Seen in new photos — NOT published yet (published: false hides them everywhere) ----
+  // Switch on with `published: true` (and `showInForm: true` for the quote form) once confirmed.
+
+  // TODO(veronica): confirm this is a rental item
+  // Note: the wood backdrop in the Sweet 16 photo looks like the existing dark-stained Rustic
+  // Wood Backdrop, not a light-wood one — no photo attached until we know which piece this is.
+  {
+    id: 'light-wood-backdrop',
+    category: 'backdrops',
+    name: { en: 'Light Wood Backdrop', es: 'Backdrop de madera clara' },
+    description: {
+      en: 'A light, natural wood wall that keeps your photos bright and airy.',
+      es: 'Un muro de madera clara y natural que hace que tus fotos se vean luminosas.',
+    },
+    showInForm: false,
+    published: false,
+  },
+  // TODO(veronica): confirm this is a rental item (and which numbers/letters are available)
+  {
+    id: 'marquee-numbers',
+    category: 'add-ons',
+    name: { en: 'Light-Up Marquee Numbers', es: 'Números gigantes con luces' },
+    description: {
+      en: 'Giant light-up numbers like "16" that make the age the star of your photos.',
+      es: 'Números gigantes con foquitos, como el "16", para que la edad brille en tus fotos.',
+    },
+    image: 'sweet-16-light-wood-backdrop.jpg',
+    showInForm: false,
+    published: false,
+  },
+  // TODO(veronica): confirm this is a rental item
+  {
+    id: 'white-pedestals',
+    category: 'add-ons',
+    name: { en: 'White Pedestal Stands', es: 'Bases blancas tipo pedestal' },
+    description: {
+      en: 'Clean white pedestals in different heights to show off your cake, desserts and décor.',
+      es: 'Bases blancas de diferentes alturas para lucir tu pastel, tus postres y tu decoración.',
+    },
+    image: 'balloons-bee-backdrop-pedestals.jpg',
+    showInForm: false,
+    published: false,
+  },
+  // TODO(veronica): confirm this is a rental item — the buffet photo looks like two Barrel Bars
+  // (two barrels + a plank each). If it's the same piece, delete this entry; if it's a separate,
+  // longer buffet table, publish it.
+  {
+    id: 'barrel-buffet-table',
+    category: 'bars-carts',
+    name: { en: 'Barrel Buffet Table', es: 'Mesa de buffet de barriles' },
+    description: {
+      en: 'Whiskey barrels with a long wood plank top, made for setting out the food buffet.',
+      es: 'Barriles de whiskey con una tabla larga de madera, perfecta para servir el buffet.',
+    },
+    image: 'barrel-buffet-table-setup.jpg',
+    showInForm: false,
+    published: false,
   },
 ];
 

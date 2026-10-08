@@ -31,7 +31,6 @@ export const celebrations: Celebration[] = [
       es: 'Una celebración única merece piezas tan especiales como ella.',
     },
   },
-  // No photo for now (shown as a text card). Set `image` when a photo is ready.
   {
     id: 'sweet-16',
     tier: 'primary',
@@ -40,6 +39,7 @@ export const celebrations: Celebration[] = [
       en: 'A milestone birthday with a photo-ready rustic look, perfect for a cowgirl or western-theme sweet 16.',
       es: 'Un cumpleaños inolvidable con un look rústico perfecto para las fotos, ideal para un sweet 16 vaquero o western.',
     },
+    image: 'sweet-16-light-wood-backdrop.jpg',
   },
   {
     id: 'graduation',
@@ -81,7 +81,8 @@ export const celebrations: Celebration[] = [
       en: 'Sweet, cozy cowboy, cowgirl and farmhouse setups to welcome your little one.',
       es: 'Montajes tiernos y acogedores, vaqueros o estilo rancho, para darle la bienvenida a tu bebé.',
     },
-    image: 'balloons-cowgirl-shower.jpg',
+    // The cowgirl shower photo never arrived; the bee shower is Verónica's own baby shower setup.
+    image: 'balloons-bee-backdrop-pedestals.jpg',
   },
   {
     id: 'celebration-of-life',
