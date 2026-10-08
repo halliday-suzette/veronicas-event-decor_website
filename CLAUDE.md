@@ -18,7 +18,14 @@ User-facing docs (editing copy, swapping images, Formspree, deploy) are in READM
   (`style/styled/styling`, `estiliz*`, `decoramos`) over all customer-facing text incl. alt text.
 
 No test suite. Verify changes by building and running `check:i18n`, then checking the page in a
-browser at 360, 390, 768, 1024, 1280 and 1536px (no horizontal scroll), in both languages.
+browser at 320, 360, 390, 768, 1024, 1280 and 1536px (no horizontal scroll), in both languages.
+
+**Browser support:** Safari/iOS 15.4+, Chrome/Edge/Samsung Internet 99+, Firefox 97+ (needs
+`<dialog>` and CSS cascade layers; Tailwind emits hex fallbacks for `color-mix()`). Verified on
+WebKit (iPhone SE 320px, iPhone 15 Pro ± landscape, iPad Mini/Pro ± landscape, Mac Safari),
+Chromium (Galaxy S8, Pixel 7, Galaxy Tab S4, 1366/1920/2560) and Firefox (390/1366/1920): no
+horizontal scroll, menu/lightbox/form work, 44px tap targets on touch devices. Under 360px the
+header logo is 40px tall and the header padding is tighter so the row fits.
 
 ## Stack
 

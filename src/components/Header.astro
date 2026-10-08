@@ -19,8 +19,9 @@ const t = useTranslations(lang);
   id="site-header"
   class="sticky top-0 z-50 border-b border-gold-deep/40 bg-onyx/95 backdrop-blur supports-[backdrop-filter]:bg-onyx/85"
 >
-  <div class="mx-auto flex h-[var(--header-h)] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-    <a href="#home" class="shrink-0 rounded-md">
+  <!-- Under 360px (e.g. original iPhone SE, 320px) the logo and padding shrink so the row fits. -->
+  <div class="mx-auto flex h-[var(--header-h)] max-w-7xl items-center justify-between gap-2 px-3 min-[360px]:gap-3 min-[360px]:px-4 sm:px-6 lg:px-8">
+    <a href="#home" class="inline-flex min-h-11 shrink-0 items-center rounded-md">
       <Logo lang={lang} variant="compact" />
     </a>
 
