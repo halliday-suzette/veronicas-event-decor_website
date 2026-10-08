@@ -102,12 +102,14 @@ Astro 7 (`output: 'static'`, built-in i18n, `prefixDefaultLocale: false`), Tailw
   language, muted card styling.
 - **Keywords (SEO/AEO/GEO):** primary "rustic western party rentals" / "renta de mobiliario rústico
   western", secondary "western farmhouse décor" / "decoración (western) estilo rancho". Max 2–3
-  visible uses of each per page (currently EN: 3 — hero intro, catalog H3, Our Story; ES: 2 —
-  hero intro, catalog H3; the ES H1/eyebrow are the client's own wording). "Farmhouse"/"estilo rancho" only on weddings,
+  visible uses of each per page (currently EN: 2 — hero intro, catalog H3; ES: 2 — hero intro,
+  catalog H3; the ES H1/eyebrow and the Our Story text are the client's own wording). "Farmhouse"/"estilo rancho" only on weddings,
   baby showers, wood & arched backdrops, dessert pieces/table (plus the hero, definition and
   "styles" FAQ). Western stays the lead identity. No stuffing, hidden text or keyword lists.
-- **Business definition** = `about.definition` (first sentence of Our Story); it's also the
-  LocalBusiness description and the `llms.txt` summary — keep it a clear, quotable sentence.
+- **Business definition** = `about.definition`: not shown on the page; it's the LocalBusiness
+  description and the `llms.txt` summary — keep it a clear, quotable sentence.
+- **Our Story** (`about.paragraphs`, 3 paragraphs per language) is final client-approved text
+  (2026-10-08): don't rewrite, shorten or "improve" it.
 - Missing facts (prices, quantities, dimensions, lead times, "most requested"): leave a
   `TODO(veronica)` comment and render nothing or neutral copy. Brand name stays in English.
 - Quote form option values submitted to Formspree are always the **English** labels

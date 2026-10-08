@@ -198,11 +198,15 @@ export const en = {
   about: {
     eyebrow: 'About Us',
     title: 'Our Story',
-    // First sentence = the business definition; also used for the JSON-LD description and llms.txt.
+    // Business definition: not shown on the page; used for the JSON-LD description and llms.txt.
     definition:
       "Veronica's Event Decor is a Latina woman-owned party rental company in Pomona, California, specializing in handcrafted whiskey barrel tables, rustic western party rentals and western farmhouse décor.",
-    story:
-      'We love celebrations, and we put that love into every handcrafted piece we rent. Every event gets our personal attention: we listen to your ideas, help you choose the right pieces, and take care of the details so you can enjoy the day with your family.',
+    // Client-approved Our Story text, one entry per paragraph — use exactly as written.
+    paragraphs: [
+      "Veronica's Event Decor was born from the passion of a Latina entrepreneur who loves creativity, thoughtful details, and celebrations that turn into unforgettable memories.",
+      'We specialize in handcrafted whiskey barrel table rentals, rustic western-style furniture, and decorative accents that bring warmth, character, and charm to every event. We love celebrations, and that passion shines through in every piece we offer.',
+      "We believe every celebration deserves a setting as unique as the occasion. That's why we take the time to listen to your ideas and help you choose the perfect pieces to create a special atmosphere, so you can enjoy every moment with the people you love.",
+    ],
     serviceTitle: 'Where We Deliver',
     deliveryLine: 'We deliver and set up across the Inland Empire, Orange County and Riverside.',
     baseLabel: 'Home base',

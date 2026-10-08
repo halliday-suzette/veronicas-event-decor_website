@@ -18,9 +18,11 @@ const t = useTranslations(lang);
     <SectionHeading id="about-title" tone="light" eyebrow={t.about.eyebrow} title={t.about.title} />
 
     <div class="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
-      <p class="text-center text-lg leading-relaxed text-charcoal lg:text-left lg:text-xl">
-        {`${t.about.definition} ${t.about.story}`}
-      </p>
+      <div class="space-y-5 text-center text-lg leading-relaxed text-charcoal lg:text-left lg:text-xl">
+        {t.about.paragraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
 
       <div class="rounded-lg border border-whiskey-light/60 bg-cream/70 p-6 shadow-soft sm:p-8">
         <h3 class="text-center text-2xl font-semibold text-whiskey-dark lg:text-left">
