@@ -71,7 +71,7 @@ export const celebrations: Celebration[] = [
       en: 'Warm, romantic rustic western and farmhouse touches for your reception and sweetheart table.',
       es: 'Detalles rústicos western y estilo rancho, cálidos y románticos, para tu recepción y mesa de novios.',
     },
-    image: 'barrels-umbrellas-patio-dusk.jpg',
+    image: 'wedding-floral-arch-barrel-bar.jpg',
   },
   {
     id: 'baby-shower',

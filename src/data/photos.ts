@@ -141,6 +141,15 @@ export const photos: Record<string, PhotoInfo> = {
       es: 'Arco de globos negro, dorado y durazno sobre un backdrop de madera oscura con letrero de neón "Happy Birthday", encima de una barra de barriles con rueda de carreta, pastel y bebidas en tinas de metal',
     },
   },
+  // The couple's framed portrait on the easel is blurred for their privacy.
+  'wedding-floral-arch-barrel-bar.jpg': {
+    alt: {
+      en: 'Wedding setup: a barrel bar with a thick wood top and a wagon wheel under an arch of pink and white roses with flowing white drapes',
+      es: 'Montaje de boda: barra de barriles con tabla gruesa de madera y rueda de carreta bajo un arco de rosas rosas y blancas con cortinas blancas',
+    },
+    // Keep the rose arch in view when cropped.
+    position: 'top',
+  },
   'balloons-bee-backdrop-pedestals.jpg': {
     alt: {
       en: 'Bumble bee baby shower backdrop that reads "What will baby bee", with a yellow, white and brown balloon garland, sunflowers and white pedestal stands',
